@@ -3,6 +3,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strconv"
 )
@@ -29,21 +30,57 @@ type Restaurant struct {
 	City string
 	Rating int
 }
+
+func getOrderByResId(resId int, orders []Order) Order{
+	var orderNil Order
+
+	for _,order := range orders {
+		if order.Restau.Id == resId {
+			return order
+		}
+	}
+
+	return orderNil
+}
+
+func getInfo() {
+	jsonFilePath := "data.json"
+	orderJsonFile, err := os.Open(jsonFilePath)
+	if err != nil {
+		fmt.Println("failed to open file")
+	}
+	defer orderJsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(orderJsonFile)
+
+	var orderList []Order
+	json.Unmarshal(byteValue, &orderList)
+
+	resId := 18
+
+	order := getOrderByResId(resId, orderList)
+	jsonData, err := json.Marshal(order)
+	if err != nil {
+		fmt.Println("Failed to convert to json")
+	}
+	fmt.Println(string(jsonData))
+}
+
 func main() {
 
-	orderFile, err := os.Open("/Users/varun.gupta1/Desktop/Swiggy-Training-2020/git-training/workspace/go-learning-goland/Case_Study/Case_Study1/Order.csv")
+	orderFile, err := os.Open("Order.csv")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer orderFile.Close()
 
-	userFile, err := os.Open("/Users/varun.gupta1/Desktop/Swiggy-Training-2020/git-training/workspace/go-learning-goland/Case_Study/Case_Study1//User.csv")
+	userFile, err := os.Open("User.csv")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer userFile.Close()
 
-	restaurantFile, err := os.Open("/Users/varun.gupta1/Desktop/Swiggy-Training-2020/git-training/workspace/go-learning-goland/Case_Study/Case_Study1//Restaurant.csv")
+	restaurantFile, err := os.Open("Restaurant.csv")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -128,7 +165,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(string(jsonData))
+	//fmt.Println(string(jsonData))
 
 	jsonFile, err := os.Create("./data.json")
 	if err != nil {
@@ -138,4 +175,7 @@ func main() {
 
 	jsonFile.Write(jsonData)
 	jsonFile.Close()
+
+	getInfo()
+
 }
