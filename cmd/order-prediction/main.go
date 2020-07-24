@@ -5,9 +5,13 @@ import (
 	"fmt"
 	"github.com/elgs/gojq"
 	"github.com/varungupte/BootCamp_Team3/pkg/orders"
+	"net/http"
 	"os"
 	"strconv"
+	"github.com/gin-gonic/gin"
 )
+
+var jsonData2 string
 
 func main() {
 	ordrs := orders.GetOrders("Order.csv")
@@ -30,8 +34,67 @@ func main() {
 	jsonFile.Write(jsonData)
 	jsonFile.Close()
 
+	jsonData2 = string(jsonData)
+
+	//Popular restaurants(based on number of orders)
 	analyticsPopularFood(string(jsonData))
-	analyticsPopularDishCitywise(string(jsonData),"San Francisco")
+
+	//Popular Dish Areawise(In a particular User City, which is the dish maximum ordered)
+	analyticsPopularDishCitywise(string(jsonData),"SanFrancisco")
+
+
+	//gin stuff (Popular Dish Areawise)
+	router := gin.Default()
+	api:= router.Group("/populardish")
+	api.GET("/",  HomePage)
+	api.GET("/city/:city",AnalyticsPopularDIsh)
+	router.Run("localhost:5656")
+}
+
+
+
+func HomePage(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "Hi there !... This is analytics tool to find popular dish based on various parameters.",
+	})
+}
+
+
+
+func AnalyticsPopularDIsh (c *gin.Context) {
+	cityName := c.Param("city")
+	//Using gojq library https://github.com/elgs/gojq#gojq
+	parser, _ := gojq.NewStringQuery(jsonData2)
+
+
+	//Popular Dish Areawise(In a particular User City, which is the dish maximum ordered)
+	var m = make(map[string]int)
+	for i := 0; i < 1000; i++ {
+		var f string
+		f = "["+strconv.Itoa(i)+"].User.City"
+		q,_:=parser.Query(f)
+		if q==cityName{
+			var d string
+			d = "["+strconv.Itoa(i)+"].DishName"
+			dishName,_:=parser.Query(d)
+			m[dishName.(string)]=m[dishName.(string)]+1
+		}
+
+	}
+	// Iterating map
+	var res string
+	maxres:=-1
+	for i, p := range m {
+		if p > maxres{
+			res = i
+			maxres = p
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"Dish Name":res,
+		"Most Popular dish in :-" :cityName,
+	})
 }
 
 func analyticsPopularFood(jsonData string){
@@ -67,7 +130,7 @@ func analyticsPopularDishCitywise(jsonData string,cityName string){
 	parser, _ := gojq.NewStringQuery(jsonData)
 
 
-	//Popular Dish Areawise(In a particular User City, which is the dish maximum order)
+	//Popular Dish Areawise(In a particular User City, which is the dish maximum ordered)
 	var m = make(map[string]int)
 	for i := 0; i < 1000; i++ {
 		var f string
