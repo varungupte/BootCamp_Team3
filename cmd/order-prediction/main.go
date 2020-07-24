@@ -45,10 +45,12 @@ func main() {
 
 	//gin stuff (Popular Dish Areawise)
 	router := gin.Default()
-	api:= router.Group("/populardish")
-	api.GET("/",  HomePage)
-	api.GET("/city/:city",AnalyticsPopularDIsh)
+	api:= router.Group("/order")
+	//api.GET("/",  HomePage)
+	api.GET("/populardish/city/:city",AnalyticsPopularDIsh)
+	api.GET("/order_details/:ordernumber",  OrderDetail)
 	router.Run("localhost:5656")
+
 }
 
 
@@ -59,6 +61,20 @@ func HomePage(c *gin.Context) {
 	})
 }
 
+
+func OrderDetail (c *gin.Context) {
+	ordernumber := c.Param("ordernumber")
+	//Using gojq library https://github.com/elgs/gojq#gojq
+	parser, _ := gojq.NewStringQuery(jsonData2)
+	ord,_ := strconv.Atoi(ordernumber)
+	ord=ord-1
+	quer := "["+strconv.Itoa(ord)+"]"
+	order_detail,_:=parser.Query(quer)
+	fmt.Println(order_detail)
+	c.JSON(http.StatusOK, gin.H{
+		"Order Details":order_detail,
+	})
+}
 
 
 func AnalyticsPopularDIsh (c *gin.Context) {

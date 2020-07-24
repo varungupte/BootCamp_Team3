@@ -12,7 +12,7 @@ import (
 type Order struct {
 	Id int
 	Quantity int
-	Amount int
+	Amount float64
 	DishName string
 	User users.User
 	Restau restaurants.Restaurant
@@ -43,7 +43,7 @@ func GetOrders(filename string) []Order {
 
 	for _, each := range orderData {
 		ord.Id,_ = strconv.Atoi(each[0])
-		ord.Amount,_ = strconv.Atoi(each[1])
+		ord.Amount,_ = strconv.ParseFloat((each[1]),32)
 		ord.Quantity,_ = strconv.Atoi(each[2])
 		ord.DishName= each[3]
 		var userid int
