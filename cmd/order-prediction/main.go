@@ -64,6 +64,7 @@ func main() {
 	api.GET("/order_details/:ordernumber",  OrderDetail)
 	api.GET("/order_details/",  OrderDetailAll)
 	api.POST("/add_order", PostOrder)
+	api.POST("/updateOrderDish", UpdateOrderDish)
 	router.Run("localhost:5656")
 
 }
@@ -231,4 +232,51 @@ func analyticsPopularDishCitywise(jsonData string,cityName string){
 	}
 	fmt.Println("The most popular dish in ",cityName," is:-")
 	fmt.Println(res)
+}
+
+func UpdateOrderDish (c *gin.Context) {
+	order_id_str :=  c.DefaultQuery("order_id", "0")
+	updated_dish := c.Query("dish")
+	order_id, _ := strconv.Atoi(order_id_str)
+
+	jsonFilePath := "data.json"
+	orderList, err := parseJsonFile(jsonFilePath)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"message": "Failed to open file",
+		})
+	}
+
+	for _,order := range orderList {
+		if order.Id == order_id {
+			prev_dish := order.DishName
+			order.DishName = updated_dish
+			c.JSON(200, gin.H{
+				"message": "Successfully updated",
+				"previous": prev_dish,
+				"updated_dish": updated_dish,
+
+			})
+			return
+		}
+	}
+
+	c.JSON(200, gin.H{
+		"message": "No order found with this order_id",
+	})
+}
+
+func parseJsonFile(jsonFilePath string) ([]orders.Order, error){
+	orderJsonFile, err := os.Open(jsonFilePath)
+	var orderList []orders.Order
+
+	if err != nil {
+		return orderList, err
+	}
+	defer orderJsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(orderJsonFile)
+	json.Unmarshal(byteValue, &orderList)
+
+	return orderList, nil
 }
