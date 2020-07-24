@@ -5,11 +5,24 @@ import (
 	"fmt"
 	"github.com/elgs/gojq"
 	"github.com/varungupte/BootCamp_Team3/pkg/orders"
+	"github.com/varungupte/BootCamp_Team3/pkg/restaurants"
+	"github.com/varungupte/BootCamp_Team3/pkg/users"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
 	"github.com/gin-gonic/gin"
 )
+
+type Order struct {
+	Id int
+	Quantity int
+	Amount float64
+	DishName string
+	User users.User
+	Restau restaurants.Restaurant
+	DeliveryTime string
+}
 
 var jsonData2 string
 
@@ -49,15 +62,62 @@ func main() {
 	//api.GET("/",  HomePage)
 	api.GET("/populardish/city/:city",AnalyticsPopularDIsh)
 	api.GET("/order_details/:ordernumber",  OrderDetail)
+	api.GET("/order_details/",  OrderDetailAll)
+	api.POST("/add_order", PostOrder)
 	router.Run("localhost:5656")
 
 }
 
+func PostOrder (c *gin.Context) {
+	body := c.Request.Body
 
+	content, err := ioutil.ReadAll(body)
+	if err!= nil {
+		fmt.Println("Sorry No Content :", err.Error())
+	}
+	fmt.Println(string(content))
+
+
+	//unmarshalling orders
+	var orders []Order
+	err3 := json.Unmarshal([]byte(jsonData2), &orders)
+	if err3 != nil {
+		fmt.Println("unmarshalling orders",err)
+		os.Exit(1)
+	}
+
+	//unmarshalling content
+	var orderData2 Order
+	err2 := json.Unmarshal([]byte(content), &orderData2)
+	if err2 != nil {
+		fmt.Println("err2->",err2)
+		os.Exit(1)
+	}
+
+	//appending new order
+	orders=append(orders,orderData2)
+
+	// Convert to JSON
+	updatedData, err4 := json.Marshal(orders)
+	if err4 != nil {
+		fmt.Println("err4->",err4)
+		os.Exit(1)
+	}
+	jsonData2=string(updatedData)
+	c.JSON(http.StatusCreated, gin.H {
+		"message" :string(updatedData),
+	})
+}
 
 func HomePage(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "Hi there !... This is analytics tool to find popular dish based on various parameters.",
+	})
+}
+
+func OrderDetailAll(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"order_details": jsonData2,
 	})
 }
 
