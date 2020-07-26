@@ -7,7 +7,7 @@ import (
 
 func main() {
 	orders.GenerateOrdersJSON("Order.csv")
-
+	gin.ForceConsoleColor()
 	router := gin.Default()
 	orders.AddOrderPaths(router)
 	router.Run("localhost:5656")

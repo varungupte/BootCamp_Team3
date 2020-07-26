@@ -78,14 +78,20 @@ func GenerateOrdersJSON(filename string) {
 }
 
 func AddOrderPaths(router *gin.Engine) {
-	order:= router.Group("/order")
+	order:= router.Group("/order",gin.BasicAuth(gin.Accounts{
+		"user1": "gupte",//username:password
+		"user2": "gupte",
+		"user3": "gupte",
+	}))
 	order.GET("/", HomePage)
+	order.GET("/count",  OrderCount)
 	order.GET("/populardish/city/:city", AnalyticsPopularDIsh)
-	order.GET("/order_details/:ordernumber",  OrderDetail)
-	order.GET("/order_details/",  OrderDetailAll)
+	order.GET("/order_details/order_id/:ordernumber",  OrderDetail)
+	order.GET("/order_details/tillorder/:tillorder",  OrderDetailAll)
 	order.POST("/add_order", PostOrder)
 	order.POST("/updateOrderDish", UpdateOrderDish)
 }
+
 
 func PostOrder (c *gin.Context) {
 	body := c.Request.Body
@@ -124,10 +130,46 @@ func HomePage(c *gin.Context) {
 	})
 }
 
-func OrderDetailAll(c *gin.Context) {
+func OrderCount(c *gin.Context) {
+	//unmarshalling orders
+	var orders []Order
+	err := json.Unmarshal([]byte(gJsonData), &orders)
+	errorutil.CheckError(err, "unmarshalling orders")
+	ordercount := len(orders)
+	fmt.Println(ordercount)
 	c.JSON(200, gin.H{
-		"order_details": gJsonData,
+		"Number of orders": ordercount,
 	})
+}
+
+func OrderDetailAll(c *gin.Context) {
+	//c.JSON(200, gin.H{
+	//	"order_details": gJsonData,
+	//})
+	tillorder := c.Param("tillorder")
+	//unmarshalling orders
+	var orders []Order
+	err := json.Unmarshal([]byte(gJsonData), &orders)
+	errorutil.CheckError(err, "unmarshalling orders")
+
+	var neworders []Order
+	i,_:= strconv.Atoi(tillorder)
+	for _,v := range orders{
+		if i==0{
+			break
+		}
+		neworders=append(neworders,v)
+		i=i-1
+	}
+	// Convert to JSON
+	updatedData, err4 := json.Marshal(neworders)
+	errorutil.CheckError(err4, "")
+
+	c.JSON(http.StatusOK, gin.H {
+		"message" :string(updatedData),
+	})
+
+
 }
 
 func OrderDetail (c *gin.Context) {
