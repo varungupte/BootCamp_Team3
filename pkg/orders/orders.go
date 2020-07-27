@@ -6,10 +6,14 @@ import (
 	"fmt"
 	"github.com/elgs/gojq"
 	"github.com/gin-gonic/gin"
+	"github.com/varungupte/BootCamp_Team3/cmd/orderproto"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
 	"github.com/varungupte/BootCamp_Team3/pkg/restaurants"
 	"github.com/varungupte/BootCamp_Team3/pkg/users"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -89,7 +93,7 @@ func AddOrderPaths(router *gin.Engine) {
 	order.GET("/order_details/order_id/:ordernumber",  OrderDetail)
 	order.GET("/order_details/tillorder/:tillorder",  OrderDetailAll)
 	order.POST("/add_order", PostOrder)
-	order.POST("/updateOrderDish", UpdateOrderDish)
+	order.POST("/updateOrderDish", UpdateOrderDishHandler)
 }
 
 
@@ -222,35 +226,50 @@ func AnalyticsPopularDIsh (c *gin.Context) {
 	})
 }
 
-func UpdateOrderDish (c *gin.Context) {
+func UpdateOrderDishHandler(c *gin.Context) {
 	order_id_str :=  c.DefaultQuery("order_id", "0")
 	updated_dish := c.Query("dish")
 	order_id, _ := strconv.Atoi(order_id_str)
 
+
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+
+	if err != nil {
+		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+	}
+	defer conn.Close()
+
+	client := orderproto.NewUpdateOrderServiceClient(conn)
+	req := &orderproto.UpdateDishRequest{
+		OrderId:int64(order_id),
+		UpdatedDish:updated_dish,
+	}
+
+	resp, err := client.UpdateDish(context.Background(), req)
+
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":resp.Message,
+	})
+}
+
+func UpdateOrderDish (order_id int, updated_dish string) string{
+
 	jsonFilePath := "../../pkg/orders/orders.json"
 	orderList, err := parseJsonFile(jsonFilePath)
 	if err != nil {
-		c.JSON(200, gin.H{
-			"message": "Failed to open file",
-		})
+		return "Failed to open file"
 	}
 
 	for _,order := range orderList {
 		if order.Id == order_id {
-			prev_dish := order.DishName
 			order.DishName = updated_dish
-			c.JSON(200, gin.H{
-				"message": "Successfully updated",
-				"previous": prev_dish,
-				"updated_dish": updated_dish,
-			})
-			return
+
+			return "Successfully updated"
 		}
 	}
 
-	c.JSON(200, gin.H{
-		"message": "No order found with this order_id",
-	})
+	return "No order found with this order_id"
 }
 
 func parseJsonFile(jsonFilePath string) ([]Order, error){

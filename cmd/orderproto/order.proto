@@ -1,0 +1,18 @@
+syntax="proto3";
+
+package order;
+
+option go_package="cmd/orderproto";
+
+message UpdateDishRequest {
+    int64 order_id=1;
+    string updated_dish=2;
+}
+
+message UpdateDishResponse {
+    string message=2;
+}
+
+service UpdateOrderService {
+    rpc UpdateDish(UpdateDishRequest) returns (UpdateDishResponse){}
+}
