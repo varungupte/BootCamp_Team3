@@ -2,14 +2,13 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/varungupte/BootCamp_Team3/pkg/orders"
+	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orders_client"
 )
 
 func main() {
-	orders.GenerateOrdersJSON("Order.csv")
 	gin.ForceConsoleColor()
 	router := gin.Default()
-	orders.AddOrderPaths(router)
-	router.Run("localhost:5656")
+	orders_client.AddOrderPaths(router)
+	router.Run("localhost:5657")
 }
 

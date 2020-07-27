@@ -1,0 +1,33 @@
+syntax="proto3";
+
+package orders;
+
+option go_package="orders/orderspb";
+
+message OrdersCountRequest {}
+
+message OrdersCountResponse {
+    string count=1;
+}
+
+message OrderDetailRequest {
+    string OrderNumber=1;
+}
+
+message OrderDetailResponse {
+    string orderDetail=1;
+}
+
+message PopularDishResponse {
+    string DishName=1;
+}
+
+message PopularDishRequest {
+    string CityName = 1;
+}
+
+service OrdersService {
+    rpc GetOrdersCount(OrdersCountRequest) returns (OrdersCountResponse) {}
+    rpc GetOrderDetail(OrderDetailRequest) returns (OrderDetailResponse) {}
+    rpc GetPopularDish(PopularDishRequest) returns (PopularDishResponse){}
+}
