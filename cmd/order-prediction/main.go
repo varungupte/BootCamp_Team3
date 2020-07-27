@@ -9,6 +9,6 @@ func main() {
 	gin.ForceConsoleColor()
 	router := gin.Default()
 	orders_client.AddOrderPaths(router)
-	router.Run("localhost:5656")
+	router.Run("localhost:5657")
 }
 

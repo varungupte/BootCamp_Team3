@@ -6,6 +6,7 @@ import (
 	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
 	"google.golang.org/grpc"
 	"log"
+	"net/http"
 )
 
 func AddOrderPaths(router *gin.Engine) {
@@ -17,7 +18,7 @@ func AddOrderPaths(router *gin.Engine) {
 	order.GET("/", HomePage)
 	order.GET("/count", OrderCount)
 	//order.GET("/populardish/city/:city", AnalyticsPopularDIsh)
-	//order.GET("/order_details/order_id/:ordernumber", OrderDetail)
+	order.GET("/order_details/order_id/:ordernumber", OrderDetail)
 	//order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
 	//order.POST("/add_order", PostOrder)
 	//order.POST("/updateOrderDish", UpdateOrderDish)
@@ -62,7 +63,6 @@ func HomePage(c *gin.Context) {
 }
 
 func OrderCount(c *gin.Context) {
-	//unmarshalling orders
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 
 	if err != nil {
@@ -109,25 +109,30 @@ func OrderCount(c *gin.Context) {
 //	c.JSON(http.StatusOK, gin.H {
 //		"message" :string(updatedData),
 //	})
-//
-//
 //}
-//
-//func OrderDetail (c *gin.Context) {
-//	ordernumber := c.Param("ordernumber")
-//	//Using gojq library https://github.com/elgs/gojq#gojq
-//	parser, _ := gojq.NewStringQuery(gJsonData)
-//	ord,_ := strconv.Atoi(ordernumber)
-//	ord=ord-1
-//	quer := "["+strconv.Itoa(ord)+"]"
-//	order_detail,_:=parser.Query(quer)
-//	fmt.Println(order_detail)
-//	c.JSON(http.StatusOK, gin.H{
-//		"Order Details":order_detail,
-//	})
-//}
-//
-//
+
+func OrderDetail (c *gin.Context) {
+	ordernumber := c.Param("ordernumber")
+
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+	}
+	defer conn.Close();
+
+	oc := orderspb.NewOrdersServiceClient(conn)
+	req := &orderspb.OrderDetailRequest{
+		OrderNumber: ordernumber,
+	}
+	res, err := oc.GetOrderDetail(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"Order Details" : res.OrderDetail,
+	})
+}
+
 //func AnalyticsPopularDIsh (c *gin.Context) {
 //	cityName := c.Param("city")
 //	//Using gojq library https://github.com/elgs/gojq#gojq
