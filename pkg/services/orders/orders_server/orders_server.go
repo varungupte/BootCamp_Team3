@@ -112,6 +112,39 @@ func (*orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCo
 	return res, nil
 }
 
+func (*orders_server) GetPopularDish(ctx context.Context,req *orderspb.PopularDishRequest) (*orderspb.PopularDishResponse, error) {
+	//Using gojq library https://github.com/elgs/gojq#gojq
+	parser, _ := gojq.NewStringQuery(gJsonData)
+	cityName := req.CityName
+	//Popular Dish Areawise (In a particular User City, which is the dish maximum ordered)
+	var m = make(map[string]int)
+	for i := 0; i < 1000; i++ {
+		var f string
+		f = "[" + strconv.Itoa(i) + "].User.City"
+		q, _ := parser.Query(f)
+		if q == cityName {
+			var d string
+			d = "[" + strconv.Itoa(i) + "].DishName"
+			dishName, _ := parser.Query(d)
+			m[dishName.(string)] = m[dishName.(string)] + 1
+		}
+	}
+
+	// Iterating map
+	var name string
+	maxres := -1
+	for i, p := range m {
+		if p > maxres {
+			name = i
+			maxres = p
+		}
+	}
+	res := &orderspb.PopularDishResponse{
+		DishName: name,
+	}
+	return res, nil
+}
+
 func (*orders_server) GetOrderDetail (ctx context.Context, req *orderspb.OrderDetailRequest) (*orderspb.OrderDetailResponse, error) {
 	orderNumber:= req.OrderNumber
 
