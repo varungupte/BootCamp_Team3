@@ -5,10 +5,10 @@ import (
 	"github.com/varungupte/BootCamp_Team3/pkg/orders"
 	"google.golang.org/grpc"
 	"log"
+	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orders_client"
 )
 
 func main() {
-	orders.GenerateOrdersJSON("Order.csv")
 	gin.ForceConsoleColor()
 	router := gin.Default()
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
@@ -17,6 +17,7 @@ func main() {
 	}
 	defer conn.Close();
 	orders.AddOrderPaths(router,conn)
+	orders_client.AddOrderPaths(router)
 	router.Run("localhost:5656")
 }
 

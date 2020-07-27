@@ -1,0 +1,15 @@
+syntax="proto3";
+
+package orders;
+
+option go_package="orders/orderspb";
+
+message OrdersCountRequest {}
+
+message OrdersCountResponse {
+    string count=1;
+}
+
+service OrdersService {
+    rpc GetOrdersCount(OrdersCountRequest) returns (OrdersCountResponse) {}
+}
