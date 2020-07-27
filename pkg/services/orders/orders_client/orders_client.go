@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func AddOrderPaths(router *gin.Engine) {
@@ -21,7 +22,7 @@ func AddOrderPaths(router *gin.Engine) {
 	order.GET("/order_details/order_id/:ordernumber", OrderDetail)
 	//order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
 	//order.POST("/add_order", PostOrder)
-	//order.POST("/updateOrderDish", UpdateOrderDish)
+	order.POST("/updateOrderDish", UpdateOrderDish)
 }
 
 
@@ -155,48 +156,33 @@ func OrderDetail (c *gin.Context) {
 	})
 }
 
-//func UpdateOrderDish (c *gin.Context) {
-//	order_id_str :=  c.DefaultQuery("order_id", "0")
-//	updated_dish := c.Query("dish")
-//	order_id, _ := strconv.Atoi(order_id_str)
-//
-//	jsonFilePath := "../../pkg/orders/orders.json"
-//	orderList, err := parseJsonFile(jsonFilePath)
-//	if err != nil {
-//		c.JSON(200, gin.H{
-//			"message": "Failed to open file",
-//		})
-//	}
-//
-//	for _,order := range orderList {
-//		if order.Id == order_id {
-//			prev_dish := order.DishName
-//			order.DishName = updated_dish
-//			c.JSON(200, gin.H{
-//				"message": "Successfully updated",
-//				"previous": prev_dish,
-//				"updated_dish": updated_dish,
-//			})
-//			return
-//		}
-//	}
-//
-//	c.JSON(200, gin.H{
-//		"message": "No order found with this order_id",
-//	})
-//}
-//
-//func parseJsonFile(jsonFilePath string) ([]Order, error){
-//	orderJsonFile, err := os.Open(jsonFilePath)
-//	var orderList []Order
-//
-//	if err != nil {
-//		return orderList, err
-//	}
-//	defer orderJsonFile.Close()
-//
-//	byteValue, _ := ioutil.ReadAll(orderJsonFile)
-//	json.Unmarshal(byteValue, &orderList)
-//
-//	return orderList, nil
-//}
+func UpdateOrderDish (c *gin.Context) {
+	orderIdStr :=  c.DefaultQuery("order_id", "0")
+	updatedDish := c.Query("dish")
+	orderId, _ := strconv.Atoi(orderIdStr)
+
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+	}
+	defer conn.Close();
+
+	oc := orderspb.NewOrdersServiceClient(conn)
+	req := &orderspb.UpdateDishRequest{
+		OrderId: int64(orderId),
+		UpdatedDish: updatedDish,
+	}
+	res, err := oc.UpdateDish(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error While calling UpdateDish : %v ", err)
+		c.JSON(200, gin.H{
+			"Status": res.Status,
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"Status":      res.Status,
+		"UpdatedDish": updatedDish,
+	})
+}
+

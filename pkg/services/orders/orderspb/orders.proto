@@ -5,7 +5,6 @@ package orders;
 option go_package="orders/orderspb";
 
 message OrdersCountRequest {}
-
 message OrdersCountResponse {
     string count=1;
 }
@@ -13,7 +12,6 @@ message OrdersCountResponse {
 message OrderDetailRequest {
     string OrderNumber=1;
 }
-
 message OrderDetailResponse {
     string orderDetail=1;
 }
@@ -21,13 +19,21 @@ message OrderDetailResponse {
 message PopularDishResponse {
     string DishName=1;
 }
-
 message PopularDishRequest {
     string CityName = 1;
+}
+
+message UpdateDishRequest {
+    int64 orderId=1;
+    string updatedDish=2;
+}
+message UpdateDishResponse {
+    string status=1;
 }
 
 service OrdersService {
     rpc GetOrdersCount(OrdersCountRequest) returns (OrdersCountResponse) {}
     rpc GetOrderDetail(OrderDetailRequest) returns (OrderDetailResponse) {}
     rpc GetPopularDish(PopularDishRequest) returns (PopularDishResponse){}
+    rpc UpdateDish(UpdateDishRequest) returns (UpdateDishResponse){}
 }

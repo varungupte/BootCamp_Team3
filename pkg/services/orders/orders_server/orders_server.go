@@ -11,6 +11,7 @@ import (
 	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
 	"github.com/varungupte/BootCamp_Team3/pkg/users"
 	"google.golang.org/grpc"
+	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -157,6 +158,47 @@ func (*orders_server) GetOrderDetail (ctx context.Context, req *orderspb.OrderDe
 	result := fmt.Sprint(orderDetail)
 	res := &orderspb.OrderDetailResponse{
 		OrderDetail: result,
+	}
+	return res, nil
+}
+
+func parseJsonFile(jsonFilePath string) ([]Order, error){
+	orderJsonFile, err := os.Open(jsonFilePath)
+	var orderList []Order
+
+	if err != nil {
+		return orderList, err
+	}
+	defer orderJsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(orderJsonFile)
+	json.Unmarshal(byteValue, &orderList)
+
+	return orderList, nil
+}
+
+func (*orders_server) UpdateDish (ctx context.Context, req *orderspb.UpdateDishRequest) (*orderspb.UpdateDishResponse, error) {
+	fmt.Println("Update dish called")
+
+	order_id := int(req.GetOrderId())
+	updated_dish := req.GetUpdatedDish()
+
+	jsonFilePath := "./orders.json"
+	orderList, err := parseJsonFile(jsonFilePath)
+	if err != nil {
+	}
+
+	for _, order := range orderList {
+		if order.Id == order_id {
+			order.DishName = updated_dish
+			res := &orderspb.UpdateDishResponse{
+				Status: "SUCCESS: Order updated",
+			}
+			return res, nil
+		}
+	}
+	res := &orderspb.UpdateDishResponse{
+		Status: "FAILURE: No order found with this orderId",
 	}
 	return res, nil
 }
