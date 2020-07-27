@@ -2,10 +2,12 @@ package orders_client
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
 	"google.golang.org/grpc"
 	"log"
+	"net/http"
 )
 
 func AddOrderPaths(router *gin.Engine) {
@@ -16,7 +18,7 @@ func AddOrderPaths(router *gin.Engine) {
 	}))
 	order.GET("/", HomePage)
 	order.GET("/count", OrderCount)
-	//order.GET("/populardish/city/:city", AnalyticsPopularDIsh)
+	order.GET("/populardish/city/:city", AnalyticsPopularDIsh)
 	//order.GET("/order_details/order_id/:ordernumber", OrderDetail)
 	//order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
 	//order.POST("/add_order", PostOrder)
@@ -128,40 +130,29 @@ func OrderCount(c *gin.Context) {
 //}
 //
 //
-//func AnalyticsPopularDIsh (c *gin.Context) {
-//	cityName := c.Param("city")
-//	//Using gojq library https://github.com/elgs/gojq#gojq
-//	parser, _ := gojq.NewStringQuery(gJsonData)
-//
-//	//Popular Dish Areawise(In a particular User City, which is the dish maximum ordered)
-//	var m = make(map[string]int)
-//	for i := 0; i < 1000; i++ {
-//		var f string
-//		f = "["+strconv.Itoa(i)+"].User.City"
-//		q,_:=parser.Query(f)
-//		if q==cityName{
-//			var d string
-//			d = "["+strconv.Itoa(i)+"].DishName"
-//			dishName,_:=parser.Query(d)
-//			m[dishName.(string)]=m[dishName.(string)]+1
-//		}
-//
-//	}
-//	// Iterating map
-//	var res string
-//	maxres:=-1
-//	for i, p := range m {
-//		if p > maxres{
-//			res = i
-//			maxres = p
-//		}
-//	}
-//
-//	c.JSON(http.StatusOK, gin.H{
-//		"Dish Name":res,
-//		"Most Popular dish in :-" :cityName,
-//	})
-//}
+func AnalyticsPopularDIsh (c *gin.Context) {
+	cityName := c.Param("city")
+	conn,err:=grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+	}
+	defer conn.Close();
+
+	oc := orderspb.NewOrdersServiceClient(conn)
+
+	req := &orderspb.City{
+		CityName: cityName,
+	}
+	fmt.Println("Calling grpc Server")
+	res, err := oc.GetPopularDish(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error While calling GetPopularDish: %v", err)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"Dish Name":res.DishName,
+		"Most Popular dish in :-" :cityName,
+	})
+}
 //
 //func UpdateOrderDish (c *gin.Context) {
 //	order_id_str :=  c.DefaultQuery("order_id", "0")
