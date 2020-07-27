@@ -10,14 +10,24 @@ message OrdersCountResponse {
     string count=1;
 }
 
-message PopularDish{
-   string DishName=1;
+message OrderDetailRequest {
+    string OrderNumber=1;
 }
-message City{
-  string CityName=1;
+
+message OrderDetailResponse {
+    string orderDetail=1;
+}
+
+message PopularDishResponse {
+    string DishName=1;
+}
+
+message PopularDishRequest {
+    string CityName = 1;
 }
 
 service OrdersService {
     rpc GetOrdersCount(OrdersCountRequest) returns (OrdersCountResponse) {}
-    rpc GetPopularDish(City) returns (PopularDish){}
+    rpc GetOrderDetail(OrderDetailRequest) returns (OrderDetailResponse) {}
+    rpc GetPopularDish(PopularDishRequest) returns (PopularDishResponse){}
 }

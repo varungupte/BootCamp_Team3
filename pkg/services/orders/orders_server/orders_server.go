@@ -112,35 +112,51 @@ func (*orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCo
 	return res, nil
 }
 
-func (*orders_server) GetPopularDish(ctx context.Context,req *orderspb.City)(*orderspb.PopularDish,error)  {
+func (*orders_server) GetPopularDish(ctx context.Context,req *orderspb.PopularDishRequest) (*orderspb.PopularDishResponse, error) {
 	//Using gojq library https://github.com/elgs/gojq#gojq
 	parser, _ := gojq.NewStringQuery(gJsonData)
-    cityName:=req.CityName
-	//Popular Dish Areawise(In a particular User City, which is the dish maximum ordered)
+	cityName := req.CityName
+	//Popular Dish Areawise (In a particular User City, which is the dish maximum ordered)
 	var m = make(map[string]int)
 	for i := 0; i < 1000; i++ {
 		var f string
-		f = "["+strconv.Itoa(i)+"].User.City"
-		q,_:=parser.Query(f)
-		if q==cityName{
+		f = "[" + strconv.Itoa(i) + "].User.City"
+		q, _ := parser.Query(f)
+		if q == cityName {
 			var d string
-			d = "["+strconv.Itoa(i)+"].DishName"
-			dishName,_:=parser.Query(d)
-			m[dishName.(string)]=m[dishName.(string)]+1
+			d = "[" + strconv.Itoa(i) + "].DishName"
+			dishName, _ := parser.Query(d)
+			m[dishName.(string)] = m[dishName.(string)] + 1
 		}
-
 	}
+
 	// Iterating map
 	var name string
-	maxres:=-1
+	maxres := -1
 	for i, p := range m {
-		if p > maxres{
+		if p > maxres {
 			name = i
 			maxres = p
 		}
 	}
-	res:=&orderspb.PopularDish{
+	res := &orderspb.PopularDishResponse{
 		DishName: name,
 	}
-	return res,nil
+	return res, nil
+}
+
+func (*orders_server) GetOrderDetail (ctx context.Context, req *orderspb.OrderDetailRequest) (*orderspb.OrderDetailResponse, error) {
+	orderNumber:= req.OrderNumber
+
+	parser, _ := gojq.NewStringQuery(gJsonData)
+	ord,_ := strconv.Atoi(orderNumber)
+	ord = ord-1
+	quer := "["+strconv.Itoa(ord)+"]"
+	orderDetail, _ := parser.Query(quer)
+
+	result := fmt.Sprint(orderDetail)
+	res := &orderspb.OrderDetailResponse{
+		OrderDetail: result,
+	}
+	return res, nil
 }
