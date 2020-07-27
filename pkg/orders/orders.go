@@ -3,7 +3,6 @@ package orders
 import (
 	"encoding/csv"
 	"encoding/json"
-	"fmt"
 	"github.com/elgs/gojq"
 	"github.com/gin-gonic/gin"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
@@ -13,6 +12,11 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"context"
+	"fmt"
+	"google.golang.org/grpc"
+	"github.com/varungupte/BootCamp_Team3/cmd/greet/greetpb"
+	"log"
 )
 
 type Order struct {
@@ -76,8 +80,14 @@ func GenerateOrdersJSON(filename string) {
 	}
 	convertToJSON(orders)
 }
+var c greetpb.GreetServiceClient
+func AddOrderPaths(router *gin.Engine,conn grpc.ClientConnInterface) {
 
-func AddOrderPaths(router *gin.Engine) {
+	fmt.Println("Hi i'm in client... ")
+
+	c = greetpb.NewGreetServiceClient(conn)
+
+	//callGreet(c);
 	order:= router.Group("/order",gin.BasicAuth(gin.Accounts{
 		"user1": "gupte",//username:password
 		"user2": "gupte",
@@ -172,20 +182,43 @@ func OrderDetailAll(c *gin.Context) {
 
 }
 
-func OrderDetail (c *gin.Context) {
-	ordernumber := c.Param("ordernumber")
-	//Using gojq library https://github.com/elgs/gojq#gojq
-	parser, _ := gojq.NewStringQuery(gJsonData)
-	ord,_ := strconv.Atoi(ordernumber)
-	ord=ord-1
-	quer := "["+strconv.Itoa(ord)+"]"
-	order_detail,_:=parser.Query(quer)
-	fmt.Println(order_detail)
-	c.JSON(http.StatusOK, gin.H{
-		"Order Details":order_detail,
+func OrderDetail (cc *gin.Context) {
+
+	callGreet(c,cc);
+	//ordernumber := cc.Param("ordernumber")
+	////Using gojq library https://github.com/elgs/gojq#gojq
+	//parser, _ := gojq.NewStringQuery(gJsonData)
+	//ord,_ := strconv.Atoi(ordernumber)
+	//ord=ord-1
+	//quer := "["+strconv.Itoa(ord)+"]"
+	//order_detail,_:=parser.Query(quer)
+	//fmt.Println(order_detail)
+	//cc.JSON(http.StatusOK, gin.H{
+	//	"Order Details":order_detail,
+	//})
+}
+func  callGreet(c greetpb.GreetServiceClient,cc *gin.Context)  {
+	fmt.Println("in Call Greet Function... ")
+	ordernumber := cc.Param("ordernumber")
+
+	req:= &greetpb.GreetRequest {
+		Greeting: &greetpb.Greeting {
+			TotalOrder: gJsonData,
+			OrderNumber : ordernumber,
+		},
+	}
+
+	res, err := c.Greet(context.Background(), req)
+
+	if err!= nil {
+		log.Fatalf("Error While calleding Greet : %v ", err)
+	}
+
+	log.Println("Response From the Greet ", res.Result)
+	cc.JSON(http.StatusOK, gin.H{
+		"Order Details":res.Result,
 	})
 }
-
 
 func AnalyticsPopularDIsh (c *gin.Context) {
 	cityName := c.Param("city")
