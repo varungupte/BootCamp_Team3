@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"github.com/elgs/gojq"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
 	"github.com/varungupte/BootCamp_Team3/pkg/restaurants"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
@@ -107,6 +108,22 @@ func (*orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCo
 	}
 	res := &orderspb.OrdersCountResponse{
 		Count: strconv.Itoa(len(orders)),
+	}
+	return res, nil
+}
+
+func (*orders_server) GetOrderDetail (ctx context.Context, req *orderspb.OrderDetailRequest) (*orderspb.OrderDetailResponse, error) {
+	orderNumber:= req.OrderNumber
+
+	parser, _ := gojq.NewStringQuery(gJsonData)
+	ord,_ := strconv.Atoi(orderNumber)
+	ord = ord-1
+	quer := "["+strconv.Itoa(ord)+"]"
+	orderDetail, _ := parser.Query(quer)
+
+	result := fmt.Sprint(orderDetail)
+	res := &orderspb.OrderDetailResponse{
+		OrderDetail: result,
 	}
 	return res, nil
 }

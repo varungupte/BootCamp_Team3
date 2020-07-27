@@ -10,6 +10,15 @@ message OrdersCountResponse {
     string count=1;
 }
 
+message OrderDetailRequest {
+    string OrderNumber=1;
+}
+
+message OrderDetailResponse {
+    string orderDetail=1;
+}
+
 service OrdersService {
     rpc GetOrdersCount(OrdersCountRequest) returns (OrdersCountResponse) {}
+    rpc GetOrderDetail(OrderDetailRequest) returns (OrderDetailResponse) {}
 }
