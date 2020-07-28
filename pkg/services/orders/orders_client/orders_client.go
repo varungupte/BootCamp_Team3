@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
 	"google.golang.org/grpc"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -163,9 +162,6 @@ func UpdateOrderDish (c *gin.Context) {
 	//updatedDish := c.Query("dish")
 	updatedDish := c.PostForm("dish")
 	orderId, _ := strconv.Atoi(orderIdStr)
-
-	data, _ := ioutil.ReadAll(c.Request.Body)
-	log.Println("data rese ", string(data))
 
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
