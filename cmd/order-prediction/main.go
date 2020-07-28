@@ -7,8 +7,11 @@ import (
 
 func main() {
 	gin.ForceConsoleColor()
+	// Creates a gin router with default middleware:
+	// logger and recovery (crash-free) middleware
 	router := gin.Default()
 	orders_client.AddOrderPaths(router)
+	// listen and serve on localhost:5657
 	router.Run("localhost:5657")
 }
 
