@@ -147,7 +147,7 @@ func (*orders_server) PostOrder(ctx context.Context, req *orderspb.PostOrderRequ
 	//jsonFile.Close()
 
 	res := &orderspb.PostOrderResponse{
-		Updatedorders: gJsonData,
+		Updatedorders: "SUCCESS: Order updated",
 	}
 	return res, nil
 }

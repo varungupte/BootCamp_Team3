@@ -84,10 +84,15 @@ func PostOrder (c *gin.Context) {
 	res, err := oc.PostOrder(context.Background(), req)
 	if err != nil {
 		log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+		c.JSON(http.StatusOK, gin.H{
+			"Order Status": "Issue while updating....",
+		})
+	}else{
+		c.JSON(http.StatusOK, gin.H{
+			"Order Status" : "Post call successfully executed.",
+		})
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"Order Details" : res.Updatedorders,
-	})
+	fmt.Println(res.Updatedorders)
 
 	////unmarshalling orders
 	//var orders []Order
