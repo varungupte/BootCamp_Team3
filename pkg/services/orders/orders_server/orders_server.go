@@ -189,7 +189,6 @@ func writeJsonFile(jsonFilePath string, ordersList []Order) error{
 	}
 
 	return nil
-
 }
 
 //This function updates the dish of order given order_id it opens file and write to it after update
