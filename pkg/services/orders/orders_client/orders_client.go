@@ -11,17 +11,30 @@ import (
 )
 
 func AddOrderPaths(router *gin.Engine) {
+	
+	//BasicAuth module for authorization while hitting the api
 	order:= router.Group("/order",gin.BasicAuth(gin.Accounts{
 		"user1": "gupte",//username:password
 		"user2": "gupte",
 		"user3": "gupte",
 	}))
 	order.GET("/", HomePage)
+	
+	//will return the total orders so far
 	order.GET("/count", OrderCount)
+	
+	//Popular Dish Areawise(In a particular User City, which is the dish maximum ordered)
 	order.GET("/populardish/city/:city", AnalyticsPopularDIsh)
+	
+	// will return json object containing info about the order with orderid "ordernumber"
 	order.GET("/order_details/order_id/:ordernumber", OrderDetail)
-	//order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
-	//order.POST("/add_order", PostOrder)
+	
+	// will return slice for orders till orderid "tillorder"
+	order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
+	
+	// POST request to add orders
+	order.POST("/add_order", PostOrder)
+	
 	order.POST("/updateOrderDish", UpdateOrderDish)
 }
 
