@@ -168,8 +168,10 @@ func OrderDetail (c *gin.Context) {
 }
 
 func UpdateOrderDish (c *gin.Context) {
-	orderIdStr :=  c.DefaultQuery("order_id", "0")
-	updatedDish := c.Query("dish")
+	//orderIdStr :=  c.DefaultQuery("order_id", "0")
+	orderIdStr := c.DefaultPostForm("order_id", "0")
+	//updatedDish := c.Query("dish")
+	updatedDish := c.PostForm("dish")
 	orderId, _ := strconv.Atoi(orderIdStr)
 
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
