@@ -2,9 +2,12 @@ package orders_client
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
 	"google.golang.org/grpc"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -29,8 +32,8 @@ func AddOrderPaths(router *gin.Engine) {
 	// will return json object containing info about the order with orderid "ordernumber"
 	order.GET("/order_details/order_id/:ordernumber", OrderDetail)
 	
-	// will return slice for orders till orderid "tillorder"
-	order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
+	//// will return slice for orders till orderid "tillorder"
+	//order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
 	
 	// POST request to add orders
 	order.POST("/add_order", PostOrder)
@@ -38,7 +41,27 @@ func AddOrderPaths(router *gin.Engine) {
 	order.POST("/updateOrderDish", UpdateOrderDish)
 }
 
+func OrderDetail (c *gin.Context) {
+	ordernumber := c.Param("ordernumber")
 
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+	}
+	defer conn.Close();
+
+	oc := orderspb.NewOrdersServiceClient(conn)
+	req := &orderspb.OrderDetailRequest{
+		OrderNumber: ordernumber,
+	}
+	res, err := oc.GetOrderDetail(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"Order Details" : res.OrderDetail,
+	})
+}
 func PostOrder (c *gin.Context) {
 	body := c.Request.Body
 
@@ -47,27 +70,46 @@ func PostOrder (c *gin.Context) {
 
 	fmt.Println(string(content))
 
-	//unmarshalling orders
-	var orders []Order
-	err = json.Unmarshal([]byte(gJsonData), &orders)
-	errorutil.CheckError(err, "unmarshalling orders")
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+	}
+	defer conn.Close()
 
-	//unmarshalling content
-	var orderData2 Order
-	err = json.Unmarshal([]byte(content), &orderData2)
-	errorutil.CheckError(err, "")
+	oc := orderspb.NewOrdersServiceClient(conn)
 
-	//appending new order
-	orders = append(orders, orderData2)
-
-	// Convert to JSON
-	updatedData, err4 := json.Marshal(orders)
-	errorutil.CheckError(err4, "")
-
-	gJsonData = string(updatedData)
-	c.JSON(http.StatusCreated, gin.H {
-		"message" :string(updatedData),
+	req := &orderspb.PostOrderRequest{
+		Neworder: string(content),
+	}
+	res, err := oc.PostOrder(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"Order Details" : res.Updatedorders,
 	})
+
+	////unmarshalling orders
+	//var orders []Order
+	//err = json.Unmarshal([]byte(gJsonData), &orders)
+	//errorutil.CheckError(err, "unmarshalling orders")
+	//
+	////unmarshalling content
+	//var orderData2 Order
+	//err = json.Unmarshal([]byte(content), &orderData2)
+	//errorutil.CheckError(err, "")
+	//
+	////appending new order
+	//orders = append(orders, orderData2)
+	//
+	//// Convert to JSON
+	//updatedData, err4 := json.Marshal(orders)
+	//errorutil.CheckError(err4, "")
+	//
+	//gJsonData = string(updatedData)
+	//c.JSON(http.StatusCreated, gin.H {
+	//	"message" :string(updatedData),
+	//})
 }
 
 func HomePage(c *gin.Context) {
@@ -97,33 +139,33 @@ func OrderCount(c *gin.Context) {
 	})
 }
 
-func OrderDetailAll(c *gin.Context) {
-	//c.JSON(200, gin.H{
-	//	"order_details": gJsonData,
-	//})
-	tillorder := c.Param("tillorder")
-	//unmarshalling orders
-	var orders []Order
-	err := json.Unmarshal([]byte(gJsonData), &orders)
-	errorutil.CheckError(err, "unmarshalling orders")
-
-	var neworders []Order
-	i,_:= strconv.Atoi(tillorder)
-	for _,v := range orders{
-		if i==0{
-			break
-		}
-		neworders=append(neworders,v)
-		i=i-1
-	}
-	// Convert to JSON
-	updatedData, err4 := json.Marshal(neworders)
-	errorutil.CheckError(err4, "")
-
-	c.JSON(http.StatusOK, gin.H {
-		"message" :string(updatedData),
-	})
-}
+//func OrderDetailAll(c *gin.Context) {
+//	//c.JSON(200, gin.H{
+//	//	"order_details": gJsonData,
+//	//})
+//	tillorder := c.Param("tillorder")
+//	//unmarshalling orders
+//	var orders []Order
+//	err := json.Unmarshal([]byte(gJsonData), &orders)
+//	errorutil.CheckError(err, "unmarshalling orders")
+//
+//	var neworders []Order
+//	i,_:= strconv.Atoi(tillorder)
+//	for _,v := range orders{
+//		if i==0{
+//			break
+//		}
+//		neworders=append(neworders,v)
+//		i=i-1
+//	}
+//	// Convert to JSON
+//	updatedData, err4 := json.Marshal(neworders)
+//	errorutil.CheckError(err4, "")
+//
+//	c.JSON(http.StatusOK, gin.H {
+//		"message" :string(updatedData),
+//	})
+//}
 
 func AnalyticsPopularDIsh (c *gin.Context) {
 	cityName := c.Param("city")
@@ -147,27 +189,7 @@ func AnalyticsPopularDIsh (c *gin.Context) {
 	})
 }
 
-func OrderDetail (c *gin.Context) {
-	ordernumber := c.Param("ordernumber")
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
-	}
-	defer conn.Close();
-
-	oc := orderspb.NewOrdersServiceClient(conn)
-	req := &orderspb.OrderDetailRequest{
-		OrderNumber: ordernumber,
-	}
-	res, err := oc.GetOrderDetail(context.Background(), req)
-	if err != nil {
-		log.Fatalf("Error While calling GetOrderDetail : %v ", err)
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"Order Details" : res.OrderDetail,
-	})
-}
 
 func UpdateOrderDish (c *gin.Context) {
 	orderIdStr :=  c.DefaultQuery("order_id", "0")

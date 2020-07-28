@@ -113,6 +113,33 @@ func (*orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCo
 	return res, nil
 }
 
+func (*orders_server) PostOrder(ctx context.Context, req *orderspb.PostOrderRequest) (*orderspb.PostOrderResponse, error)  {
+
+	////unmarshalling orders
+	var orders []Order
+	err := json.Unmarshal([]byte(gJsonData), &orders)
+	errorutil.CheckError(err, "unmarshalling orders")
+
+	////unmarshalling content
+	var orderData2 Order
+	err = json.Unmarshal([]byte(req.Neworder), &orderData2)
+	errorutil.CheckError(err, "")
+
+	////appending new order
+	orders = append(orders, orderData2)
+
+	//// Convert to JSON
+	updatedData, err4 := json.Marshal(orders)
+	errorutil.CheckError(err4, "")
+
+	gJsonData = string(updatedData)
+
+	res := &orderspb.PostOrderResponse{
+		Updatedorders: gJsonData,
+	}
+	return res, nil
+}
+
 func (*orders_server) GetPopularDish(ctx context.Context,req *orderspb.PopularDishRequest) (*orderspb.PopularDishResponse, error) {
 	//Using gojq library https://github.com/elgs/gojq#gojq
 	parser, _ := gojq.NewStringQuery(gJsonData)
