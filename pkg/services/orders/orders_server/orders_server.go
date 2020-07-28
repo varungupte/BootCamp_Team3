@@ -101,6 +101,8 @@ func main()  {
 	}
 }
 
+// GetOrdersCount find the total number of orders in the database.
+// It returns the OrderCountResponse and any error encountered.
 func (*orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCountRequest) (*orderspb.OrdersCountResponse, error)  {
 	var orders []Order
 	err := json.Unmarshal([]byte(gJsonData), &orders)

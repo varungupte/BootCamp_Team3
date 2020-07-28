@@ -10,6 +10,7 @@ import (
 	"strconv"
 )
 
+// AddOrderPaths adds GET and POST API paths for gin.
 func AddOrderPaths(router *gin.Engine) {
 	
 	//BasicAuth module for authorization while hitting the api
@@ -24,7 +25,7 @@ func AddOrderPaths(router *gin.Engine) {
 	order.GET("/count", OrderCount)
 	
 	//Popular Dish Areawise(In a particular User City, which is the dish maximum ordered)
-	order.GET("/populardish/city/:city", AnalyticsPopularDIsh)
+	order.GET("/populardish/city/:city", PopularDish)
 	
 	// will return json object containing info about the order with orderid "ordernumber"
 	order.GET("/order_details/order_id/:ordernumber", OrderDetail)
@@ -70,12 +71,16 @@ func AddOrderPaths(router *gin.Engine) {
 // 	})
 // }
 
+// HomePage is the handler for /order API.
+// It displays an introductory message.
 func HomePage(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "Hi there !... This is analytics tool to find popular dish based on various parameters.",
 	})
 }
 
+// OrderCount is the handler for /order/count API.
+// It displays the total number of orders in the database.
 func OrderCount(c *gin.Context) {
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 
@@ -125,7 +130,9 @@ func OrderCount(c *gin.Context) {
 // 	})
 // }
 
-func AnalyticsPopularDIsh (c *gin.Context) {
+// PopularDish is the handler for /populardish/city/:city API.
+// It displays the most popular dish of a particular city.
+func PopularDish (c *gin.Context) {
 	cityName := c.Param("city")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
@@ -147,6 +154,8 @@ func AnalyticsPopularDIsh (c *gin.Context) {
 	})
 }
 
+// OrderDetail is the handler for /order_details/order_id/:ordernumber API.
+// It displays the order detail by a particular orderId.
 func OrderDetail (c *gin.Context) {
 	ordernumber := c.Param("ordernumber")
 
@@ -169,6 +178,8 @@ func OrderDetail (c *gin.Context) {
 	})
 }
 
+// UpdateOrderDish is the handler for /updateOrderDish API.
+// It updates the dish name of a particular order.
 func UpdateOrderDish (c *gin.Context) {
 	//orderIdStr :=  c.DefaultQuery("order_id", "0")
 	orderIdStr := c.DefaultPostForm("order_id", "0")
