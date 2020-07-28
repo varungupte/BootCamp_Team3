@@ -30,45 +30,45 @@ func AddOrderPaths(router *gin.Engine) {
 	order.GET("/order_details/order_id/:ordernumber", OrderDetail)
 	
 	// will return slice for orders till orderid "tillorder"
-	order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
+// 	order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
 	
 	// POST request to add orders
-	order.POST("/add_order", PostOrder)
+// 	order.POST("/add_order", PostOrder)
 	
 	order.POST("/updateOrderDish", UpdateOrderDish)
 }
 
 
-func PostOrder (c *gin.Context) {
-	body := c.Request.Body
+// func PostOrder (c *gin.Context) {
+// 	body := c.Request.Body
 
-	content, err := ioutil.ReadAll(body)
-	errorutil.CheckError(err, "Sorry No Content:")
+// 	content, err := ioutil.ReadAll(body)
+// 	errorutil.CheckError(err, "Sorry No Content:")
 
-	fmt.Println(string(content))
+// 	fmt.Println(string(content))
 
-	//unmarshalling orders
-	var orders []Order
-	err = json.Unmarshal([]byte(gJsonData), &orders)
-	errorutil.CheckError(err, "unmarshalling orders")
+// 	//unmarshalling orders
+// 	var orders []Order
+// 	err = json.Unmarshal([]byte(gJsonData), &orders)
+// 	errorutil.CheckError(err, "unmarshalling orders")
 
-	//unmarshalling content
-	var orderData2 Order
-	err = json.Unmarshal([]byte(content), &orderData2)
-	errorutil.CheckError(err, "")
+// 	//unmarshalling content
+// 	var orderData2 Order
+// 	err = json.Unmarshal([]byte(content), &orderData2)
+// 	errorutil.CheckError(err, "")
 
-	//appending new order
-	orders = append(orders, orderData2)
+// 	//appending new order
+// 	orders = append(orders, orderData2)
 
-	// Convert to JSON
-	updatedData, err4 := json.Marshal(orders)
-	errorutil.CheckError(err4, "")
+// 	// Convert to JSON
+// 	updatedData, err4 := json.Marshal(orders)
+// 	errorutil.CheckError(err4, "")
 
-	gJsonData = string(updatedData)
-	c.JSON(http.StatusCreated, gin.H {
-		"message" :string(updatedData),
-	})
-}
+// 	gJsonData = string(updatedData)
+// 	c.JSON(http.StatusCreated, gin.H {
+// 		"message" :string(updatedData),
+// 	})
+// }
 
 func HomePage(c *gin.Context) {
 	c.JSON(200, gin.H{
@@ -97,33 +97,33 @@ func OrderCount(c *gin.Context) {
 	})
 }
 
-func OrderDetailAll(c *gin.Context) {
-	//c.JSON(200, gin.H{
-	//	"order_details": gJsonData,
-	//})
-	tillorder := c.Param("tillorder")
-	//unmarshalling orders
-	var orders []Order
-	err := json.Unmarshal([]byte(gJsonData), &orders)
-	errorutil.CheckError(err, "unmarshalling orders")
+// func OrderDetailAll(c *gin.Context) {
+// 	//c.JSON(200, gin.H{
+// 	//	"order_details": gJsonData,
+// 	//})
+// 	tillorder := c.Param("tillorder")
+// 	//unmarshalling orders
+// 	var orders []Order
+// 	err := json.Unmarshal([]byte(gJsonData), &orders)
+// 	errorutil.CheckError(err, "unmarshalling orders")
 
-	var neworders []Order
-	i,_:= strconv.Atoi(tillorder)
-	for _,v := range orders{
-		if i==0{
-			break
-		}
-		neworders=append(neworders,v)
-		i=i-1
-	}
-	// Convert to JSON
-	updatedData, err4 := json.Marshal(neworders)
-	errorutil.CheckError(err4, "")
+// 	var neworders []Order
+// 	i,_:= strconv.Atoi(tillorder)
+// 	for _,v := range orders{
+// 		if i==0{
+// 			break
+// 		}
+// 		neworders=append(neworders,v)
+// 		i=i-1
+// 	}
+// 	// Convert to JSON
+// 	updatedData, err4 := json.Marshal(neworders)
+// 	errorutil.CheckError(err4, "")
 
-	c.JSON(http.StatusOK, gin.H {
-		"message" :string(updatedData),
-	})
-}
+// 	c.JSON(http.StatusOK, gin.H {
+// 		"message" :string(updatedData),
+// 	})
+// }
 
 func AnalyticsPopularDIsh (c *gin.Context) {
 	cityName := c.Param("city")
