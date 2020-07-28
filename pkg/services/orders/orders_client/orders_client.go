@@ -13,6 +13,7 @@ import (
 	"strconv"
 )
 
+// AddOrderPaths adds GET and POST API paths for gin.
 func AddOrderPaths(router *gin.Engine) {
 	
 	//BasicAuth module for authorization while hitting the api
@@ -27,20 +28,22 @@ func AddOrderPaths(router *gin.Engine) {
 	order.GET("/count", OrderCount)
 	
 	//Popular Dish Areawise(In a particular User City, which is the dish maximum ordered)
-	order.GET("/populardish/city/:city", AnalyticsPopularDIsh)
+	order.GET("/populardish/city/:city", PopularDish)
 	
 	// will return json object containing info about the order with orderid "ordernumber"
 	order.GET("/order_details/order_id/:ordernumber", OrderDetail)
 	
-	//// will return slice for orders till orderid "tillorder"
-	//order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
+	// will return slice for orders till orderid "tillorder"
+    // order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
 	
 	// POST request to add orders
-	order.POST("/add_order", PostOrder)
+    order.POST("/add_order", PostOrder)
 	
 	order.POST("/updateOrderDish", UpdateOrderDish)
 }
 
+// OrderDetail is the handler for /order_details/order_id/:ordernumber API.
+// It displays the order detail by a particular orderId
 func OrderDetail (c *gin.Context) {
 	ordernumber := c.Param("ordernumber")
 
@@ -62,13 +65,16 @@ func OrderDetail (c *gin.Context) {
 		"Order Details" : res.OrderDetail,
 	})
 }
+
+// PostOrder adds a new order to the database.
+// It displays a success or failure message.
 func PostOrder (c *gin.Context) {
 	body := c.Request.Body
 
-	content, err := ioutil.ReadAll(body)
-	errorutil.CheckError(err, "Sorry No Content:")
+ 	content, err := ioutil.ReadAll(body)
+ 	errorutil.CheckError(err, "Sorry No Content:")
 
-	fmt.Println(string(content))
+ 	fmt.Println(string(content))
 
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
@@ -93,36 +99,18 @@ func PostOrder (c *gin.Context) {
 		})
 	}
 	fmt.Println(res.Updatedorders)
-
-	////unmarshalling orders
-	//var orders []Order
-	//err = json.Unmarshal([]byte(gJsonData), &orders)
-	//errorutil.CheckError(err, "unmarshalling orders")
-	//
-	////unmarshalling content
-	//var orderData2 Order
-	//err = json.Unmarshal([]byte(content), &orderData2)
-	//errorutil.CheckError(err, "")
-	//
-	////appending new order
-	//orders = append(orders, orderData2)
-	//
-	//// Convert to JSON
-	//updatedData, err4 := json.Marshal(orders)
-	//errorutil.CheckError(err4, "")
-	//
-	//gJsonData = string(updatedData)
-	//c.JSON(http.StatusCreated, gin.H {
-	//	"message" :string(updatedData),
-	//})
 }
 
+// HomePage is the handler for /order API.
+// It displays an introductory message.
 func HomePage(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "Hi there !... This is analytics tool to find popular dish based on various parameters.",
 	})
 }
 
+// OrderCount is the handler for /order/count API.
+// It displays the total number of orders in the database.
 func OrderCount(c *gin.Context) {
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 
@@ -144,35 +132,37 @@ func OrderCount(c *gin.Context) {
 	})
 }
 
-//func OrderDetailAll(c *gin.Context) {
-//	//c.JSON(200, gin.H{
-//	//	"order_details": gJsonData,
-//	//})
-//	tillorder := c.Param("tillorder")
-//	//unmarshalling orders
-//	var orders []Order
-//	err := json.Unmarshal([]byte(gJsonData), &orders)
-//	errorutil.CheckError(err, "unmarshalling orders")
-//
-//	var neworders []Order
-//	i,_:= strconv.Atoi(tillorder)
-//	for _,v := range orders{
-//		if i==0{
-//			break
-//		}
-//		neworders=append(neworders,v)
-//		i=i-1
-//	}
-//	// Convert to JSON
-//	updatedData, err4 := json.Marshal(neworders)
-//	errorutil.CheckError(err4, "")
-//
-//	c.JSON(http.StatusOK, gin.H {
-//		"message" :string(updatedData),
-//	})
-//}
+// func OrderDetailAll(c *gin.Context) {
+// 	//c.JSON(200, gin.H{
+// 	//	"order_details": gJsonData,
+// 	//})
+// 	tillorder := c.Param("tillorder")
+// 	//unmarshalling orders
+// 	var orders []Order
+// 	err := json.Unmarshal([]byte(gJsonData), &orders)
+// 	errorutil.CheckError(err, "unmarshalling orders")
 
-func AnalyticsPopularDIsh (c *gin.Context) {
+// 	var neworders []Order
+// 	i,_:= strconv.Atoi(tillorder)
+// 	for _,v := range orders{
+// 		if i==0{
+// 			break
+// 		}
+// 		neworders=append(neworders,v)
+// 		i=i-1
+// 	}
+// 	// Convert to JSON
+// 	updatedData, err4 := json.Marshal(neworders)
+// 	errorutil.CheckError(err4, "")
+
+// 	c.JSON(http.StatusOK, gin.H {
+// 		"message" :string(updatedData),
+// 	})
+// }
+
+// PopularDish is the handler for /populardish/city/:city API.
+// It displays the most popular dish of a particular city.
+func PopularDish (c *gin.Context) {
 	cityName := c.Param("city")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
@@ -194,11 +184,13 @@ func AnalyticsPopularDIsh (c *gin.Context) {
 	})
 }
 
-
-
+// UpdateOrderDish is the handler for /updateOrderDish API.
+// It updates the dish name of a particular order.
 func UpdateOrderDish (c *gin.Context) {
-	orderIdStr :=  c.DefaultQuery("order_id", "0")
-	updatedDish := c.Query("dish")
+	//orderIdStr :=  c.DefaultQuery("order_id", "0")
+	orderIdStr := c.DefaultPostForm("order_id", "0")
+	//updatedDish := c.Query("dish")
+	updatedDish := c.PostForm("dish")
 	orderId, _ := strconv.Atoi(orderIdStr)
 
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())

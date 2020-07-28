@@ -103,6 +103,8 @@ func main()  {
 	}
 }
 
+// GetOrdersCount find the total number of orders in the database.
+// It returns the OrderCountResponse and any error encountered.
 func (*orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCountRequest) (*orderspb.OrdersCountResponse, error)  {
 	var orders []Order
 	err := json.Unmarshal([]byte(gJsonData), &orders)
@@ -216,27 +218,56 @@ func parseJsonFile(jsonFilePath string) ([]Order, error){
 	return orderList, nil
 }
 
+func writeJsonFile(jsonFilePath string, ordersList []Order) error{
+	jsonData, err := json.Marshal(ordersList)
+	if err!= nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(jsonFilePath, jsonData, 0644)
+	if err!= nil {
+		return err
+	}
+
+	return nil
+}
+
+//This function updates the dish of order given order_id it opens file and write to it after update
 func (*orders_server) UpdateDish (ctx context.Context, req *orderspb.UpdateDishRequest) (*orderspb.UpdateDishResponse, error) {
 	fmt.Println("Update dish called")
 
 	order_id := int(req.GetOrderId())
 	updated_dish := req.GetUpdatedDish()
+	res := &orderspb.UpdateDishResponse{
+		Status: "SUCCESS: Order updated",
+	}
 
 	jsonFilePath := "./orders.json"
 	orderList, err := parseJsonFile(jsonFilePath)
 	if err != nil {
+		res = &orderspb.UpdateDishResponse{
+			Status: "Failed to write in file",
+		}
+
+		return res, err
 	}
 
-	for _, order := range orderList {
+	for i, order := range orderList {
 		if order.Id == order_id {
-			order.DishName = updated_dish
-			res := &orderspb.UpdateDishResponse{
-				Status: "SUCCESS: Order updated",
+			log.Println(orderList[i].DishName)
+			orderList[i].DishName = updated_dish
+			err = writeJsonFile(jsonFilePath, orderList)
+			if err!=nil {
+				res = &orderspb.UpdateDishResponse{
+					Status: "Failed to write in file",
+				}
 			}
-			return res, nil
+
+			return res, err
 		}
 	}
-	res := &orderspb.UpdateDishResponse{
+
+	res = &orderspb.UpdateDishResponse{
 		Status: "FAILURE: No order found with this orderId",
 	}
 	return res, nil
