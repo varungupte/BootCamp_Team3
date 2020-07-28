@@ -29,6 +29,7 @@ type Order struct {
 }
 
 var gJsonData string
+var orderscurrent []Order
 
 func convertToJSON(orders []Order)  {
 	jsonData, err := json.Marshal(orders)
@@ -77,6 +78,7 @@ func GenerateOrdersJSON(filename string) {
 		ord.DeliveryTime = each[6]
 		orders= append(orders, ord)
 	}
+	orderscurrent = orders
 	convertToJSON(orders)
 }
 
@@ -128,11 +130,21 @@ func (*orders_server) PostOrder(ctx context.Context, req *orderspb.PostOrderRequ
 	////appending new order
 	orders = append(orders, orderData2)
 
+	convertToJSON(orders)
+
 	//// Convert to JSON
 	updatedData, err4 := json.Marshal(orders)
 	errorutil.CheckError(err4, "")
 
 	gJsonData = string(updatedData)
+
+	//jsonFile, err := os.Create("./orders.json")
+	//errorutil.CheckError(err, "")
+	//
+	//defer jsonFile.Close()
+	//
+	//jsonFile.Write(gJsonData)
+	//jsonFile.Close()
 
 	res := &orderspb.PostOrderResponse{
 		Updatedorders: gJsonData,
