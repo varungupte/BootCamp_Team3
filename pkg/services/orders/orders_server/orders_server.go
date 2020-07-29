@@ -1,19 +1,18 @@
-package main
+package orders_server
 
 import (
 	"context"
 	"encoding/csv"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/elgs/gojq"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
 	"github.com/varungupte/BootCamp_Team3/pkg/restaurants"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
 	"github.com/varungupte/BootCamp_Team3/pkg/users"
-	"google.golang.org/grpc"
 	"io/ioutil"
 	"log"
-	"net"
 	"os"
 	"strconv"
 )
@@ -35,7 +34,7 @@ func convertToJSON(orders []Order)  {
 	jsonData, err := json.Marshal(orders)
 	errorutil.CheckError(err, "")
 
-	jsonFile, err := os.Create("./orders.json")
+	jsonFile, err := os.Create(string(os.Getenv("GOPATH")) + "/src/github.com/varungupte/BootCamp_Team3/assets/orders.json")
 	errorutil.CheckError(err, "")
 
 	defer jsonFile.Close()
@@ -47,8 +46,8 @@ func convertToJSON(orders []Order)  {
 }
 
 func GenerateOrdersJSON(filename string) {
-	usrs := users.GetUsers("User.csv")
-	rests := restaurants.GetRestaurants("Restaurant.csv")
+	usrs := users.GetUsers(string(os.Getenv("GOPATH")) + "/src/github.com/varungupte/BootCamp_Team3/assets/User.csv")
+	rests := restaurants.GetRestaurants(string(os.Getenv("GOPATH")) + "/src/github.com/varungupte/BootCamp_Team3/assets/Restaurant.csv")
 
 	orderFile, err := os.Open(filename)
 	errorutil.CheckError(err, "")
@@ -82,30 +81,12 @@ func GenerateOrdersJSON(filename string) {
 	convertToJSON(orders)
 }
 
-type orders_server struct {
 
-}
-
-func main()  {
-	lis, err := net.Listen("tcp", "0.0.0.0:50051")
-	if err != nil {
-		log.Fatalf("Sorry failed to load server %v: ", err)
-	}
-
-	s := grpc.NewServer()
-
-	orderspb.RegisterOrdersServiceServer(s, &orders_server{})
-	GenerateOrdersJSON("Orders.csv")
-
-	fmt.Println("Orders Server starting...")
-	if s.Serve(lis); err != nil {
-		log.Fatalf("failed to Serve %v", err)
-	}
-}
+type Orders_server struct {}
 
 // GetOrdersCount find the total number of orders in the database.
 // It returns the OrderCountResponse and any error encountered.
-func (*orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCountRequest) (*orderspb.OrdersCountResponse, error)  {
+func (*Orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCountRequest) (*orderspb.OrdersCountResponse, error)  {
 	var orders []Order
 	err := json.Unmarshal([]byte(gJsonData), &orders)
 	if err != nil {
@@ -117,8 +98,7 @@ func (*orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCo
 	return res, nil
 }
 
-func (*orders_server) PostOrder(ctx context.Context, req *orderspb.PostOrderRequest) (*orderspb.PostOrderResponse, error)  {
-
+func (*Orders_server) PostOrder(ctx context.Context, req *orderspb.PostOrderRequest) (*orderspb.PostOrderResponse, error)  {
 	////unmarshalling orders
 	var orders []Order
 	err := json.Unmarshal([]byte(gJsonData), &orders)
@@ -133,28 +113,13 @@ func (*orders_server) PostOrder(ctx context.Context, req *orderspb.PostOrderRequ
 	orders = append(orders, orderData2)
 
 	convertToJSON(orders)
-
-	//// Convert to JSON
-	updatedData, err4 := json.Marshal(orders)
-	errorutil.CheckError(err4, "")
-
-	gJsonData = string(updatedData)
-
-	//jsonFile, err := os.Create("./orders.json")
-	//errorutil.CheckError(err, "")
-	//
-	//defer jsonFile.Close()
-	//
-	//jsonFile.Write(gJsonData)
-	//jsonFile.Close()
-
 	res := &orderspb.PostOrderResponse{
 		Updatedorders: "SUCCESS: Order updated",
 	}
 	return res, nil
 }
 
-func (*orders_server) GetPopularDish(ctx context.Context,req *orderspb.PopularDishRequest) (*orderspb.PopularDishResponse, error) {
+func (*Orders_server) GetPopularDish(ctx context.Context,req *orderspb.PopularDishRequest) (*orderspb.PopularDishResponse, error) {
 	//Using gojq library https://github.com/elgs/gojq#gojq
 	parser, _ := gojq.NewStringQuery(gJsonData)
 	cityName := req.CityName
@@ -181,25 +146,28 @@ func (*orders_server) GetPopularDish(ctx context.Context,req *orderspb.PopularDi
 			maxres = p
 		}
 	}
-	res := &orderspb.PopularDishResponse{
-		DishName: name,
+	res := &orderspb.PopularDishResponse{}
+	if maxres == -1 {
+		return res, errors.New("City doesn't exist in the database")
 	}
+	res.DishName = name
 	return res, nil
 }
 
-func (*orders_server) GetOrderDetail (ctx context.Context, req *orderspb.OrderDetailRequest) (*orderspb.OrderDetailResponse, error) {
+func (*Orders_server) GetOrderDetail (ctx context.Context, req *orderspb.OrderDetailRequest) (*orderspb.OrderDetailResponse, error) {
 	orderNumber:= req.OrderNumber
 
 	parser, _ := gojq.NewStringQuery(gJsonData)
 	ord,_ := strconv.Atoi(orderNumber)
 	ord = ord-1
+	res := &orderspb.OrderDetailResponse{}
+	if ord >= 1000 {
+		return res, errors.New("OrderId out of bounds")
+	}
 	quer := "["+strconv.Itoa(ord)+"]"
 	orderDetail, _ := parser.Query(quer)
-
 	result := fmt.Sprint(orderDetail)
-	res := &orderspb.OrderDetailResponse{
-		OrderDetail: result,
-	}
+	res.OrderDetail = result
 	return res, nil
 }
 
@@ -233,22 +201,19 @@ func writeJsonFile(jsonFilePath string, ordersList []Order) error{
 }
 
 //This function updates the dish of order given order_id it opens file and write to it after update
-func (*orders_server) UpdateDish (ctx context.Context, req *orderspb.UpdateDishRequest) (*orderspb.UpdateDishResponse, error) {
-	fmt.Println("Update dish called")
-
+func (*Orders_server) UpdateDish (ctx context.Context, req *orderspb.UpdateDishRequest) (*orderspb.UpdateDishResponse, error) {
 	order_id := int(req.GetOrderId())
 	updated_dish := req.GetUpdatedDish()
 	res := &orderspb.UpdateDishResponse{
 		Status: "SUCCESS: Order updated",
 	}
 
-	jsonFilePath := "./orders.json"
+	jsonFilePath := string(os.Getenv("GOPATH")) + "/src/github.com/varungupte/BootCamp_Team3/assets/orders.json"
 	orderList, err := parseJsonFile(jsonFilePath)
 	if err != nil {
 		res = &orderspb.UpdateDishResponse{
 			Status: "Failed to write in file",
 		}
-
 		return res, err
 	}
 
@@ -257,18 +222,16 @@ func (*orders_server) UpdateDish (ctx context.Context, req *orderspb.UpdateDishR
 			log.Println(orderList[i].DishName)
 			orderList[i].DishName = updated_dish
 			err = writeJsonFile(jsonFilePath, orderList)
-			if err!=nil {
+			if err != nil {
 				res = &orderspb.UpdateDishResponse{
 					Status: "Failed to write in file",
 				}
 			}
-
 			return res, err
 		}
 	}
-
 	res = &orderspb.UpdateDishResponse{
 		Status: "FAILURE: No order found with this orderId",
 	}
-	return res, nil
+	return res, errors.New("No order found with this orderId")
 }

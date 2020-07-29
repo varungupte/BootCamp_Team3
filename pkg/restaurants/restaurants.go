@@ -18,7 +18,7 @@ type Restaurant struct {
 // GetRestaurants reads the restaurant information from "Restaurants.csv".
 // It returns the slice of Restaurants
 func GetRestaurants(filename string) []Restaurant {
-	restaurantFile, err := os.Open("Restaurant.csv")
+	restaurantFile, err := os.Open(filename)
 	if err != nil {
 		fmt.Println(err)
 	}

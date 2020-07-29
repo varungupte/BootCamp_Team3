@@ -79,6 +79,10 @@ func PostOrder (c *gin.Context) {
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+		c.JSON(http.StatusBadGateway, gin.H {
+			"Error Message" : "Connection failed with gRPC server",
+		})
+		return
 	}
 	defer conn.Close()
 
@@ -90,9 +94,10 @@ func PostOrder (c *gin.Context) {
 	res, err := oc.PostOrder(context.Background(), req)
 	if err != nil {
 		log.Fatalf("Error While calling GetOrderDetail : %v ", err)
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusForbidden, gin.H{
 			"Order Status": "Issue while updating....",
 		})
+		return
 	}else{
 		c.JSON(http.StatusOK, gin.H{
 			"Order Status" : "Post call successfully executed.",
