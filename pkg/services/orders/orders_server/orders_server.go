@@ -1,4 +1,4 @@
-package main
+package orders_server
 
 import (
 	"context"
@@ -10,10 +10,8 @@ import (
 	"github.com/varungupte/BootCamp_Team3/pkg/restaurants"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
 	"github.com/varungupte/BootCamp_Team3/pkg/users"
-	"google.golang.org/grpc"
 	"io/ioutil"
 	"log"
-	"net"
 	"os"
 	"strconv"
 )
@@ -82,30 +80,14 @@ func GenerateOrdersJSON(filename string) {
 	convertToJSON(orders)
 }
 
-type orders_server struct {
+type OrdersServer struct {
 
 }
 
-func main()  {
-	lis, err := net.Listen("tcp", "0.0.0.0:50051")
-	if err != nil {
-		log.Fatalf("Sorry failed to load server %v: ", err)
-	}
-
-	s := grpc.NewServer()
-
-	orderspb.RegisterOrdersServiceServer(s, &orders_server{})
-	GenerateOrdersJSON("Orders.csv")
-
-	fmt.Println("Orders Server starting...")
-	if s.Serve(lis); err != nil {
-		log.Fatalf("failed to Serve %v", err)
-	}
-}
 
 // GetOrdersCount find the total number of orders in the database.
 // It returns the OrderCountResponse and any error encountered.
-func (*orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCountRequest) (*orderspb.OrdersCountResponse, error)  {
+func (*OrdersServer) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCountRequest) (*orderspb.OrdersCountResponse, error)  {
 	var orders []Order
 	err := json.Unmarshal([]byte(gJsonData), &orders)
 	if err != nil {
@@ -117,7 +99,8 @@ func (*orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCo
 	return res, nil
 }
 
-func (*orders_server) PostOrder(ctx context.Context, req *orderspb.PostOrderRequest) (*orderspb.PostOrderResponse, error)  {
+
+func (*OrdersServer) PostOrder(ctx context.Context, req *orderspb.PostOrderRequest) (*orderspb.PostOrderResponse, error)  {
 
 	////unmarshalling orders
 	var orders []Order
@@ -154,7 +137,7 @@ func (*orders_server) PostOrder(ctx context.Context, req *orderspb.PostOrderRequ
 	return res, nil
 }
 
-func (*orders_server) GetPopularDish(ctx context.Context,req *orderspb.PopularDishRequest) (*orderspb.PopularDishResponse, error) {
+func (*OrdersServer) GetPopularDish(ctx context.Context,req *orderspb.PopularDishRequest) (*orderspb.PopularDishResponse, error) {
 	//Using gojq library https://github.com/elgs/gojq#gojq
 	parser, _ := gojq.NewStringQuery(gJsonData)
 	cityName := req.CityName
@@ -187,7 +170,7 @@ func (*orders_server) GetPopularDish(ctx context.Context,req *orderspb.PopularDi
 	return res, nil
 }
 
-func (*orders_server) GetOrderDetail (ctx context.Context, req *orderspb.OrderDetailRequest) (*orderspb.OrderDetailResponse, error) {
+func (*OrdersServer) GetOrderDetail (ctx context.Context, req *orderspb.OrderDetailRequest) (*orderspb.OrderDetailResponse, error) {
 	orderNumber:= req.OrderNumber
 
 	parser, _ := gojq.NewStringQuery(gJsonData)
@@ -233,7 +216,7 @@ func writeJsonFile(jsonFilePath string, ordersList []Order) error{
 }
 
 //This function updates the dish of order given order_id it opens file and write to it after update
-func (*orders_server) UpdateDish (ctx context.Context, req *orderspb.UpdateDishRequest) (*orderspb.UpdateDishResponse, error) {
+func (*OrdersServer) UpdateDish (ctx context.Context, req *orderspb.UpdateDishRequest) (*orderspb.UpdateDishResponse, error) {
 	fmt.Println("Update dish called")
 
 	order_id := int(req.GetOrderId())
