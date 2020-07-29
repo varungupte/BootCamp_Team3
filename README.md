@@ -71,11 +71,12 @@ Open Terminal and copy-paste the following commands
 8. go get github.com/varungupte/BootCamp_Team3
 9. go get -u github.com/elgs/gojq
 10. go get -u github.com/gin-gonic/gin
-11. cd $GOPATH/src/github.com/varungupte/BootCamp_Team3/cmd/order-prediction
-12. go run main.go              <-- this will run gin server
-13. Open a new terminal tab
-14. cd $GOPATH/src/github.com/varungupte/BootCamp_Team3/pkg/services/orders/orders_server
-15. go run orders_server.go     <-- this will run gRPC server
+11. go get -u google.golang.org/grpc
+12. cd $GOPATH/src/github.com/varungupte/BootCamp_Team3/cmd/order-prediction
+13. go run main.go              <-- this will run gin server
+14. Open a new terminal tab
+15. cd $GOPATH/src/github.com/varungupte/BootCamp_Team3/pkg/services/orders/orders_server
+16. go run orders_server.go     <-- this will run gRPC server
 ```
 
 ### Project Directory Structure
