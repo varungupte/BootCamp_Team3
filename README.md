@@ -6,20 +6,21 @@ Created a web server using Go programming language.
 It includes the following features:
 ```
 1. Authentication Service for the user.
+
 2. Add a new order
+   -> localhost:5657/order/add_order
+
 3. Update the dish in a particular order
+   -> localhost:5657/order/updateOrderDish
 
 4. Get the total number of orders.
-   -> localhost:5656/order/count
+   -> localhost:5657/order/count
     
 5. Get the details of a particular order by orderID.
-   -> localhost:5656/order/order_details/order_id/<orderID>
+   -> localhost:5657/order/order_details/order_id/<orderID>
 
-6. Get the details of N number of orders
-   -> localhost:5656/order/order_details/tillorder/<N>
-
-7. Query the most popular dish in a particular City.
-   -> localhost:5656/populardish/city/<CityName>
+6. Query the most popular dish in a particular City.
+   -> localhost:5657/populardish/city/<CityName>
 ```
 
 ### Data
@@ -58,7 +59,7 @@ type Order struct {
 }
 ```
 
-### Steps to run the webserver:
+### Steps to run the GIN and gRPC servers:
 Open Terminal and copy-paste the following commands
 ```
 1. mkdir $HOME/GoWorkspace
@@ -71,29 +72,39 @@ Open Terminal and copy-paste the following commands
 9. go get -u github.com/elgs/gojq
 10. go get -u github.com/gin-gonic/gin
 11. cd $GOPATH/src/github.com/varungupte/BootCamp_Team3/cmd/order-prediction
-12. go install .
-13. $GOBIN/order-prediction
+12. go run main.go              <-- this will run gin server
+13. Open a new terminal tab
+14. cd $GOPATH/src/github.com/varungupte/BootCamp_Team3/pkg/services/orders/orders_server
+15. go run orders_server.go     <-- this will run gRPC server
 ```
 
 ### Project Directory Structure
 ```
 BootCamp_Team3
-    ├── cmd
-    │   └── order-prediction
-    │       ├── Order.csv
-    │       ├── Restaurant.csv
-    │       ├── User.csv
-    │       └── main.go
-    └── pkg
-        ├── errorutil
-        │   └── errorutil.go
-        ├── orders
-        │   ├── orders.go
-        │   └── orders.json
-        ├── restaurants
-        │   └── restaurants.go
-        └── users
-            └── users.go
+   ├── README.md
+   ├── cmd
+   │   └── order-prediction
+   │       └── main.go
+   └── pkg
+       ├── errorutil
+       │   └── errorutil.go
+       ├── restaurants
+       │   └── restaurants.go
+       ├── services
+       │   └── orders
+       │       ├── orders_client
+       │       │   └── orders_client.go
+       │       ├── orders_server
+       │       │   ├── Orders.csv
+       │       │   ├── Restaurant.csv
+       │       │   ├── User.csv
+       │       │   ├── orders.json
+       │       │   └── orders_server.go
+       │       └── orderspb
+       │           ├── orders.pb.go
+       │           └── orders.proto
+       └── users
+           └── users.go
 ```
 
 #### /cmd
