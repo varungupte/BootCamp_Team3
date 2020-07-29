@@ -5,7 +5,7 @@ import (
 	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orders_client"
 )
 
-// main launches the gin server at http://localhost:5657
+// Main launches the gin server at http://localhost:5657
 func main() {
 	gin.ForceConsoleColor()
 	// Creates a gin router with default middleware:
