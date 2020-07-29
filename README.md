@@ -118,4 +118,6 @@ It's common to have a small main function that imports and invokes the code from
 #### /pkg
 Library code that's ok to use by external applications (e.g., pkg/orders, pkg/restaurants, pkg/users). 
 
+### Request Flow
+
 ![image](https://user-images.githubusercontent.com/59866066/88765441-1c657e80-d194-11ea-9f5c-17054dfc3d5e.png)
