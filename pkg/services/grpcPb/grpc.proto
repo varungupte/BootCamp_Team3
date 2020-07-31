@@ -16,7 +16,6 @@ message PostOrderResponse{
     string status = 1;
 }
 
-
 message OrderDetailRequest {
     string OrderNumber = 1;
 }
