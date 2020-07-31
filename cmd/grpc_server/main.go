@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orders_server"
-	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
+	"github.com/varungupte/BootCamp_Team3/pkg/services/grpc_server"
+	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -18,8 +18,8 @@ func main()  {
 
 	s := grpc.NewServer()
 
-	orderspb.RegisterOrdersServiceServer(s, &orders_server.Orders_server{})
-	orders_server.GenerateOrdersJSON(string(os.Getenv("GOPATH")) + "/src/github.com/varungupte/BootCamp_Team3/assets/Orders.csv")
+	grpcPb.RegisterGRPCServiceServer(s, &grpc_server.GrpcServer{})
+	grpc_server.GenerateOrdersJSON(string(os.Getenv("GOPATH")) + "/src/github.com/varungupte/BootCamp_Team3/assets/Orders.csv")
 
 	fmt.Println("Orders Server starting...")
 	if s.Serve(lis); err != nil {

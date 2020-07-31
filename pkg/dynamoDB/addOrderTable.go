@@ -17,7 +17,7 @@ func main() {
 	db := dynamodb.New(sess)
 
 	awsParams := &dynamodb.CreateTableInput{
-		TableName: aws.String("OrdersT3"),
+		TableName: aws.String("T3_Order"),
 
 		KeySchema: [] *dynamodb.KeySchemaElement {
 			{AttributeName: aws.String("CustomerId"), KeyType: aws.String("HASH")},
