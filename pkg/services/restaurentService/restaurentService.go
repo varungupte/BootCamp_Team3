@@ -27,8 +27,9 @@ type ItemEntity struct {
 	Name     string
 	Cuisine  string
 	Cost     float32
-	Quantity int64
+	Quantity uint32
 }
+
 func SaveRestaurant(entity RestaurantEntity) (RestaurantEntity, error) {
 	db := MakeNewDbSession()
 	restaurantMap, err := dynamodbattribute.MarshalMap(entity)
@@ -88,7 +89,7 @@ func GetRestaurantItems(id int64)([]ItemEntity,error)  {
 	if err!=nil {
 		return []ItemEntity{},err
 	}
-	return res.Items,nil
+	return res.Items, nil
 }
 
 func GetItemsBetweenRange(min float32,max float32,id int64)([]ItemEntity,error)  {

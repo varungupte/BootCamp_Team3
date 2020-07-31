@@ -5,11 +5,6 @@ package grpcPb;
 option go_package="services/grpcPb";
 
 // Order
-message OrdersCountRequest {}
-message OrdersCountResponse {
-    string count = 1;
-}
-
 message PostOrderRequest{
     string newOrder = 1;
 }
@@ -61,18 +56,21 @@ message CustomerResponse {
 
 
 // Restaurant
-message Item{
-    string name = 1;
-    string cuisine = 2;
-    float cost = 3;
-    int64 quantity = 4;
+message Item {
+    uint32 id=1;
+    string name = 2;
+    string cuisine = 3;
+    float cost = 4;
+    uint32 quantity = 5;
 }
+
 message Address{
-    string hounseNo = 1;
+    string houseNo = 1;
     string street = 2;
     string city = 3;
     string pin = 4;
 }
+
 message PostRestaurantRequest{
     int64 id = 1;
     string name = 2;
@@ -104,13 +102,49 @@ message ItemsInRangeRequest{
     int64 restaurantId = 3;
 }
 
+
+// Order
+message CreateOrderRequest {
+    uint32 resId=1;
+    uint32 custId=2;
+    repeated Item Items=3;
+    float discount=4;
+    Address address=5;
+}
+
+message CreateOrderResponse {
+    bool status=1;
+    string message=2;
+    uint32 orderId=3;
+}
+
+message UpdateOrderItemRequest {
+    uint32 orderId=1;
+    uint32 custId=2;
+    uint32 itemId=3;
+    uint32 quantity=4;
+}
+
+message UpdateOrderItemResponse {
+    bool status=1;
+    string message=2;
+}
+
+message OrdersCountRequest{}
+
+message OrdersCountResponse{
+    int64 count=1;
+}
+
 service GRPCService {
     // Order
-    rpc GetOrdersCount (OrdersCountRequest) returns (OrdersCountResponse) {}
     rpc GetOrderDetail (OrderDetailRequest) returns (OrderDetailResponse) {}
     rpc GetPopularDish (PopularDishRequest) returns (PopularDishResponse){}
     rpc UpdateDish (UpdateDishRequest) returns (UpdateDishResponse){}
     rpc PostOrder (PostOrderRequest) returns (PostOrderResponse){}
+    rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse){}
+    rpc UpdateOrderItem(UpdateOrderItemRequest) returns (UpdateOrderItemResponse){}
+    rpc GetOrdersCount (OrdersCountRequest) returns (OrdersCountResponse) {}
 
     // Customer
     rpc GetCustomersCount (CustomersCountRequest) returns (CustomersCountResponse){}
