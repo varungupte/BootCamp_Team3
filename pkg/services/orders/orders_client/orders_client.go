@@ -2,6 +2,7 @@ package orders_client
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
@@ -15,43 +16,256 @@ import (
 
 // AddOrderPaths adds GET and POST API paths for gin.
 func AddOrderPaths(router *gin.Engine) {
-	
+
 	//BasicAuth module for authorization while hitting the api
-	order:= router.Group("/order",gin.BasicAuth(gin.Accounts{
-		"user1": "gupte",//username:password
+	order := router.Group("/order", gin.BasicAuth(gin.Accounts{
+		"user1": "gupte", //username:password
 		"user2": "gupte",
 		"user3": "gupte",
 	}))
 	order.GET("/", HomePage)
-	
+
 	//will return the total orders so far
 	order.GET("/count", OrderCount)
-	
+
 	//Popular Dish Areawise(In a particular User City, which is the dish maximum ordered)
 	order.GET("/populardish/city/:city", PopularDish)
-	
+
 	// will return json object containing info about the order with orderid "ordernumber"
 	order.GET("/order_details/order_id/:ordernumber", OrderDetail)
-	
+
 	// will return slice for orders till orderid "tillorder"
-    // order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
-	
+	// order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
+
 	// POST request to add orders
-    order.POST("/add_order", PostOrder)
-	
+	order.POST("/add_order", PostOrder)
+
 	order.POST("/updateOrderDish", UpdateOrderDish)
+
+	restaurant := router.Group("/restaurant")
+	itemRouter:=router.Group("/item")
+	restaurant.GET("/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		n, err := strconv.ParseInt(id, 10, 64)
+		if err == nil {
+			fmt.Println("Unable to convert string to int 64")
+		}
+		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+		}
+		defer conn.Close()
+
+		oc := orderspb.NewOrdersServiceClient(conn)
+		req := &orderspb.RestaurantRequest{
+			RestaurantId: n,
+		}
+		res, err := oc.GetRestaurant(context.Background(), req)
+		if err != nil {
+			log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"Restaurant Details": res,
+		})
+	})
+	restaurant.POST("/", func(c *gin.Context) {
+		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+		}
+		defer conn.Close()
+		body := c.Request.Body
+		content, err := ioutil.ReadAll(body)
+		var restaurant orderspb.PostRestaurantRequest
+		err = json.Unmarshal(content, &restaurant)
+		errorutil.CheckError(err, "unmarshalling orders")
+		oc := orderspb.NewOrdersServiceClient(conn)
+		res, err := oc.PostRestaurant(context.Background(), &restaurant)
+		if err != nil {
+			log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"status":  res.Status,
+			"message": res.Message,
+		})
+
+	})
+	restaurant.DELETE("/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		n, err := strconv.ParseInt(id, 10, 64)
+		if err == nil {
+			fmt.Println("Unable to convert string to int 64")
+		}
+		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+		}
+		defer conn.Close()
+
+		oc := orderspb.NewOrdersServiceClient(conn)
+		req := &orderspb.RestaurantRequest{
+			RestaurantId: n,
+		}
+		res, err := oc.DeleteRestaurant(context.Background(), req)
+		if err != nil {
+			log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"status":  res.Status,
+			"message": res.Message,
+		})
+	})
+	itemRouter.DELETE("/:restId/:itemName", func(c *gin.Context) {
+		Id1 := c.Param("restId")
+		itemName := c.Param("itemName")
+		resId, err := strconv.ParseInt(Id1, 10, 64)
+		if err == nil {
+			fmt.Println("Unable to convert string to int 64")
+		}
+		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+		}
+		defer conn.Close()
+
+		oc := orderspb.NewOrdersServiceClient(conn)
+		req := &orderspb.DeleteItemRequest{
+			RestaurantId: resId,
+			ItemName:     itemName,
+		}
+		res, err := oc.DeleteItem(context.Background(), req)
+		if err != nil {
+			log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"status":  res.Status,
+			"message": res.Message,
+		})
+	})
+	itemRouter.PUT("/:id", func(c *gin.Context) {
+		body := c.Request.Body
+		content, err := ioutil.ReadAll(body)
+		id := c.Param("id")
+		n, err := strconv.ParseInt(id, 10, 64)
+		if err == nil {
+			fmt.Println("Unable to convert string to int 64")
+		}
+		var item orderspb.Item
+		err = json.Unmarshal(content, &item)
+		errorutil.CheckError(err, "unmarshalling orders")
+		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+		}
+		defer conn.Close()
+
+		oc := orderspb.NewOrdersServiceClient(conn)
+		req := &orderspb.UpdateItemRequest{
+			RestaurantId:    n,
+			ItemToBeUpdates: &item,
+		}
+		res, err := oc.UpdateItem(context.Background(), req)
+		if err != nil {
+			log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"status":  res.Status,
+			"message": res.Message,
+		})
+	})
+	//restaurant.GET("/count", func(c *gin.Context) {
+	//	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	//	if err != nil {
+	//		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+	//	}
+	//	defer conn.Close()
+	//
+	//	oc := orderspb.NewOrdersServiceClient(conn)
+	//	req := &orderspb.OrdersCountRequest{}
+	//	res, err := oc.GetCountOfRestaurant(context.Background(), req)
+	//	if err != nil {
+	//		log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	//	}
+	//	c.JSON(http.StatusOK, gin.H{
+	//		"count": res.Count,
+	//	})
+	//})
+	restaurant.GET("/:id/item", func(c *gin.Context) {
+		id := c.Param("id")
+		n, err := strconv.ParseInt(id, 10, 64)
+		if err == nil {
+			fmt.Println("Unable to convert string to int 64")
+		}
+		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+		}
+		defer conn.Close()
+
+		oc := orderspb.NewOrdersServiceClient(conn)
+		req := &orderspb.RestaurantRequest{
+			RestaurantId: n,
+		}
+		res, err := oc.GetItemsOfRestaurant(context.Background(), req)
+		if err != nil {
+			log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"status":  "Successfull",
+			"message": res.Items,
+		})
+	})
+	//https://example.org/?a=1&a=2&b=&=3&&&&
+	restaurant.GET("/:id/items/?priceMin=&priceMax=&", func(c *gin.Context) {
+		queryValues := c.Request.URL.Query()
+		id := c.Param("id")
+		n, err := strconv.ParseInt(id, 10, 64)
+		if err == nil {
+			fmt.Println("Unable to convert string to int 64")
+		}
+		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+		}
+		defer conn.Close()
+
+		oc := orderspb.NewOrdersServiceClient(conn)
+		value, err := strconv.ParseFloat(queryValues.Get("priceMin"), 32)
+		if err != nil {
+			// do something sensible
+		}
+		min := float32(value)
+		value, err = strconv.ParseFloat(queryValues.Get("priceMax"), 32)
+		if err != nil {
+			// do something sensible
+		}
+		max := float32(value)
+		req := &orderspb.ItemsInRangeRequest{
+			RestaurantId: n,
+			MinRange:     min,
+			MaxRange:     max,
+		}
+		res, err := oc.GetItemsInRange(context.Background(), req)
+		if err != nil {
+			log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"status":  "Successfull",
+			"message": res.Items,
+		})
+	})
 }
 
 // OrderDetail is the handler for /order_details/order_id/:ordernumber API.
 // It displays the order detail by a particular orderId
-func OrderDetail (c *gin.Context) {
+func OrderDetail(c *gin.Context) {
 	ordernumber := c.Param("ordernumber")
 
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
-	defer conn.Close();
+	defer conn.Close()
 
 	oc := orderspb.NewOrdersServiceClient(conn)
 	req := &orderspb.OrderDetailRequest{
@@ -62,25 +276,26 @@ func OrderDetail (c *gin.Context) {
 		log.Fatalf("Error While calling GetOrderDetail : %v ", err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"Order Details" : res.OrderDetail,
+		"Order Details": res.OrderDetail,
 	})
+
 }
 
 // PostOrder adds a new order to the database.
 // It displays a success or failure message.
-func PostOrder (c *gin.Context) {
+func PostOrder(c *gin.Context) {
 	body := c.Request.Body
 
- 	content, err := ioutil.ReadAll(body)
- 	errorutil.CheckError(err, "Sorry No Content:")
+	content, err := ioutil.ReadAll(body)
+	errorutil.CheckError(err, "Sorry No Content:")
 
- 	fmt.Println(string(content))
+	fmt.Println(string(content))
 
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
-		c.JSON(http.StatusBadGateway, gin.H {
-			"Error Message" : "Connection failed with gRPC server",
+		c.JSON(http.StatusBadGateway, gin.H{
+			"Error Message": "Connection failed with gRPC server",
 		})
 		return
 	}
@@ -98,9 +313,9 @@ func PostOrder (c *gin.Context) {
 			"Order Status": "Issue while updating....",
 		})
 		return
-	}else{
+	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"Order Status" : "Post call successfully executed.",
+			"Order Status": "Post call successfully executed.",
 		})
 	}
 	fmt.Println(res.Updatedorders)
@@ -122,7 +337,7 @@ func OrderCount(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
-	defer conn.Close();
+	defer conn.Close()
 
 	oc := orderspb.NewOrdersServiceClient(conn)
 
@@ -167,13 +382,13 @@ func OrderCount(c *gin.Context) {
 
 // PopularDish is the handler for /populardish/city/:city API.
 // It displays the most popular dish of a particular city.
-func PopularDish (c *gin.Context) {
+func PopularDish(c *gin.Context) {
 	cityName := c.Param("city")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
-	defer conn.Close();
+	defer conn.Close()
 
 	oc := orderspb.NewOrdersServiceClient(conn)
 	req := &orderspb.PopularDishRequest{
@@ -184,14 +399,14 @@ func PopularDish (c *gin.Context) {
 		log.Fatalf("Error While calling GetPopularDish: %v", err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"Dish Name": res.DishName,
-		"Most Popular dish in :-" : cityName,
+		"Dish Name":               res.DishName,
+		"Most Popular dish in :-": cityName,
 	})
 }
 
 // UpdateOrderDish is the handler for /updateOrderDish API.
 // It updates the dish name of a particular order.
-func UpdateOrderDish (c *gin.Context) {
+func UpdateOrderDish(c *gin.Context) {
 	//orderIdStr :=  c.DefaultQuery("order_id", "0")
 	orderIdStr := c.DefaultPostForm("order_id", "0")
 	//updatedDish := c.Query("dish")
@@ -202,11 +417,11 @@ func UpdateOrderDish (c *gin.Context) {
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
-	defer conn.Close();
+	defer conn.Close()
 
 	oc := orderspb.NewOrdersServiceClient(conn)
 	req := &orderspb.UpdateDishRequest{
-		OrderId: int64(orderId),
+		OrderId:     int64(orderId),
 		UpdatedDish: updatedDish,
 	}
 	res, err := oc.UpdateDish(context.Background(), req)
@@ -222,4 +437,3 @@ func UpdateOrderDish (c *gin.Context) {
 		"UpdatedDish": updatedDish,
 	})
 }
-
