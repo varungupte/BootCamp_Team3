@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
-	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
+	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"google.golang.org/grpc"
 	"io/ioutil"
 	"log"
@@ -13,8 +13,8 @@ import (
 	"strconv"
 )
 
-// AddOrderPaths adds GET and POST API paths for gin.
-func AddOrderPaths(router *gin.Engine) {
+// AddOrderAPIs adds GET and POST API paths for gin.
+func AddOrderAPIs(router *gin.Engine) {
 	
 	//BasicAuth module for authorization while hitting the api
 	order:= router.Group("/order",gin.BasicAuth(gin.Accounts{
@@ -53,8 +53,8 @@ func OrderDetail (c *gin.Context) {
 	}
 	defer conn.Close();
 
-	oc := orderspb.NewOrdersServiceClient(conn)
-	req := &orderspb.OrderDetailRequest{
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.OrderDetailRequest {
 		OrderNumber: ordernumber,
 	}
 	res, err := oc.GetOrderDetail(context.Background(), req)
@@ -86,10 +86,10 @@ func PostOrder (c *gin.Context) {
 	}
 	defer conn.Close()
 
-	oc := orderspb.NewOrdersServiceClient(conn)
+	oc := grpcPb.NewGRPCServiceClient(conn)
 
-	req := &orderspb.PostOrderRequest{
-		Neworder: string(content),
+	req := &grpcPb.PostOrderRequest{
+		NewOrder: string(content),
 	}
 	res, err := oc.PostOrder(context.Background(), req)
 	if err != nil {
@@ -100,10 +100,10 @@ func PostOrder (c *gin.Context) {
 		return
 	}else{
 		c.JSON(http.StatusOK, gin.H{
-			"Order Status" : "Post call successfully executed.",
+			"Order Status" : res.Status,
 		})
 	}
-	fmt.Println(res.Updatedorders)
+	fmt.Println(res.Status)
 }
 
 // HomePage is the handler for /order API.
@@ -124,9 +124,9 @@ func OrderCount(c *gin.Context) {
 	}
 	defer conn.Close();
 
-	oc := orderspb.NewOrdersServiceClient(conn)
+	oc := grpcPb.NewGRPCServiceClient(conn)
 
-	req := &orderspb.OrdersCountRequest{}
+	req := &grpcPb.OrdersCountRequest{}
 	res, err := oc.GetOrdersCount(context.Background(), req)
 	if err != nil {
 		log.Fatalf("Error While calling GetOrdersCount: %v", err)
@@ -175,8 +175,8 @@ func PopularDish (c *gin.Context) {
 	}
 	defer conn.Close();
 
-	oc := orderspb.NewOrdersServiceClient(conn)
-	req := &orderspb.PopularDishRequest{
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.PopularDishRequest{
 		CityName: cityName,
 	}
 	res, err := oc.GetPopularDish(context.Background(), req)
@@ -204,8 +204,8 @@ func UpdateOrderDish (c *gin.Context) {
 	}
 	defer conn.Close();
 
-	oc := orderspb.NewOrdersServiceClient(conn)
-	req := &orderspb.UpdateDishRequest{
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.UpdateDishRequest{
 		OrderId: int64(orderId),
 		UpdatedDish: updatedDish,
 	}

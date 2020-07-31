@@ -1,0 +1,72 @@
+syntax="proto3";
+
+package grpcPb;
+
+option go_package="services/grpcPb";
+
+message OrdersCountRequest {}
+message OrdersCountResponse {
+    string count = 1;
+}
+
+message PostOrderRequest{
+    string newOrder = 1;
+}
+message PostOrderResponse{
+    string status = 1;
+}
+
+
+message OrderDetailRequest {
+    string OrderNumber = 1;
+}
+message OrderDetailResponse {
+    string orderDetail = 1;
+}
+
+message PopularDishResponse {
+    string DishName = 1;
+}
+message PopularDishRequest {
+    string CityName = 1;
+}
+
+message UpdateDishRequest {
+    int64 orderId = 1;
+    string updatedDish = 2;
+}
+message UpdateDishResponse {
+    string status = 1;
+}
+
+message CustomersCountRequest {}
+message CustomersCountResponse {
+    int64 count = 1;
+}
+
+message AddCustomerRequest {
+    string newCustomer = 1;
+}
+message StatusResponse {
+    string status = 1;
+}
+
+message CustomerRequest {
+    string CustomerId = 1;
+}
+message CustomerResponse {
+    string CustomerData = 1;
+}
+
+service GRPCService {
+    rpc GetOrdersCount (OrdersCountRequest) returns (OrdersCountResponse) {}
+    rpc GetOrderDetail (OrderDetailRequest) returns (OrderDetailResponse) {}
+    rpc GetPopularDish (PopularDishRequest) returns (PopularDishResponse){}
+    rpc UpdateDish (UpdateDishRequest) returns (UpdateDishResponse){}
+    rpc PostOrder (PostOrderRequest) returns (PostOrderResponse){}
+
+    rpc GetCustomersCount (CustomersCountRequest) returns (CustomersCountResponse){}
+    rpc GetCustomer (CustomerRequest) returns (CustomerResponse){}
+    rpc AddCustomer (AddCustomerRequest) returns (StatusResponse) {}
+    rpc DeleteCustomer (CustomerRequest) returns (StatusResponse) {}
+}

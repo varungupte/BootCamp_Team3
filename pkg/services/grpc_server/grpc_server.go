@@ -1,4 +1,4 @@
-package orders_server
+package grpc_server
 
 import (
 	"context"
@@ -6,10 +6,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/elgs/gojq"
+	"github.com/varungupte/BootCamp_Team3/pkg/dynamoDB/types"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
 	"github.com/varungupte/BootCamp_Team3/pkg/restaurants"
-	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
+	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"github.com/varungupte/BootCamp_Team3/pkg/users"
 	"io/ioutil"
 	"log"
@@ -18,12 +23,12 @@ import (
 )
 
 type Order struct {
-	Id int
-	Quantity int
-	Amount float64
-	DishName string
-	User users.User
-	Restau restaurants.Restaurant
+	Id           int
+	Quantity     int
+	Amount       float64
+	DishName     string
+	User         users.User
+	Restau       restaurants.Restaurant
 	DeliveryTime string
 }
 
@@ -82,44 +87,52 @@ func GenerateOrdersJSON(filename string) {
 }
 
 
-type Orders_server struct {}
+func getDBInstance() *dynamodb.DynamoDB {
+	sess := session.Must(session.NewSession(&aws.Config{
+		Endpoint: aws.String("http://localhost:8000"),
+		Region: aws.String("us-east-1"),
+	}))
+	return dynamodb.New(sess)
+}
+
+type GrpcServer struct {}
 
 // GetOrdersCount find the total number of orders in the database.
 // It returns the OrderCountResponse and any error encountered.
-func (*Orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCountRequest) (*orderspb.OrdersCountResponse, error)  {
+func (*GrpcServer) GetOrdersCount(ctx context.Context, req *grpcPb.OrdersCountRequest) (*grpcPb.OrdersCountResponse, error)  {
 	var orders []Order
 	err := json.Unmarshal([]byte(gJsonData), &orders)
 	if err != nil {
 		return nil, err
 	}
-	res := &orderspb.OrdersCountResponse{
+	res := &grpcPb.OrdersCountResponse{
 		Count: strconv.Itoa(len(orders)),
 	}
 	return res, nil
 }
 
-func (*Orders_server) PostOrder(ctx context.Context, req *orderspb.PostOrderRequest) (*orderspb.PostOrderResponse, error)  {
-	////unmarshalling orders
+func (*GrpcServer) PostOrder(ctx context.Context, req *grpcPb.PostOrderRequest) (*grpcPb.PostOrderResponse, error)  {
+	// unmarshalling orders
 	var orders []Order
 	err := json.Unmarshal([]byte(gJsonData), &orders)
 	errorutil.CheckError(err, "unmarshalling orders")
 
-	////unmarshalling content
+	// unmarshalling content
 	var orderData2 Order
-	err = json.Unmarshal([]byte(req.Neworder), &orderData2)
+	err = json.Unmarshal([]byte(req.NewOrder), &orderData2)
 	errorutil.CheckError(err, "")
 
-	////appending new order
+	// appending new order
 	orders = append(orders, orderData2)
 
 	convertToJSON(orders)
-	res := &orderspb.PostOrderResponse{
-		Updatedorders: "SUCCESS: Order updated",
+	res := &grpcPb.PostOrderResponse{
+		Status: "SUCCESS: Order updated",
 	}
 	return res, nil
 }
 
-func (*Orders_server) GetPopularDish(ctx context.Context,req *orderspb.PopularDishRequest) (*orderspb.PopularDishResponse, error) {
+func (*GrpcServer) GetPopularDish(ctx context.Context,req *grpcPb.PopularDishRequest) (*grpcPb.PopularDishResponse, error) {
 	//Using gojq library https://github.com/elgs/gojq#gojq
 	parser, _ := gojq.NewStringQuery(gJsonData)
 	cityName := req.CityName
@@ -146,7 +159,7 @@ func (*Orders_server) GetPopularDish(ctx context.Context,req *orderspb.PopularDi
 			maxres = p
 		}
 	}
-	res := &orderspb.PopularDishResponse{}
+	res := &grpcPb.PopularDishResponse{}
 	if maxres == -1 {
 		return res, errors.New("City doesn't exist in the database")
 	}
@@ -154,13 +167,13 @@ func (*Orders_server) GetPopularDish(ctx context.Context,req *orderspb.PopularDi
 	return res, nil
 }
 
-func (*Orders_server) GetOrderDetail (ctx context.Context, req *orderspb.OrderDetailRequest) (*orderspb.OrderDetailResponse, error) {
+func (*GrpcServer) GetOrderDetail (ctx context.Context, req *grpcPb.OrderDetailRequest) (*grpcPb.OrderDetailResponse, error) {
 	orderNumber:= req.OrderNumber
 
 	parser, _ := gojq.NewStringQuery(gJsonData)
 	ord,_ := strconv.Atoi(orderNumber)
 	ord = ord-1
-	res := &orderspb.OrderDetailResponse{}
+	res := &grpcPb.OrderDetailResponse{}
 	if ord >= 1000 {
 		return res, errors.New("OrderId out of bounds")
 	}
@@ -201,17 +214,17 @@ func writeJsonFile(jsonFilePath string, ordersList []Order) error{
 }
 
 //This function updates the dish of order given order_id it opens file and write to it after update
-func (*Orders_server) UpdateDish (ctx context.Context, req *orderspb.UpdateDishRequest) (*orderspb.UpdateDishResponse, error) {
+func (*GrpcServer) UpdateDish (ctx context.Context, req *grpcPb.UpdateDishRequest) (*grpcPb.UpdateDishResponse, error) {
 	order_id := int(req.GetOrderId())
 	updated_dish := req.GetUpdatedDish()
-	res := &orderspb.UpdateDishResponse{
+	res := &grpcPb.UpdateDishResponse{
 		Status: "SUCCESS: Order updated",
 	}
 
 	jsonFilePath := string(os.Getenv("GOPATH")) + "/src/github.com/varungupte/BootCamp_Team3/assets/orders.json"
 	orderList, err := parseJsonFile(jsonFilePath)
 	if err != nil {
-		res = &orderspb.UpdateDishResponse{
+		res = &grpcPb.UpdateDishResponse{
 			Status: "Failed to write in file",
 		}
 		return res, err
@@ -223,15 +236,121 @@ func (*Orders_server) UpdateDish (ctx context.Context, req *orderspb.UpdateDishR
 			orderList[i].DishName = updated_dish
 			err = writeJsonFile(jsonFilePath, orderList)
 			if err != nil {
-				res = &orderspb.UpdateDishResponse{
+				res = &grpcPb.UpdateDishResponse{
 					Status: "Failed to write in file",
 				}
 			}
 			return res, err
 		}
 	}
-	res = &orderspb.UpdateDishResponse{
+	res = &grpcPb.UpdateDishResponse{
 		Status: "FAILURE: No order found with this orderId",
 	}
 	return res, errors.New("No order found with this orderId")
+}
+
+func (*GrpcServer) GetCustomersCount (ctx context.Context, req *grpcPb.CustomersCountRequest) (*grpcPb.CustomersCountResponse, error) {
+	db := getDBInstance()
+	// create the api params
+	params := &dynamodb.DescribeTableInput{
+		TableName: aws.String("T3_Customer"),
+	}
+	// get the table description
+	resp, err := db.DescribeTable(params)
+	if err != nil {
+			  return nil, err
+			  }
+	countResp := &grpcPb.CustomersCountResponse{
+		Count: aws.Int64Value(resp.Table.ItemCount),
+	}
+	return countResp, nil
+}
+
+func (*GrpcServer) AddCustomer(ctx context.Context, req *grpcPb.AddCustomerRequest) (*grpcPb.StatusResponse, error)  {
+	// unmarshalling content
+	var customerData types.Customer
+	err := json.Unmarshal([]byte(req.NewCustomer), &customerData)
+	errorutil.CheckError(err, "")
+
+	db := getDBInstance()
+
+	customerMap, err := dynamodbattribute.MarshalMap(customerData)
+	if err != nil {
+		panic("Cannot map the values given in customer struct...")
+	}
+
+	params := &dynamodb.PutItemInput{
+		TableName: aws.String("T3_Customer"),
+		Item: customerMap,
+	}
+
+	resp, err := db.PutItem(params)
+
+	if err != nil {
+		log.Fatalf("Some problem while inserting : %v", err)
+	}
+	// print the response
+	fmt.Println(resp)
+
+	res := &grpcPb.StatusResponse{
+		Status: "SUCCESS: New customer added",
+	}
+	return res, nil
+}
+
+func (*GrpcServer) GetCustomer (ctx context.Context, req *grpcPb.CustomerRequest) (*grpcPb.CustomerResponse, error) {
+	customerId := req.CustomerId
+	resp := &grpcPb.CustomerResponse{}
+
+	db := getDBInstance()
+
+	params := &dynamodb.GetItemInput{
+		TableName: aws.String("T3_Customer"),
+		Key: map[string]*dynamodb.AttributeValue{
+			"Id": {
+				N: aws.String(customerId),
+			},
+		},
+	}
+
+	itemOutput, err := db.GetItem(params)
+	if err != nil {
+		return resp, err
+	}
+	if (len(itemOutput.Item) == 0) {
+		resp.CustomerData = ""
+		return resp, errors.New("FAILURE: Customer not found")
+	}
+	resp.CustomerData = fmt.Sprintf("%s", itemOutput.Item)
+	return resp, nil
+}
+
+func (*GrpcServer) DeleteCustomer (ctx context.Context, req *grpcPb.CustomerRequest) (*grpcPb.StatusResponse, error) {
+	customerId := req.CustomerId
+	resp := &grpcPb.StatusResponse{
+		Status: "FAILURE",
+	}
+
+	db := getDBInstance()
+
+	params := &dynamodb.DeleteItemInput{
+		TableName: aws.String("T3_Customer"),
+		Key: map[string]*dynamodb.AttributeValue{
+			"Id" : {
+				N: aws.String(customerId),
+			},
+		},
+	}
+
+	itemOutput, err := db.DeleteItem(params)
+	if err != nil {
+		fmt.Printf("ERROR: %v\n", err.Error())
+		return resp, err
+	}
+	// print the response data
+	fmt.Println(itemOutput)
+	//var jsonStr string
+	//jsonStr = fmt.Sprintf("%s", itemOutput.)
+	resp.Status = fmt.Sprintf("SUCCESS: CustomerId %s deleted!!", customerId)
+	return resp, nil
 }
