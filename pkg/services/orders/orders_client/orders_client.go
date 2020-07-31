@@ -173,23 +173,23 @@ func AddOrderPaths(router *gin.Engine) {
 			"message": res.Message,
 		})
 	})
-	//restaurant.GET("/count", func(c *gin.Context) {
-	//	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
-	//	if err != nil {
-	//		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
-	//	}
-	//	defer conn.Close()
-	//
-	//	oc := orderspb.NewOrdersServiceClient(conn)
-	//	req := &orderspb.OrdersCountRequest{}
-	//	res, err := oc.GetCountOfRestaurant(context.Background(), req)
-	//	if err != nil {
-	//		log.Fatalf("Error While calling GetOrderDetail : %v ", err)
-	//	}
-	//	c.JSON(http.StatusOK, gin.H{
-	//		"count": res.Count,
-	//	})
-	//})
+	router.GET("/count/restaurant", func(c *gin.Context) {
+		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+		}
+		defer conn.Close()
+
+		oc := orderspb.NewOrdersServiceClient(conn)
+		req := &orderspb.OrdersCountRequest{}
+		res, err := oc.GetCountOfRestaurant(context.Background(), req)
+		if err != nil {
+			log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"count": res.Count,
+		})
+	})
 	restaurant.GET("/:id/item", func(c *gin.Context) {
 		id := c.Param("id")
 		n, err := strconv.ParseInt(id, 10, 64)
@@ -216,8 +216,7 @@ func AddOrderPaths(router *gin.Engine) {
 		})
 	})
 	//https://example.org/?a=1&a=2&b=&=3&&&&
-	restaurant.GET("/:id/items/?priceMin=&priceMax=&", func(c *gin.Context) {
-		queryValues := c.Request.URL.Query()
+	restaurant.GET("/:id/items/:priceMin/:priceMax", func(c *gin.Context) {
 		id := c.Param("id")
 		n, err := strconv.ParseInt(id, 10, 64)
 		if err == nil {
@@ -230,12 +229,12 @@ func AddOrderPaths(router *gin.Engine) {
 		defer conn.Close()
 
 		oc := orderspb.NewOrdersServiceClient(conn)
-		value, err := strconv.ParseFloat(queryValues.Get("priceMin"), 32)
+		value, err := strconv.ParseFloat(c.Param("priceMin"), 32)
 		if err != nil {
 			// do something sensible
 		}
 		min := float32(value)
-		value, err = strconv.ParseFloat(queryValues.Get("priceMax"), 32)
+		value, err = strconv.ParseFloat(c.Param("priceMax"), 32)
 		if err != nil {
 			// do something sensible
 		}
