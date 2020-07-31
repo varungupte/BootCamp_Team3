@@ -4,6 +4,7 @@ package grpcPb;
 
 option go_package="services/grpcPb";
 
+// Order
 message OrdersCountRequest {}
 message OrdersCountResponse {
     string count = 1;
@@ -38,6 +39,7 @@ message UpdateDishResponse {
     string status = 1;
 }
 
+// Customer
 message CustomersCountRequest {}
 message CustomersCountResponse {
     int64 count = 1;
@@ -57,15 +59,72 @@ message CustomerResponse {
     string CustomerData = 1;
 }
 
+
+// Restaurant
+message Item{
+    string name = 1;
+    string cuisine = 2;
+    float cost = 3;
+    int64 quantity = 4;
+}
+message Address{
+    string hounseNo = 1;
+    string street = 2;
+    string city = 3;
+    string pin = 4;
+}
+message PostRestaurantRequest{
+    int64 id = 1;
+    string name = 2;
+    repeated Item items = 3;
+    Address restaurantAddress = 4;
+    bool status = 5;
+}
+message ItemsListResponse{
+    repeated Item items = 1;
+}
+message DeleteItemRequest{
+    int64 restaurantId = 1;
+    string itemName = 2;
+}
+message RestaurantRequest{
+    int64 restaurantId = 1;
+}
+message GenericResponse{
+    string status = 1;
+    string message=2;
+}
+message UpdateItemRequest{
+    int64 restaurantId = 1;
+    Item itemToBeUpdates = 2;
+}
+message ItemsInRangeRequest{
+    float minRange = 1;
+    float maxRange = 2;
+    int64 restaurantId = 3;
+}
+
 service GRPCService {
+    // Order
     rpc GetOrdersCount (OrdersCountRequest) returns (OrdersCountResponse) {}
     rpc GetOrderDetail (OrderDetailRequest) returns (OrderDetailResponse) {}
     rpc GetPopularDish (PopularDishRequest) returns (PopularDishResponse){}
     rpc UpdateDish (UpdateDishRequest) returns (UpdateDishResponse){}
     rpc PostOrder (PostOrderRequest) returns (PostOrderResponse){}
 
+    // Customer
     rpc GetCustomersCount (CustomersCountRequest) returns (CustomersCountResponse){}
     rpc GetCustomer (CustomerRequest) returns (CustomerResponse){}
     rpc DeleteCustomer (CustomerRequest) returns (CustomerResponse) {}
     rpc AddCustomer (AddCustomerRequest) returns (StatusResponse) {}
+
+    // Restaurant
+    rpc PostRestaurant(PostRestaurantRequest) returns (GenericResponse){}
+    rpc DeleteItem(DeleteItemRequest) returns (GenericResponse){}
+    rpc DeleteRestaurant(RestaurantRequest)returns(GenericResponse){}
+    rpc UpdateItem(UpdateItemRequest) returns(GenericResponse){}
+    rpc GetCountOfRestaurant(OrdersCountRequest) returns (OrdersCountResponse){}
+    rpc GetRestaurant(RestaurantRequest) returns (PostRestaurantRequest){}
+    rpc GetItemsOfRestaurant(RestaurantRequest) returns(ItemsListResponse){}
+    rpc GetItemsInRange(ItemsInRangeRequest) returns(ItemsListResponse){}
 }
