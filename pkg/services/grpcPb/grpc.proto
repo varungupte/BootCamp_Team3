@@ -137,11 +137,6 @@ message OrdersCountResponse{
 }
 
 service GRPCService {
-    // Order
-    rpc GetOrderDetail (OrderDetailRequest) returns (OrderDetailResponse) {}
-    rpc GetPopularDish (PopularDishRequest) returns (PopularDishResponse){}
-    rpc UpdateDish (UpdateDishRequest) returns (UpdateDishResponse){}
-    rpc PostOrder (PostOrderRequest) returns (PostOrderResponse){}
     rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse){}
     rpc UpdateOrderItem(UpdateOrderItemRequest) returns (UpdateOrderItemResponse){}
     rpc GetOrdersCount (OrdersCountRequest) returns (OrdersCountResponse) {}

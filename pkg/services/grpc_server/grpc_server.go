@@ -134,15 +134,16 @@ func (*GrpcServer) UpdateOrderItem (ctx context.Context, req *grpcPb.UpdateOrder
 	params := &dynamodb.GetItemInput{
 		TableName:aws.String("OrdersT3"),
 		Key:map[string]*dynamodb.AttributeValue{
-			"OrderId" :{
-				S:aws.String(strconv.Itoa(int(orderId))),
+			"Id" :{
+				N:aws.String(strconv.Itoa(int(orderId))),
 			},
-			"CustomerId" :{
-				S:aws.String(strconv.Itoa(int(customerId))),
+			"CustId" :{
+				N:aws.String(strconv.Itoa(int(customerId))),
 			},
 		},
 	}
 	resp, err := db.GetItem(params)
+	log.Println("resss", resp)
 
 	//if err != nil {
 	//
