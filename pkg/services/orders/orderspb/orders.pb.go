@@ -498,6 +498,509 @@ func (x *UpdateDishResponse) GetStatus() string {
 	return ""
 }
 
+type Item struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id       int32   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name     string  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Cuisine  string  `protobuf:"bytes,3,opt,name=cuisine,proto3" json:"cuisine,omitempty"`
+	Cost     float32 `protobuf:"fixed32,4,opt,name=cost,proto3" json:"cost,omitempty"`
+	Quantity int32   `protobuf:"varint,5,opt,name=quantity,proto3" json:"quantity,omitempty"`
+}
+
+func (x *Item) Reset() {
+	*x = Item{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_orders_orderspb_orders_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Item) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Item) ProtoMessage() {}
+
+func (x *Item) ProtoReflect() protoreflect.Message {
+	mi := &file_orders_orderspb_orders_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Item.ProtoReflect.Descriptor instead.
+func (*Item) Descriptor() ([]byte, []int) {
+	return file_orders_orderspb_orders_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *Item) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Item) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Item) GetCuisine() string {
+	if x != nil {
+		return x.Cuisine
+	}
+	return ""
+}
+
+func (x *Item) GetCost() float32 {
+	if x != nil {
+		return x.Cost
+	}
+	return 0
+}
+
+func (x *Item) GetQuantity() int32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+type Address struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	HouseNo int32  `protobuf:"varint,1,opt,name=house_no,json=houseNo,proto3" json:"house_no,omitempty"`
+	Street  string `protobuf:"bytes,2,opt,name=street,proto3" json:"street,omitempty"`
+	City    string `protobuf:"bytes,3,opt,name=city,proto3" json:"city,omitempty"`
+	Pin     int32  `protobuf:"varint,4,opt,name=pin,proto3" json:"pin,omitempty"`
+}
+
+func (x *Address) Reset() {
+	*x = Address{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_orders_orderspb_orders_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Address) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Address) ProtoMessage() {}
+
+func (x *Address) ProtoReflect() protoreflect.Message {
+	mi := &file_orders_orderspb_orders_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Address.ProtoReflect.Descriptor instead.
+func (*Address) Descriptor() ([]byte, []int) {
+	return file_orders_orderspb_orders_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *Address) GetHouseNo() int32 {
+	if x != nil {
+		return x.HouseNo
+	}
+	return 0
+}
+
+func (x *Address) GetStreet() string {
+	if x != nil {
+		return x.Street
+	}
+	return ""
+}
+
+func (x *Address) GetCity() string {
+	if x != nil {
+		return x.City
+	}
+	return ""
+}
+
+func (x *Address) GetPin() int32 {
+	if x != nil {
+		return x.Pin
+	}
+	return 0
+}
+
+type CreateOrderRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ResId      string   `protobuf:"bytes,1,opt,name=res_id,json=resId,proto3" json:"res_id,omitempty"`
+	CustomerId string   `protobuf:"bytes,2,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
+	Items      []*Item  `protobuf:"bytes,3,rep,name=Items,proto3" json:"Items,omitempty"`
+	Discount   float32  `protobuf:"fixed32,4,opt,name=discount,proto3" json:"discount,omitempty"`
+	Address    *Address `protobuf:"bytes,5,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (x *CreateOrderRequest) Reset() {
+	*x = CreateOrderRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_orders_orderspb_orders_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateOrderRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateOrderRequest) ProtoMessage() {}
+
+func (x *CreateOrderRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_orders_orderspb_orders_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateOrderRequest.ProtoReflect.Descriptor instead.
+func (*CreateOrderRequest) Descriptor() ([]byte, []int) {
+	return file_orders_orderspb_orders_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *CreateOrderRequest) GetResId() string {
+	if x != nil {
+		return x.ResId
+	}
+	return ""
+}
+
+func (x *CreateOrderRequest) GetCustomerId() string {
+	if x != nil {
+		return x.CustomerId
+	}
+	return ""
+}
+
+func (x *CreateOrderRequest) GetItems() []*Item {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+func (x *CreateOrderRequest) GetDiscount() float32 {
+	if x != nil {
+		return x.Discount
+	}
+	return 0
+}
+
+func (x *CreateOrderRequest) GetAddress() *Address {
+	if x != nil {
+		return x.Address
+	}
+	return nil
+}
+
+type CreateOrderResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Status  bool   `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	OrderId string `protobuf:"bytes,3,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+}
+
+func (x *CreateOrderResponse) Reset() {
+	*x = CreateOrderResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_orders_orderspb_orders_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateOrderResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateOrderResponse) ProtoMessage() {}
+
+func (x *CreateOrderResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_orders_orderspb_orders_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateOrderResponse.ProtoReflect.Descriptor instead.
+func (*CreateOrderResponse) Descriptor() ([]byte, []int) {
+	return file_orders_orderspb_orders_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *CreateOrderResponse) GetStatus() bool {
+	if x != nil {
+		return x.Status
+	}
+	return false
+}
+
+func (x *CreateOrderResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *CreateOrderResponse) GetOrderId() string {
+	if x != nil {
+		return x.OrderId
+	}
+	return ""
+}
+
+type UpdateOrderItemRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OrderId    string `protobuf:"bytes,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	CustomerId string `protobuf:"bytes,2,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
+	ItemId     int32  `protobuf:"varint,3,opt,name=item_id,json=itemId,proto3" json:"item_id,omitempty"`
+	Quantity   int32  `protobuf:"varint,4,opt,name=quantity,proto3" json:"quantity,omitempty"`
+}
+
+func (x *UpdateOrderItemRequest) Reset() {
+	*x = UpdateOrderItemRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_orders_orderspb_orders_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateOrderItemRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateOrderItemRequest) ProtoMessage() {}
+
+func (x *UpdateOrderItemRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_orders_orderspb_orders_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateOrderItemRequest.ProtoReflect.Descriptor instead.
+func (*UpdateOrderItemRequest) Descriptor() ([]byte, []int) {
+	return file_orders_orderspb_orders_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *UpdateOrderItemRequest) GetOrderId() string {
+	if x != nil {
+		return x.OrderId
+	}
+	return ""
+}
+
+func (x *UpdateOrderItemRequest) GetCustomerId() string {
+	if x != nil {
+		return x.CustomerId
+	}
+	return ""
+}
+
+func (x *UpdateOrderItemRequest) GetItemId() int32 {
+	if x != nil {
+		return x.ItemId
+	}
+	return 0
+}
+
+func (x *UpdateOrderItemRequest) GetQuantity() int32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+type UpdateOrderItemResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Status  bool   `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+}
+
+func (x *UpdateOrderItemResponse) Reset() {
+	*x = UpdateOrderItemResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_orders_orderspb_orders_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateOrderItemResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateOrderItemResponse) ProtoMessage() {}
+
+func (x *UpdateOrderItemResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_orders_orderspb_orders_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateOrderItemResponse.ProtoReflect.Descriptor instead.
+func (*UpdateOrderItemResponse) Descriptor() ([]byte, []int) {
+	return file_orders_orderspb_orders_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *UpdateOrderItemResponse) GetStatus() bool {
+	if x != nil {
+		return x.Status
+	}
+	return false
+}
+
+func (x *UpdateOrderItemResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type GetOrdersCountRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *GetOrdersCountRequest) Reset() {
+	*x = GetOrdersCountRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_orders_orderspb_orders_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetOrdersCountRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetOrdersCountRequest) ProtoMessage() {}
+
+func (x *GetOrdersCountRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_orders_orderspb_orders_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetOrdersCountRequest.ProtoReflect.Descriptor instead.
+func (*GetOrdersCountRequest) Descriptor() ([]byte, []int) {
+	return file_orders_orderspb_orders_proto_rawDescGZIP(), []int{16}
+}
+
+type GetOrdersCountResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Count int64 `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
+}
+
+func (x *GetOrdersCountResponse) Reset() {
+	*x = GetOrdersCountResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_orders_orderspb_orders_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetOrdersCountResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetOrdersCountResponse) ProtoMessage() {}
+
+func (x *GetOrdersCountResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_orders_orderspb_orders_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetOrdersCountResponse.ProtoReflect.Descriptor instead.
+func (*GetOrdersCountResponse) Descriptor() ([]byte, []int) {
+	return file_orders_orderspb_orders_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetOrdersCountResponse) GetCount() int64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
 var File_orders_orderspb_orders_proto protoreflect.FileDescriptor
 
 var file_orders_orderspb_orders_proto_rawDesc = []byte{
@@ -535,34 +1038,95 @@ var file_orders_orderspb_orders_proto_rawDesc = []byte{
 	0x52, 0x0b, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x44, 0x69, 0x73, 0x68, 0x22, 0x2c, 0x0a,
 	0x12, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x44, 0x69, 0x73, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f,
 	0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x32, 0x95, 0x03, 0x0a, 0x0d,
-	0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x4f, 0x0a,
-	0x0e, 0x47, 0x65, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12,
-	0x1c, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72,
-	0x73, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d, 0x2e,
-	0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x43,
-	0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x4f,
-	0x0a, 0x0e, 0x47, 0x65, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c,
-	0x12, 0x1c, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x4f, 0x72, 0x64, 0x65,
-	0x72, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d,
-	0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x44,
-	0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12,
-	0x4f, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x70, 0x75, 0x6c, 0x61, 0x72, 0x44, 0x69, 0x73,
-	0x68, 0x12, 0x1c, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x50, 0x6f, 0x70,
-	0x75, 0x6c, 0x61, 0x72, 0x44, 0x69, 0x73, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x1d, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x50, 0x6f, 0x70, 0x75, 0x6c,
-	0x61, 0x72, 0x44, 0x69, 0x73, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
-	0x12, 0x49, 0x0a, 0x0a, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x44, 0x69, 0x73, 0x68, 0x12, 0x1b,
-	0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x44, 0x69, 0x73, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x6f, 0x72,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x74, 0x0a, 0x04, 0x49,
+	0x74, 0x65, 0x6d, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
+	0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x75, 0x69, 0x73, 0x69,
+	0x6e, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x75, 0x69, 0x73, 0x69, 0x6e,
+	0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x73, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x02, 0x52,
+	0x04, 0x63, 0x6f, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74,
+	0x79, 0x18, 0x05, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74, 0x69, 0x74,
+	0x79, 0x22, 0x62, 0x0a, 0x07, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x19, 0x0a, 0x08,
+	0x68, 0x6f, 0x75, 0x73, 0x65, 0x5f, 0x6e, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07,
+	0x68, 0x6f, 0x75, 0x73, 0x65, 0x4e, 0x6f, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x72, 0x65, 0x65,
+	0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x72, 0x65, 0x65, 0x74, 0x12,
+	0x12, 0x0a, 0x04, 0x63, 0x69, 0x74, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x63,
+	0x69, 0x74, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x70, 0x69, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x05,
+	0x52, 0x03, 0x70, 0x69, 0x6e, 0x22, 0xbb, 0x01, 0x0a, 0x12, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x15, 0x0a, 0x06,
+	0x72, 0x65, 0x73, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x72, 0x65,
+	0x73, 0x49, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x5f,
+	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x6d,
+	0x65, 0x72, 0x49, 0x64, 0x12, 0x24, 0x0a, 0x05, 0x49, 0x74, 0x65, 0x6d, 0x73, 0x18, 0x03, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x49,
+	0x74, 0x65, 0x6d, 0x52, 0x05, 0x49, 0x74, 0x65, 0x6d, 0x73, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x69,
+	0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x02, 0x52, 0x08, 0x64, 0x69,
+	0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2b, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73,
+	0x70, 0x62, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x22, 0x62, 0x0a, 0x13, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4f, 0x72, 0x64,
+	0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74,
+	0x75, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x19, 0x0a, 0x08,
+	0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
+	0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x22, 0x89, 0x01, 0x0a, 0x16, 0x55, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x64, 0x12, 0x1f, 0x0a,
+	0x0b, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0a, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x49, 0x64, 0x12, 0x17,
+	0x0a, 0x07, 0x69, 0x74, 0x65, 0x6d, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52,
+	0x06, 0x69, 0x74, 0x65, 0x6d, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74,
+	0x69, 0x74, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74,
+	0x69, 0x74, 0x79, 0x22, 0x4b, 0x0a, 0x17, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4f, 0x72, 0x64,
+	0x65, 0x72, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16,
+	0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06,
+	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x22, 0x17, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x43, 0x6f, 0x75,
+	0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x2e, 0x0a, 0x16, 0x47, 0x65, 0x74,
+	0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x32, 0xc3, 0x04, 0x0a, 0x0d, 0x4f, 0x72,
+	0x64, 0x65, 0x72, 0x73, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x4f, 0x0a, 0x0e, 0x47,
+	0x65, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x12, 0x1c, 0x2e,
+	0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x44, 0x65,
+	0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d, 0x2e, 0x6f, 0x72,
+	0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x44, 0x65, 0x74, 0x61,
+	0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x4f, 0x0a, 0x0e,
+	0x47, 0x65, 0x74, 0x50, 0x6f, 0x70, 0x75, 0x6c, 0x61, 0x72, 0x44, 0x69, 0x73, 0x68, 0x12, 0x1c,
+	0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x50, 0x6f, 0x70, 0x75, 0x6c, 0x61,
+	0x72, 0x44, 0x69, 0x73, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d, 0x2e, 0x6f,
+	0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x50, 0x6f, 0x70, 0x75, 0x6c, 0x61, 0x72, 0x44,
+	0x69, 0x73, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x49, 0x0a,
+	0x0a, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x44, 0x69, 0x73, 0x68, 0x12, 0x1b, 0x2e, 0x6f, 0x72,
 	0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x44, 0x69, 0x73,
-	0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x09, 0x50,
-	0x6f, 0x73, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x1a, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72,
-	0x73, 0x70, 0x62, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e,
-	0x50, 0x6f, 0x73, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x00, 0x42, 0x11, 0x5a, 0x0f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x2f, 0x6f, 0x72,
-	0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72,
+	0x73, 0x70, 0x62, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x44, 0x69, 0x73, 0x68, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x09, 0x50, 0x6f, 0x73, 0x74,
+	0x4f, 0x72, 0x64, 0x65, 0x72, 0x12, 0x1a, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62,
+	0x2e, 0x50, 0x6f, 0x73, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x1b, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x50, 0x6f, 0x73,
+	0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x12, 0x4c, 0x0a, 0x0b, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x12,
+	0x1c, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74,
+	0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d, 0x2e,
+	0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4f,
+	0x72, 0x64, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x58,
+	0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x74, 0x65,
+	0x6d, 0x12, 0x20, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x55, 0x70, 0x64,
+	0x61, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x55, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x4f,
+	0x72, 0x64, 0x65, 0x72, 0x73, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x1f, 0x2e, 0x6f, 0x72, 0x64,
+	0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x47, 0x65, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x43,
+	0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x20, 0x2e, 0x6f, 0x72,
+	0x64, 0x65, 0x72, 0x73, 0x70, 0x62, 0x2e, 0x47, 0x65, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73,
+	0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42,
+	0x11, 0x5a, 0x0f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x2f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73,
+	0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -577,35 +1141,49 @@ func file_orders_orderspb_orders_proto_rawDescGZIP() []byte {
 	return file_orders_orderspb_orders_proto_rawDescData
 }
 
-var file_orders_orderspb_orders_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_orders_orderspb_orders_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_orders_orderspb_orders_proto_goTypes = []interface{}{
-	(*OrdersCountRequest)(nil),  // 0: orderspb.OrdersCountRequest
-	(*OrdersCountResponse)(nil), // 1: orderspb.OrdersCountResponse
-	(*PostOrderRequest)(nil),    // 2: orderspb.PostOrderRequest
-	(*PostOrderResponse)(nil),   // 3: orderspb.PostOrderResponse
-	(*OrderDetailRequest)(nil),  // 4: orderspb.OrderDetailRequest
-	(*OrderDetailResponse)(nil), // 5: orderspb.OrderDetailResponse
-	(*PopularDishResponse)(nil), // 6: orderspb.PopularDishResponse
-	(*PopularDishRequest)(nil),  // 7: orderspb.PopularDishRequest
-	(*UpdateDishRequest)(nil),   // 8: orderspb.UpdateDishRequest
-	(*UpdateDishResponse)(nil),  // 9: orderspb.UpdateDishResponse
+	(*OrdersCountRequest)(nil),      // 0: orderspb.OrdersCountRequest
+	(*OrdersCountResponse)(nil),     // 1: orderspb.OrdersCountResponse
+	(*PostOrderRequest)(nil),        // 2: orderspb.PostOrderRequest
+	(*PostOrderResponse)(nil),       // 3: orderspb.PostOrderResponse
+	(*OrderDetailRequest)(nil),      // 4: orderspb.OrderDetailRequest
+	(*OrderDetailResponse)(nil),     // 5: orderspb.OrderDetailResponse
+	(*PopularDishResponse)(nil),     // 6: orderspb.PopularDishResponse
+	(*PopularDishRequest)(nil),      // 7: orderspb.PopularDishRequest
+	(*UpdateDishRequest)(nil),       // 8: orderspb.UpdateDishRequest
+	(*UpdateDishResponse)(nil),      // 9: orderspb.UpdateDishResponse
+	(*Item)(nil),                    // 10: orderspb.Item
+	(*Address)(nil),                 // 11: orderspb.Address
+	(*CreateOrderRequest)(nil),      // 12: orderspb.CreateOrderRequest
+	(*CreateOrderResponse)(nil),     // 13: orderspb.CreateOrderResponse
+	(*UpdateOrderItemRequest)(nil),  // 14: orderspb.UpdateOrderItemRequest
+	(*UpdateOrderItemResponse)(nil), // 15: orderspb.UpdateOrderItemResponse
+	(*GetOrdersCountRequest)(nil),   // 16: orderspb.GetOrdersCountRequest
+	(*GetOrdersCountResponse)(nil),  // 17: orderspb.GetOrdersCountResponse
 }
 var file_orders_orderspb_orders_proto_depIdxs = []int32{
-	0, // 0: orderspb.OrdersService.GetOrdersCount:input_type -> orderspb.OrdersCountRequest
-	4, // 1: orderspb.OrdersService.GetOrderDetail:input_type -> orderspb.OrderDetailRequest
-	7, // 2: orderspb.OrdersService.GetPopularDish:input_type -> orderspb.PopularDishRequest
-	8, // 3: orderspb.OrdersService.UpdateDish:input_type -> orderspb.UpdateDishRequest
-	2, // 4: orderspb.OrdersService.PostOrder:input_type -> orderspb.PostOrderRequest
-	1, // 5: orderspb.OrdersService.GetOrdersCount:output_type -> orderspb.OrdersCountResponse
-	5, // 6: orderspb.OrdersService.GetOrderDetail:output_type -> orderspb.OrderDetailResponse
-	6, // 7: orderspb.OrdersService.GetPopularDish:output_type -> orderspb.PopularDishResponse
-	9, // 8: orderspb.OrdersService.UpdateDish:output_type -> orderspb.UpdateDishResponse
-	3, // 9: orderspb.OrdersService.PostOrder:output_type -> orderspb.PostOrderResponse
-	5, // [5:10] is the sub-list for method output_type
-	0, // [0:5] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	10, // 0: orderspb.CreateOrderRequest.Items:type_name -> orderspb.Item
+	11, // 1: orderspb.CreateOrderRequest.address:type_name -> orderspb.Address
+	4,  // 2: orderspb.OrdersService.GetOrderDetail:input_type -> orderspb.OrderDetailRequest
+	7,  // 3: orderspb.OrdersService.GetPopularDish:input_type -> orderspb.PopularDishRequest
+	8,  // 4: orderspb.OrdersService.UpdateDish:input_type -> orderspb.UpdateDishRequest
+	2,  // 5: orderspb.OrdersService.PostOrder:input_type -> orderspb.PostOrderRequest
+	12, // 6: orderspb.OrdersService.CreateOrder:input_type -> orderspb.CreateOrderRequest
+	14, // 7: orderspb.OrdersService.UpdateOrderItem:input_type -> orderspb.UpdateOrderItemRequest
+	16, // 8: orderspb.OrdersService.GetOrdersCount:input_type -> orderspb.GetOrdersCountRequest
+	5,  // 9: orderspb.OrdersService.GetOrderDetail:output_type -> orderspb.OrderDetailResponse
+	6,  // 10: orderspb.OrdersService.GetPopularDish:output_type -> orderspb.PopularDishResponse
+	9,  // 11: orderspb.OrdersService.UpdateDish:output_type -> orderspb.UpdateDishResponse
+	3,  // 12: orderspb.OrdersService.PostOrder:output_type -> orderspb.PostOrderResponse
+	13, // 13: orderspb.OrdersService.CreateOrder:output_type -> orderspb.CreateOrderResponse
+	15, // 14: orderspb.OrdersService.UpdateOrderItem:output_type -> orderspb.UpdateOrderItemResponse
+	17, // 15: orderspb.OrdersService.GetOrdersCount:output_type -> orderspb.GetOrdersCountResponse
+	9,  // [9:16] is the sub-list for method output_type
+	2,  // [2:9] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_orders_orderspb_orders_proto_init() }
@@ -734,6 +1312,102 @@ func file_orders_orderspb_orders_proto_init() {
 				return nil
 			}
 		}
+		file_orders_orderspb_orders_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Item); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_orders_orderspb_orders_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Address); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_orders_orderspb_orders_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateOrderRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_orders_orderspb_orders_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateOrderResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_orders_orderspb_orders_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateOrderItemRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_orders_orderspb_orders_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateOrderItemResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_orders_orderspb_orders_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetOrdersCountRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_orders_orderspb_orders_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetOrdersCountResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -741,7 +1415,7 @@ func file_orders_orderspb_orders_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_orders_orderspb_orders_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -767,11 +1441,13 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type OrdersServiceClient interface {
-	GetOrdersCount(ctx context.Context, in *OrdersCountRequest, opts ...grpc.CallOption) (*OrdersCountResponse, error)
 	GetOrderDetail(ctx context.Context, in *OrderDetailRequest, opts ...grpc.CallOption) (*OrderDetailResponse, error)
 	GetPopularDish(ctx context.Context, in *PopularDishRequest, opts ...grpc.CallOption) (*PopularDishResponse, error)
 	UpdateDish(ctx context.Context, in *UpdateDishRequest, opts ...grpc.CallOption) (*UpdateDishResponse, error)
 	PostOrder(ctx context.Context, in *PostOrderRequest, opts ...grpc.CallOption) (*PostOrderResponse, error)
+	CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*CreateOrderResponse, error)
+	UpdateOrderItem(ctx context.Context, in *UpdateOrderItemRequest, opts ...grpc.CallOption) (*UpdateOrderItemResponse, error)
+	GetOrdersCount(ctx context.Context, in *GetOrdersCountRequest, opts ...grpc.CallOption) (*GetOrdersCountResponse, error)
 }
 
 type ordersServiceClient struct {
@@ -780,15 +1456,6 @@ type ordersServiceClient struct {
 
 func NewOrdersServiceClient(cc grpc.ClientConnInterface) OrdersServiceClient {
 	return &ordersServiceClient{cc}
-}
-
-func (c *ordersServiceClient) GetOrdersCount(ctx context.Context, in *OrdersCountRequest, opts ...grpc.CallOption) (*OrdersCountResponse, error) {
-	out := new(OrdersCountResponse)
-	err := c.cc.Invoke(ctx, "/orderspb.OrdersService/GetOrdersCount", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *ordersServiceClient) GetOrderDetail(ctx context.Context, in *OrderDetailRequest, opts ...grpc.CallOption) (*OrderDetailResponse, error) {
@@ -827,22 +1494,48 @@ func (c *ordersServiceClient) PostOrder(ctx context.Context, in *PostOrderReques
 	return out, nil
 }
 
+func (c *ordersServiceClient) CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*CreateOrderResponse, error) {
+	out := new(CreateOrderResponse)
+	err := c.cc.Invoke(ctx, "/orderspb.OrdersService/CreateOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ordersServiceClient) UpdateOrderItem(ctx context.Context, in *UpdateOrderItemRequest, opts ...grpc.CallOption) (*UpdateOrderItemResponse, error) {
+	out := new(UpdateOrderItemResponse)
+	err := c.cc.Invoke(ctx, "/orderspb.OrdersService/UpdateOrderItem", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ordersServiceClient) GetOrdersCount(ctx context.Context, in *GetOrdersCountRequest, opts ...grpc.CallOption) (*GetOrdersCountResponse, error) {
+	out := new(GetOrdersCountResponse)
+	err := c.cc.Invoke(ctx, "/orderspb.OrdersService/GetOrdersCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrdersServiceServer is the server API for OrdersService service.
 type OrdersServiceServer interface {
-	GetOrdersCount(context.Context, *OrdersCountRequest) (*OrdersCountResponse, error)
 	GetOrderDetail(context.Context, *OrderDetailRequest) (*OrderDetailResponse, error)
 	GetPopularDish(context.Context, *PopularDishRequest) (*PopularDishResponse, error)
 	UpdateDish(context.Context, *UpdateDishRequest) (*UpdateDishResponse, error)
 	PostOrder(context.Context, *PostOrderRequest) (*PostOrderResponse, error)
+	CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderResponse, error)
+	UpdateOrderItem(context.Context, *UpdateOrderItemRequest) (*UpdateOrderItemResponse, error)
+	GetOrdersCount(context.Context, *GetOrdersCountRequest) (*GetOrdersCountResponse, error)
 }
 
 // UnimplementedOrdersServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedOrdersServiceServer struct {
 }
 
-func (*UnimplementedOrdersServiceServer) GetOrdersCount(context.Context, *OrdersCountRequest) (*OrdersCountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetOrdersCount not implemented")
-}
 func (*UnimplementedOrdersServiceServer) GetOrderDetail(context.Context, *OrderDetailRequest) (*OrderDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrderDetail not implemented")
 }
@@ -855,27 +1548,18 @@ func (*UnimplementedOrdersServiceServer) UpdateDish(context.Context, *UpdateDish
 func (*UnimplementedOrdersServiceServer) PostOrder(context.Context, *PostOrderRequest) (*PostOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostOrder not implemented")
 }
+func (*UnimplementedOrdersServiceServer) CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrder not implemented")
+}
+func (*UnimplementedOrdersServiceServer) UpdateOrderItem(context.Context, *UpdateOrderItemRequest) (*UpdateOrderItemResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrderItem not implemented")
+}
+func (*UnimplementedOrdersServiceServer) GetOrdersCount(context.Context, *GetOrdersCountRequest) (*GetOrdersCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrdersCount not implemented")
+}
 
 func RegisterOrdersServiceServer(s *grpc.Server, srv OrdersServiceServer) {
 	s.RegisterService(&_OrdersService_serviceDesc, srv)
-}
-
-func _OrdersService_GetOrdersCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OrdersCountRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(OrdersServiceServer).GetOrdersCount(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/orderspb.OrdersService/GetOrdersCount",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrdersServiceServer).GetOrdersCount(ctx, req.(*OrdersCountRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _OrdersService_GetOrderDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -950,14 +1634,64 @@ func _OrdersService_PostOrder_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrdersService_CreateOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrdersServiceServer).CreateOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/orderspb.OrdersService/CreateOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrdersServiceServer).CreateOrder(ctx, req.(*CreateOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrdersService_UpdateOrderItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrderItemRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrdersServiceServer).UpdateOrderItem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/orderspb.OrdersService/UpdateOrderItem",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrdersServiceServer).UpdateOrderItem(ctx, req.(*UpdateOrderItemRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrdersService_GetOrdersCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrdersCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrdersServiceServer).GetOrdersCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/orderspb.OrdersService/GetOrdersCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrdersServiceServer).GetOrdersCount(ctx, req.(*GetOrdersCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _OrdersService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "orderspb.OrdersService",
 	HandlerType: (*OrdersServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "GetOrdersCount",
-			Handler:    _OrdersService_GetOrdersCount_Handler,
-		},
 		{
 			MethodName: "GetOrderDetail",
 			Handler:    _OrdersService_GetOrderDetail_Handler,
@@ -973,6 +1707,18 @@ var _OrdersService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PostOrder",
 			Handler:    _OrdersService_PostOrder_Handler,
+		},
+		{
+			MethodName: "CreateOrder",
+			Handler:    _OrdersService_CreateOrder_Handler,
+		},
+		{
+			MethodName: "UpdateOrderItem",
+			Handler:    _OrdersService_UpdateOrderItem_Handler,
+		},
+		{
+			MethodName: "GetOrdersCount",
+			Handler:    _OrdersService_GetOrdersCount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

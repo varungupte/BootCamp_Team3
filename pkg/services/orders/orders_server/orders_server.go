@@ -2,21 +2,23 @@ package orders_server
 
 import (
 	"context"
-	"encoding/csv"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/elgs/gojq"
+	"github.com/google/uuid"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
-	"github.com/varungupte/BootCamp_Team3/pkg/restaurants"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
-	"github.com/varungupte/BootCamp_Team3/pkg/users"
 	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
 )
-
+/*
 type Order struct {
 	Id int
 	Quantity int
@@ -25,6 +27,31 @@ type Order struct {
 	User users.User
 	Restau restaurants.Restaurant
 	DeliveryTime string
+}
+*/
+
+type Item struct {
+	Id int32
+	Name string
+	Cuisine string
+	Cost float32
+	Quantity int32
+}
+
+type Address struct {
+	HouseNo int32
+	Street string
+	City string
+	Pin int32
+}
+
+type Order struct {
+	OrderId string
+	ResId string
+	CustomerId string
+	Items []Item
+	Discount float32
+	Address Address
 }
 
 var gJsonData string
@@ -46,6 +73,7 @@ func convertToJSON(orders []Order)  {
 }
 
 func GenerateOrdersJSON(filename string) {
+	/*
 	usrs := users.GetUsers(string(os.Getenv("GOPATH")) + "/src/github.com/varungupte/BootCamp_Team3/assets/User.csv")
 	rests := restaurants.GetRestaurants(string(os.Getenv("GOPATH")) + "/src/github.com/varungupte/BootCamp_Team3/assets/Restaurant.csv")
 
@@ -79,24 +107,11 @@ func GenerateOrdersJSON(filename string) {
 	}
 	orderscurrent = orders
 	convertToJSON(orders)
+*/
 }
 
 
 type Orders_server struct {}
-
-// GetOrdersCount find the total number of orders in the database.
-// It returns the OrderCountResponse and any error encountered.
-func (*Orders_server) GetOrdersCount(ctx context.Context, req *orderspb.OrdersCountRequest) (*orderspb.OrdersCountResponse, error)  {
-	var orders []Order
-	err := json.Unmarshal([]byte(gJsonData), &orders)
-	if err != nil {
-		return nil, err
-	}
-	res := &orderspb.OrdersCountResponse{
-		Count: strconv.Itoa(len(orders)),
-	}
-	return res, nil
-}
 
 func (*Orders_server) PostOrder(ctx context.Context, req *orderspb.PostOrderRequest) (*orderspb.PostOrderResponse, error)  {
 	////unmarshalling orders
@@ -201,7 +216,9 @@ func writeJsonFile(jsonFilePath string, ordersList []Order) error{
 }
 
 //This function updates the dish of order given order_id it opens file and write to it after update
+
 func (*Orders_server) UpdateDish (ctx context.Context, req *orderspb.UpdateDishRequest) (*orderspb.UpdateDishResponse, error) {
+	/*
 	order_id := int(req.GetOrderId())
 	updated_dish := req.GetUpdatedDish()
 	res := &orderspb.UpdateDishResponse{
@@ -230,8 +247,170 @@ func (*Orders_server) UpdateDish (ctx context.Context, req *orderspb.UpdateDishR
 			return res, err
 		}
 	}
-	res = &orderspb.UpdateDishResponse{
+
+	 */
+	res := &orderspb.UpdateDishResponse{
 		Status: "FAILURE: No order found with this orderId",
 	}
 	return res, errors.New("No order found with this orderId")
+}
+
+// Below are new methods for order apis
+
+func (*Orders_server) CreateOrder (ctx context.Context, req *orderspb.CreateOrderRequest) (*orderspb.CreateOrderResponse, error) {
+	var order Order
+	var Items []Item
+	var item Item
+
+	order.ResId = req.GetResId()
+	order.CustomerId = req.GetCustomerId()
+	order.Discount = req.GetDiscount()
+	order.OrderId = uuid.New().String()
+
+	order.Address = Address {
+		HouseNo:req.GetAddress().GetHouseNo(),
+		Street:req.GetAddress().GetStreet(),
+		City:req.GetAddress().GetCity(),
+		Pin:req.GetAddress().GetPin(),
+	}
+
+	for _, v := range req.GetItems() {
+		item = Item{
+			Id:v.GetId(),
+			Name:v.GetName(),
+			Cuisine:v.GetCuisine(),
+			Cost:v.GetCost(),
+			Quantity:v.GetQuantity(),
+		}
+		Items = append(Items, item)
+	}
+	order.Items = Items
+
+	log.Println("order create ", order)
+
+	db := DB()
+
+	orderMap, err := dynamodbattribute.MarshalMap(order)
+	log.Println("mapppp", orderMap)
+	if err != nil {
+		panic("Cannot map the values given in order struct...")
+	}
+
+	params := &dynamodb.PutItemInput{
+		TableName: aws.String("OrdersT3"),
+		Item: orderMap,
+	}
+	log.Println("pa", params)
+
+	resp, err := db.PutItem(params)
+
+	if err != nil {
+		log.Fatalf("Some problem while inserting : %v", err)
+	}
+
+	log.Println(resp)
+
+	return &orderspb.CreateOrderResponse{
+		Status:true,
+		Message:"fine",
+		OrderId:order.OrderId,
+	}, nil
+}
+
+func (*Orders_server) UpdateOrderItem (ctx context.Context, req *orderspb.UpdateOrderItemRequest) (*orderspb.UpdateOrderItemResponse, error) {
+	order_id := req.GetOrderId()
+	item_id := req.GetItemId()
+	quantity := req.GetQuantity()
+	customer_id := req.GetCustomerId()
+
+	db := DB()
+
+	params := &dynamodb.GetItemInput{
+		TableName:aws.String("OrdersT3"),
+		Key:map[string]*dynamodb.AttributeValue{
+			"OrderId" :{
+				S:aws.String(order_id),
+			},
+			"CustomerId" :{
+				S:aws.String(customer_id),
+			},
+		},
+	}
+
+	resp, err := db.GetItem(params)
+
+	if err!= nil {
+
+	}
+
+	var order = Order{}
+	erre := dynamodbattribute.UnmarshalMap(resp.Item, &order)
+
+	if erre!= nil {
+
+	}
+
+	log.Println(order)
+	var item Item
+	j := 0
+
+	for i, v := range order.Items {
+		item = v
+		if item.Id == item_id {
+			item.Quantity = quantity
+			order.Items[i] = item
+			break
+		}
+	}
+
+	for _, v := range order.Items {
+		item = v
+		if item.Quantity > 0 {
+			order.Items[j] = v
+			j++
+		}
+	}
+
+	order.Items = order.Items[:j]
+
+	orderMap, err := dynamodbattribute.MarshalMap(order)
+	param := &dynamodb.PutItemInput{
+		TableName: aws.String("OrdersT3"),
+		Item: orderMap,
+	}
+
+	_, err = db.PutItem(param)
+	errorutil.CheckError(err, "Error while updating")
+
+	return &orderspb.UpdateOrderItemResponse{
+		Status:true,
+		Message:"finez",
+	}, nil
+}
+
+func (*Orders_server) GetOrdersCount(ctx context.Context, req *orderspb.GetOrdersCountRequest) (*orderspb.GetOrdersCountResponse, error)  {
+	db := DB()
+
+	params := &dynamodb.DescribeTableInput{
+		TableName: aws.String("OrdersT3"),
+	}
+	resp, err := db.DescribeTable(params)
+	if err != nil {
+		return &orderspb.GetOrdersCountResponse{
+			Count:0,
+		}, nil
+	}
+
+	return &orderspb.GetOrdersCountResponse{
+		Count:int64(*resp.Table.ItemCount),
+	}, nil
+}
+
+func DB() *dynamodb.DynamoDB {
+	sess := session.Must(session.NewSession(&aws.Config{
+		Region:   aws.String("us-east-1"),
+		Endpoint: aws.String("http://localhost:8000"),
+	}))
+
+	return dynamodb.New(sess)
 }

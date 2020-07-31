@@ -10,9 +10,30 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 )
 
+type Item struct {
+	Id int32
+	Name string
+	Cuisine string
+	Cost float32
+	Quantity int32
+}
+
+type Address struct {
+	HouseNo int32
+	Street string
+	City string
+	Pin int32
+}
+
+type Order struct {
+	Res_Id string
+	Customer_Id string
+	Items []Item
+	Discount float32
+	Address Address
+}
 // AddOrderPaths adds GET and POST API paths for gin.
 func AddOrderPaths(router *gin.Engine) {
 	
@@ -39,7 +60,9 @@ func AddOrderPaths(router *gin.Engine) {
 	// POST request to add orders
     order.POST("/add_order", PostOrder)
 	
-	order.POST("/updateOrderDish", UpdateOrderDish)
+	order.POST("/updateOrderItem", UpdateOrderItem)
+
+	order.POST("/createOrder", CreateOrder)
 }
 
 // OrderDetail is the handler for /order_details/order_id/:ordernumber API.
@@ -117,6 +140,7 @@ func HomePage(c *gin.Context) {
 // OrderCount is the handler for /order/count API.
 // It displays the total number of orders in the database.
 func OrderCount(c *gin.Context) {
+	log.Println("ghhh")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 
 	if err != nil {
@@ -126,14 +150,14 @@ func OrderCount(c *gin.Context) {
 
 	oc := orderspb.NewOrdersServiceClient(conn)
 
-	req := &orderspb.OrdersCountRequest{}
+	req := &orderspb.GetOrdersCountRequest{}
 	res, err := oc.GetOrdersCount(context.Background(), req)
 	if err != nil {
 		log.Fatalf("Error While calling GetOrdersCount: %v", err)
 	}
 
 	c.JSON(200, gin.H{
-		"Number of orders": res.Count,
+		"total_orders": res.Count,
 	})
 }
 
@@ -189,14 +213,15 @@ func PopularDish (c *gin.Context) {
 	})
 }
 
-// UpdateOrderDish is the handler for /updateOrderDish API.
-// It updates the dish name of a particular order.
-func UpdateOrderDish (c *gin.Context) {
-	//orderIdStr :=  c.DefaultQuery("order_id", "0")
-	orderIdStr := c.DefaultPostForm("order_id", "0")
-	//updatedDish := c.Query("dish")
-	updatedDish := c.PostForm("dish")
-	orderId, _ := strconv.Atoi(orderIdStr)
+func UpdateOrderItem (c *gin.Context) {
+	var req orderspb.UpdateOrderItemRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	log.Println(req)
 
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
@@ -205,11 +230,8 @@ func UpdateOrderDish (c *gin.Context) {
 	defer conn.Close();
 
 	oc := orderspb.NewOrdersServiceClient(conn)
-	req := &orderspb.UpdateDishRequest{
-		OrderId: int64(orderId),
-		UpdatedDish: updatedDish,
-	}
-	res, err := oc.UpdateDish(context.Background(), req)
+
+	res, err := oc.UpdateOrderItem(context.Background(), &req)
 	if err != nil {
 		log.Fatalf("Error While calling UpdateDish : %v ", err)
 		c.JSON(200, gin.H{
@@ -217,9 +239,43 @@ func UpdateOrderDish (c *gin.Context) {
 		})
 		return
 	}
+
 	c.JSON(200, gin.H{
-		"Status":      res.Status,
-		"UpdatedDish": updatedDish,
+		"Status":res.Status,
+		"Message":res.Message,
 	})
 }
 
+func CreateOrder (c *gin.Context) {
+	var req orderspb.CreateOrderRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	log.Println(req)
+
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+	}
+	defer conn.Close();
+
+	oc := orderspb.NewOrdersServiceClient(conn)
+
+	res, err := oc.CreateOrder(context.Background(), &req)
+	if err != nil {
+		log.Fatalf("Error While calling CreateOrder : %v ", err)
+		c.JSON(200, gin.H{
+			"Status": res.Status,
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"Status":res.Status,
+		"Message":res.Message,
+		"OrderId":res.OrderId,
+	})
+}
