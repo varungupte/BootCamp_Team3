@@ -825,7 +825,7 @@ var file_services_grpcPb_grpc_proto_rawDesc = []byte{
 	0x6d, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a, 0x0c, 0x43,
 	0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x44, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x0c, 0x43, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x44, 0x61, 0x74, 0x61, 0x32,
-	0xa3, 0x05, 0x0a, 0x0b, 0x47, 0x52, 0x50, 0x43, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
+	0xa5, 0x05, 0x0a, 0x0b, 0x47, 0x52, 0x50, 0x43, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
 	0x4b, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x43, 0x6f, 0x75, 0x6e,
 	0x74, 0x12, 0x1a, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x50, 0x62, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72,
 	0x73, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e,
@@ -858,17 +858,18 @@ var file_services_grpcPb_grpc_proto_rawDesc = []byte{
 	0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x12, 0x17, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x50, 0x62, 0x2e,
 	0x43, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
 	0x18, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x50, 0x62, 0x2e, 0x43, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65,
-	0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x43, 0x0a, 0x0b, 0x41,
-	0x64, 0x64, 0x43, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x12, 0x1a, 0x2e, 0x67, 0x72, 0x70,
-	0x63, 0x50, 0x62, 0x2e, 0x41, 0x64, 0x64, 0x43, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x50, 0x62, 0x2e,
-	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
-	0x12, 0x43, 0x0a, 0x0e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x75, 0x73, 0x74, 0x6f, 0x6d,
-	0x65, 0x72, 0x12, 0x17, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x50, 0x62, 0x2e, 0x43, 0x75, 0x73, 0x74,
-	0x6f, 0x6d, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x72,
-	0x70, 0x63, 0x50, 0x62, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x11, 0x5a, 0x0f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
-	0x73, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x50, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x45, 0x0a, 0x0e, 0x44,
+	0x65, 0x6c, 0x65, 0x74, 0x65, 0x43, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x12, 0x17, 0x2e,
+	0x67, 0x72, 0x70, 0x63, 0x50, 0x62, 0x2e, 0x43, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x50, 0x62, 0x2e,
+	0x43, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x12, 0x43, 0x0a, 0x0b, 0x41, 0x64, 0x64, 0x43, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x65,
+	0x72, 0x12, 0x1a, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x50, 0x62, 0x2e, 0x41, 0x64, 0x64, 0x43, 0x75,
+	0x73, 0x74, 0x6f, 0x6d, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e,
+	0x67, 0x72, 0x70, 0x63, 0x50, 0x62, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x11, 0x5a, 0x0f, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x73, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x50, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -910,8 +911,8 @@ var file_services_grpcPb_grpc_proto_depIdxs = []int32{
 	2,  // 4: grpcPb.GRPCService.PostOrder:input_type -> grpcPb.PostOrderRequest
 	10, // 5: grpcPb.GRPCService.GetCustomersCount:input_type -> grpcPb.CustomersCountRequest
 	14, // 6: grpcPb.GRPCService.GetCustomer:input_type -> grpcPb.CustomerRequest
-	12, // 7: grpcPb.GRPCService.AddCustomer:input_type -> grpcPb.AddCustomerRequest
-	14, // 8: grpcPb.GRPCService.DeleteCustomer:input_type -> grpcPb.CustomerRequest
+	14, // 7: grpcPb.GRPCService.DeleteCustomer:input_type -> grpcPb.CustomerRequest
+	12, // 8: grpcPb.GRPCService.AddCustomer:input_type -> grpcPb.AddCustomerRequest
 	1,  // 9: grpcPb.GRPCService.GetOrdersCount:output_type -> grpcPb.OrdersCountResponse
 	5,  // 10: grpcPb.GRPCService.GetOrderDetail:output_type -> grpcPb.OrderDetailResponse
 	6,  // 11: grpcPb.GRPCService.GetPopularDish:output_type -> grpcPb.PopularDishResponse
@@ -919,8 +920,8 @@ var file_services_grpcPb_grpc_proto_depIdxs = []int32{
 	3,  // 13: grpcPb.GRPCService.PostOrder:output_type -> grpcPb.PostOrderResponse
 	11, // 14: grpcPb.GRPCService.GetCustomersCount:output_type -> grpcPb.CustomersCountResponse
 	15, // 15: grpcPb.GRPCService.GetCustomer:output_type -> grpcPb.CustomerResponse
-	13, // 16: grpcPb.GRPCService.AddCustomer:output_type -> grpcPb.StatusResponse
-	13, // 17: grpcPb.GRPCService.DeleteCustomer:output_type -> grpcPb.StatusResponse
+	15, // 16: grpcPb.GRPCService.DeleteCustomer:output_type -> grpcPb.CustomerResponse
+	13, // 17: grpcPb.GRPCService.AddCustomer:output_type -> grpcPb.StatusResponse
 	9,  // [9:18] is the sub-list for method output_type
 	0,  // [0:9] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
@@ -1166,8 +1167,8 @@ type GRPCServiceClient interface {
 	PostOrder(ctx context.Context, in *PostOrderRequest, opts ...grpc.CallOption) (*PostOrderResponse, error)
 	GetCustomersCount(ctx context.Context, in *CustomersCountRequest, opts ...grpc.CallOption) (*CustomersCountResponse, error)
 	GetCustomer(ctx context.Context, in *CustomerRequest, opts ...grpc.CallOption) (*CustomerResponse, error)
+	DeleteCustomer(ctx context.Context, in *CustomerRequest, opts ...grpc.CallOption) (*CustomerResponse, error)
 	AddCustomer(ctx context.Context, in *AddCustomerRequest, opts ...grpc.CallOption) (*StatusResponse, error)
-	DeleteCustomer(ctx context.Context, in *CustomerRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 }
 
 type gRPCServiceClient struct {
@@ -1241,18 +1242,18 @@ func (c *gRPCServiceClient) GetCustomer(ctx context.Context, in *CustomerRequest
 	return out, nil
 }
 
-func (c *gRPCServiceClient) AddCustomer(ctx context.Context, in *AddCustomerRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
-	out := new(StatusResponse)
-	err := c.cc.Invoke(ctx, "/grpcPb.GRPCService/AddCustomer", in, out, opts...)
+func (c *gRPCServiceClient) DeleteCustomer(ctx context.Context, in *CustomerRequest, opts ...grpc.CallOption) (*CustomerResponse, error) {
+	out := new(CustomerResponse)
+	err := c.cc.Invoke(ctx, "/grpcPb.GRPCService/DeleteCustomer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *gRPCServiceClient) DeleteCustomer(ctx context.Context, in *CustomerRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+func (c *gRPCServiceClient) AddCustomer(ctx context.Context, in *AddCustomerRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
 	out := new(StatusResponse)
-	err := c.cc.Invoke(ctx, "/grpcPb.GRPCService/DeleteCustomer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/grpcPb.GRPCService/AddCustomer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1268,8 +1269,8 @@ type GRPCServiceServer interface {
 	PostOrder(context.Context, *PostOrderRequest) (*PostOrderResponse, error)
 	GetCustomersCount(context.Context, *CustomersCountRequest) (*CustomersCountResponse, error)
 	GetCustomer(context.Context, *CustomerRequest) (*CustomerResponse, error)
+	DeleteCustomer(context.Context, *CustomerRequest) (*CustomerResponse, error)
 	AddCustomer(context.Context, *AddCustomerRequest) (*StatusResponse, error)
-	DeleteCustomer(context.Context, *CustomerRequest) (*StatusResponse, error)
 }
 
 // UnimplementedGRPCServiceServer can be embedded to have forward compatible implementations.
@@ -1297,11 +1298,11 @@ func (*UnimplementedGRPCServiceServer) GetCustomersCount(context.Context, *Custo
 func (*UnimplementedGRPCServiceServer) GetCustomer(context.Context, *CustomerRequest) (*CustomerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCustomer not implemented")
 }
+func (*UnimplementedGRPCServiceServer) DeleteCustomer(context.Context, *CustomerRequest) (*CustomerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCustomer not implemented")
+}
 func (*UnimplementedGRPCServiceServer) AddCustomer(context.Context, *AddCustomerRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddCustomer not implemented")
-}
-func (*UnimplementedGRPCServiceServer) DeleteCustomer(context.Context, *CustomerRequest) (*StatusResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteCustomer not implemented")
 }
 
 func RegisterGRPCServiceServer(s *grpc.Server, srv GRPCServiceServer) {
@@ -1434,24 +1435,6 @@ func _GRPCService_GetCustomer_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _GRPCService_AddCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddCustomerRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GRPCServiceServer).AddCustomer(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/grpcPb.GRPCService/AddCustomer",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GRPCServiceServer).AddCustomer(ctx, req.(*AddCustomerRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _GRPCService_DeleteCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CustomerRequest)
 	if err := dec(in); err != nil {
@@ -1466,6 +1449,24 @@ func _GRPCService_DeleteCustomer_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GRPCServiceServer).DeleteCustomer(ctx, req.(*CustomerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GRPCService_AddCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddCustomerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GRPCServiceServer).AddCustomer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpcPb.GRPCService/AddCustomer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GRPCServiceServer).AddCustomer(ctx, req.(*AddCustomerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1503,12 +1504,12 @@ var _GRPCService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _GRPCService_GetCustomer_Handler,
 		},
 		{
-			MethodName: "AddCustomer",
-			Handler:    _GRPCService_AddCustomer_Handler,
-		},
-		{
 			MethodName: "DeleteCustomer",
 			Handler:    _GRPCService_DeleteCustomer_Handler,
+		},
+		{
+			MethodName: "AddCustomer",
+			Handler:    _GRPCService_AddCustomer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -284,13 +284,11 @@ func (*GrpcServer) AddCustomer(ctx context.Context, req *grpcPb.AddCustomerReque
 		Item: customerMap,
 	}
 
-	resp, err := db.PutItem(params)
+	_, err = db.PutItem(params)
 
 	if err != nil {
 		log.Fatalf("Some problem while inserting : %v", err)
 	}
-	// print the response
-	fmt.Println(resp)
 
 	res := &grpcPb.StatusResponse{
 		Status: "SUCCESS: New customer added",
@@ -325,32 +323,33 @@ func (*GrpcServer) GetCustomer (ctx context.Context, req *grpcPb.CustomerRequest
 	return resp, nil
 }
 
-func (*GrpcServer) DeleteCustomer (ctx context.Context, req *grpcPb.CustomerRequest) (*grpcPb.StatusResponse, error) {
+func (*GrpcServer) DeleteCustomer (ctx context.Context, req *grpcPb.CustomerRequest) (*grpcPb.CustomerResponse, error) {
 	customerId := req.CustomerId
-	resp := &grpcPb.StatusResponse{
-		Status: "FAILURE",
-	}
+	resp := &grpcPb.CustomerResponse{}
 
 	db := getDBInstance()
 
-	params := &dynamodb.DeleteItemInput{
+	// update active status to false
+	activeStatus := false
+
+	params := &dynamodb.UpdateItemInput{
 		TableName: aws.String("T3_Customer"),
 		Key: map[string]*dynamodb.AttributeValue{
-			"Id" : {
+			"Id": {
 				N: aws.String(customerId),
 			},
 		},
+		UpdateExpression: aws.String("set ActiveStatus=:as"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue {
+			":as": {BOOL: aws.Bool(activeStatus)},
+		},
+		ReturnValues: aws.String(dynamodb.ReturnValueAllNew),
 	}
-
-	itemOutput, err := db.DeleteItem(params)
+	// update the item
+	itemOutput, err := db.UpdateItem(params)
 	if err != nil {
-		fmt.Printf("ERROR: %v\n", err.Error())
 		return resp, err
 	}
-	// print the response data
-	fmt.Println(itemOutput)
-	//var jsonStr string
-	//jsonStr = fmt.Sprintf("%s", itemOutput.)
-	resp.Status = fmt.Sprintf("SUCCESS: CustomerId %s deleted!!", customerId)
+	resp.CustomerData = fmt.Sprintf("%s", itemOutput.Attributes)
 	return resp, nil
 }

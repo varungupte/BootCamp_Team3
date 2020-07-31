@@ -67,6 +67,6 @@ service GRPCService {
 
     rpc GetCustomersCount (CustomersCountRequest) returns (CustomersCountResponse){}
     rpc GetCustomer (CustomerRequest) returns (CustomerResponse){}
+    rpc DeleteCustomer (CustomerRequest) returns (CustomerResponse) {}
     rpc AddCustomer (AddCustomerRequest) returns (StatusResponse) {}
-    rpc DeleteCustomer (CustomerRequest) returns (StatusResponse) {}
 }

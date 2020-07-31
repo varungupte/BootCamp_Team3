@@ -141,6 +141,6 @@ func DeleteCustomer (c *gin.Context) {
 		log.Fatalf("Error While calling DeleteCustomer : %v ", err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"Status" : res.Status,
+		"Customer Data" : res.CustomerData,
 	})
 }
