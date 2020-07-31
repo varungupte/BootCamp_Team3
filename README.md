@@ -5,22 +5,28 @@
 Created a web server using Go programming language. 
 It includes the following features:
 ```
-1. Authentication Service for the user.
+POST /admin/login
 
-2. Add a new order
-   -> localhost:5657/order/add_order
+POST /restaurant
+DELETE /restaurant/{restId}/item/{itemId}
+DELETE /restaurant/{restId}
+PUT /restaurant/{restId}/item
+GET /restaurant/count
+GET /restaurant/{restName}
+GET /restaurant/{restId}
+GET /restaurant/{restId}/items
+GET /restaurant/{restId}/items?priceMin={min}&priceMax={max}
 
-3. Update the dish in a particular order
-   -> localhost:5657/order/updateOrderDish
+POST /order
+GET /order/count
+PUT /order/{orderId}/item/{itemId}/quantity/{quantity}
+DELETE /order/{orderId}/item/{itemId}/quantity/{quantity}
 
-4. Get the total number of orders.
-   -> localhost:5657/order/count
-    
-5. Get the details of a particular order by orderID.
-   -> localhost:5657/order/order_details/order_id/<orderID>
-
-6. Query the most popular dish in a particular City.
-   -> localhost:5657/populardish/city/<CityName>
+GET /customers/all
+GET /customers/id/{custId}
+GET /customers/count
+POST /customers/new
+DELETE /customers/id/{custId}
 ```
 
 ### Data

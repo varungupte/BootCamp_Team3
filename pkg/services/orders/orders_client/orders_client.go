@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
-	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orderspb"
+	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"google.golang.org/grpc"
 	"io/ioutil"
 	"log"
@@ -14,9 +14,8 @@ import (
 	"strconv"
 )
 
-// AddOrderPaths adds GET and POST API paths for gin.
-func AddOrderPaths(router *gin.Engine) {
-
+// AddOrderAPIs adds GET and POST API paths for gin.
+func AddOrderAPIs(router *gin.Engine) {
 	//BasicAuth module for authorization while hitting the api
 	order := router.Group("/order", gin.BasicAuth(gin.Accounts{
 		"user1": "gupte", //username:password
@@ -56,8 +55,8 @@ func AddOrderPaths(router *gin.Engine) {
 		}
 		defer conn.Close()
 
-		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.RestaurantRequest{
+		oc := grpcPb.NewGRPCServiceClient(conn)
+		req := &grpcPb.RestaurantRequest{
 			RestaurantId: n,
 		}
 		res, err := oc.GetRestaurant(context.Background(), req)
@@ -76,10 +75,10 @@ func AddOrderPaths(router *gin.Engine) {
 		defer conn.Close()
 		body := c.Request.Body
 		content, err := ioutil.ReadAll(body)
-		var restaurant orderspb.PostRestaurantRequest
+		var restaurant grpcPb.PostRestaurantRequest
 		err = json.Unmarshal(content, &restaurant)
 		errorutil.CheckError(err, "unmarshalling orders")
-		oc := orderspb.NewOrdersServiceClient(conn)
+		oc := grpcPb.NewGRPCServiceClient(conn)
 		res, err := oc.PostRestaurant(context.Background(), &restaurant)
 		if err != nil {
 			log.Fatalf("Error While calling GetOrderDetail : %v ", err)
@@ -102,8 +101,8 @@ func AddOrderPaths(router *gin.Engine) {
 		}
 		defer conn.Close()
 
-		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.RestaurantRequest{
+		oc := grpcPb.NewGRPCServiceClient(conn)
+		req := &grpcPb.RestaurantRequest{
 			RestaurantId: n,
 		}
 		res, err := oc.DeleteRestaurant(context.Background(), req)
@@ -128,8 +127,8 @@ func AddOrderPaths(router *gin.Engine) {
 		}
 		defer conn.Close()
 
-		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.DeleteItemRequest{
+		oc := grpcPb.NewGRPCServiceClient(conn)
+		req := &grpcPb.DeleteItemRequest{
 			RestaurantId: resId,
 			ItemName:     itemName,
 		}
@@ -150,7 +149,7 @@ func AddOrderPaths(router *gin.Engine) {
 		if err == nil {
 			fmt.Println("Unable to convert string to int 64")
 		}
-		var item orderspb.Item
+		var item grpcPb.Item
 		err = json.Unmarshal(content, &item)
 		errorutil.CheckError(err, "unmarshalling orders")
 		conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
@@ -159,8 +158,8 @@ func AddOrderPaths(router *gin.Engine) {
 		}
 		defer conn.Close()
 
-		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.UpdateItemRequest{
+		oc := grpcPb.NewGRPCServiceClient(conn)
+		req := &grpcPb.UpdateItemRequest{
 			RestaurantId:    n,
 			ItemToBeUpdates: &item,
 		}
@@ -180,8 +179,8 @@ func AddOrderPaths(router *gin.Engine) {
 		}
 		defer conn.Close()
 
-		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.OrdersCountRequest{}
+		oc := grpcPb.NewGRPCServiceClient(conn)
+		req := &grpcPb.OrdersCountRequest{}
 		res, err := oc.GetCountOfRestaurant(context.Background(), req)
 		if err != nil {
 			log.Fatalf("Error While calling GetOrderDetail : %v ", err)
@@ -202,8 +201,8 @@ func AddOrderPaths(router *gin.Engine) {
 		}
 		defer conn.Close()
 
-		oc := orderspb.NewOrdersServiceClient(conn)
-		req := &orderspb.RestaurantRequest{
+		oc := grpcPb.NewGRPCServiceClient(conn)
+		req := &grpcPb.RestaurantRequest{
 			RestaurantId: n,
 		}
 		res, err := oc.GetItemsOfRestaurant(context.Background(), req)
@@ -228,7 +227,7 @@ func AddOrderPaths(router *gin.Engine) {
 		}
 		defer conn.Close()
 
-		oc := orderspb.NewOrdersServiceClient(conn)
+		oc := grpcPb.NewGRPCServiceClient(conn)
 		value, err := strconv.ParseFloat(c.Param("priceMin"), 32)
 		if err != nil {
 			// do something sensible
@@ -239,7 +238,7 @@ func AddOrderPaths(router *gin.Engine) {
 			// do something sensible
 		}
 		max := float32(value)
-		req := &orderspb.ItemsInRangeRequest{
+		req := &grpcPb.ItemsInRangeRequest{
 			RestaurantId: n,
 			MinRange:     min,
 			MaxRange:     max,
@@ -266,8 +265,8 @@ func OrderDetail(c *gin.Context) {
 	}
 	defer conn.Close()
 
-	oc := orderspb.NewOrdersServiceClient(conn)
-	req := &orderspb.OrderDetailRequest{
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.OrderDetailRequest {
 		OrderNumber: ordernumber,
 	}
 	res, err := oc.GetOrderDetail(context.Background(), req)
@@ -300,10 +299,10 @@ func PostOrder(c *gin.Context) {
 	}
 	defer conn.Close()
 
-	oc := orderspb.NewOrdersServiceClient(conn)
+	oc := grpcPb.NewGRPCServiceClient(conn)
 
-	req := &orderspb.PostOrderRequest{
-		Neworder: string(content),
+	req := &grpcPb.PostOrderRequest{
+		NewOrder: string(content),
 	}
 	res, err := oc.PostOrder(context.Background(), req)
 	if err != nil {
@@ -314,10 +313,10 @@ func PostOrder(c *gin.Context) {
 		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"Order Status": "Post call successfully executed.",
+			"Order Status" : res.Status,
 		})
 	}
-	fmt.Println(res.Updatedorders)
+	fmt.Println(res.Status)
 }
 
 // HomePage is the handler for /order API.
@@ -338,9 +337,9 @@ func OrderCount(c *gin.Context) {
 	}
 	defer conn.Close()
 
-	oc := orderspb.NewOrdersServiceClient(conn)
+	oc := grpcPb.NewGRPCServiceClient(conn)
 
-	req := &orderspb.OrdersCountRequest{}
+	req := &grpcPb.OrdersCountRequest{}
 	res, err := oc.GetOrdersCount(context.Background(), req)
 	if err != nil {
 		log.Fatalf("Error While calling GetOrdersCount: %v", err)
@@ -389,8 +388,8 @@ func PopularDish(c *gin.Context) {
 	}
 	defer conn.Close()
 
-	oc := orderspb.NewOrdersServiceClient(conn)
-	req := &orderspb.PopularDishRequest{
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.PopularDishRequest{
 		CityName: cityName,
 	}
 	res, err := oc.GetPopularDish(context.Background(), req)
@@ -418,9 +417,9 @@ func UpdateOrderDish(c *gin.Context) {
 	}
 	defer conn.Close()
 
-	oc := orderspb.NewOrdersServiceClient(conn)
-	req := &orderspb.UpdateDishRequest{
-		OrderId:     int64(orderId),
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.UpdateDishRequest{
+		OrderId: int64(orderId),
 		UpdatedDish: updatedDish,
 	}
 	res, err := oc.UpdateDish(context.Background(), req)
