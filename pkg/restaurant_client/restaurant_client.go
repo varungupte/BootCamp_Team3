@@ -26,7 +26,7 @@ func AddRestaurantAPIs(router *gin.Engine) {
 	itemRouter.DELETE("/:restId/:itemName", DeleteRestaurantItem)
 	itemRouter.PUT("/:id", UpdateRestaurantItem)
 
-	restaurant.GET("/count", GetRestaurantCount)
+	router.GET("/count/restaurant", GetRestaurantCount)
 	restaurant.GET("/:id/item", GetRestaurantItems)
 
 	//https://example.org/?a=1&a=2&b=&=3&&&&

@@ -17,7 +17,7 @@ func SaveRestaurant(entity types.Restaurant) (types.Restaurant, error) {
 	restaurantMap, err := dynamodbattribute.MarshalMap(entity)
 	errorutil.CheckError(err, "Error occured While Marshalling Restaurant Entity")
 	_, err = db.PutItem(&dynamodb.PutItemInput{
-		TableName: aws.String("Restaurant"),
+		TableName: aws.String("T3_Restaurant"),
 		Item:      restaurantMap,
 	})
 	errorutil.CheckError(err, "Error Occured While putting Restaurent in Db")
@@ -28,7 +28,7 @@ func SaveRestaurant(entity types.Restaurant) (types.Restaurant, error) {
 func GetRestaurant(id int64) (types.Restaurant, error) {
 	db := MakeNewDbSession()
 	resp, err := db.GetItem(&dynamodb.GetItemInput{
-		TableName: aws.String("Restaurant"),
+		TableName: aws.String("T3_Restaurant"),
 		Key: map[string]*dynamodb.AttributeValue{
 			"Id": {
 				N: aws.String(strconv.Itoa(int(id))),
@@ -40,13 +40,14 @@ func GetRestaurant(id int64) (types.Restaurant, error) {
 	}
 	var restaurantEntity types.Restaurant
 	err = dynamodbattribute.UnmarshalMap(resp.Item, &restaurantEntity)
+	fmt.Println("Got this from db ",restaurantEntity)
 	return restaurantEntity, nil
 }
 
 func DeleteRestaurant(id int64) error{
 	db := MakeNewDbSession()
 	params := &dynamodb.DeleteItemInput{
-		TableName: aws.String("Restaurant"),
+		TableName: aws.String("T3_Restaurant"),
 		Key: map[string]*dynamodb.AttributeValue{
 			"Id": {
 				N: aws.String(strconv.Itoa(int(id))),
@@ -133,7 +134,7 @@ func GetRestaurantCount()(*int64,error)  {
 	db:=MakeNewDbSession()
 	// create the api params
 	params := &dynamodb.DescribeTableInput{
-		TableName: aws.String("Restaurant"),
+		TableName: aws.String("T3_Restaurant"),
 	}
 	// get the table description
 	resp, err := db.DescribeTable(params)
