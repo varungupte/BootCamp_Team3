@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/varungupte/BootCamp_Team3/pkg/customers_client"
+	"github.com/varungupte/BootCamp_Team3/pkg/restaurant_client"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/orders/orders_client"
 )
 
@@ -15,6 +16,7 @@ func main() {
 	router := gin.Default()
 	orders_client.AddOrderAPIs(router)
 	customers_client.AddCustomerAPIs(router)
+	restaurant_client.AddRestaurantAPIs(router)
 
 	// listen and serve on localhost:5657
 	router.Run("localhost:5657")
