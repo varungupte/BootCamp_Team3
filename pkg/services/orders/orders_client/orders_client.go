@@ -28,16 +28,16 @@ func AddOrderAPIs(router *gin.Engine) {
 	order.GET("/count", OrderCount)
 
 	//Popular Dish Areawise(In a particular User City, which is the dish maximum ordered)
-	order.GET("/populardish/city/:city", PopularDish)
+	//order.GET("/populardish/city/:city", PopularDish)
 
 	// will return json object containing info about the order with orderid "ordernumber"
-	order.GET("/order_details/order_id/:ordernumber", OrderDetail)
+	//order.GET("/order_details/order_id/:ordernumber", OrderDetail)
 
 	// will return slice for orders till orderid "tillorder"
 	// order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
 
 	// POST request to add orders
-    order.POST("/add_order", PostOrder)
+    //order.POST("/add_order", PostOrder)
 
 	order.POST("/updateOrderItem", UpdateOrderItem)
 
@@ -258,6 +258,7 @@ func AddOrderAPIs(router *gin.Engine) {
 
 // OrderDetail is the handler for /order_details/order_id/:ordernumber API.
 // It displays the order detail by a particular orderId
+/*
 func OrderDetail(c *gin.Context) {
 	ordernumber := c.Param("ordernumber")
 
@@ -281,8 +282,12 @@ func OrderDetail(c *gin.Context) {
 
 }
 
+
+ */
+
 // PostOrder adds a new order to the database.
 // It displays a success or failure message.
+/*
 func PostOrder(c *gin.Context) {
 	body := c.Request.Body
 
@@ -320,6 +325,8 @@ func PostOrder(c *gin.Context) {
 	}
 	fmt.Println(res.Status)
 }
+
+ */
 
 // HomePage is the handler for /order API.
 // It displays an introductory message.
@@ -383,6 +390,8 @@ func OrderCount(c *gin.Context) {
 
 // PopularDish is the handler for /populardish/city/:city API.
 // It displays the most popular dish of a particular city.
+//this function is deleted so commenting
+/*
 func PopularDish(c *gin.Context) {
 	cityName := c.Param("city")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
@@ -405,6 +414,8 @@ func PopularDish(c *gin.Context) {
 	})
 }
 
+
+ */
 func UpdateOrderItem (c *gin.Context) {
 	var req grpcPb.UpdateOrderItemRequest
 
