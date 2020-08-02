@@ -13,7 +13,7 @@ import (
 
 // AddOrderPaths adds GET and POST API paths for gin.
 func AddCustomerAPIs(router *gin.Engine) {
-	customers := router.Group("/customers")
+	customers := router.Group("/customer")
 
 	// gets the number of customers in the database
 	customers.POST("/new", AddCustomer)

@@ -14,7 +14,7 @@ import (
 	"github.com/varungupte/BootCamp_Team3/pkg/dynamoDB/types"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
-	"github.com/varungupte/BootCamp_Team3/pkg/services/restaurentService"
+	"github.com/varungupte/BootCamp_Team3/pkg/services/restaurantService"
 	"log"
 	"strconv"
 )
@@ -128,7 +128,7 @@ func (*GrpcServer) CreateOrder (ctx context.Context, req *grpcPb.CreateOrderRequ
 		HouseNo: req.GetAddress().GetHouseNo(),
 		Street:  req.GetAddress().GetStreet(),
 		City:    req.GetAddress().GetCity(),
-		PIN:     req.GetAddress().GetPin(),
+		PIN:     req.GetAddress().GetPIN(),
 	}
 
 	for _, v := range req.GetItems() {
@@ -174,7 +174,7 @@ func (*GrpcServer) CreateOrder (ctx context.Context, req *grpcPb.CreateOrderRequ
 	}, nil
 }
 
-func (*GrpcServer) UpdateOrderItem (ctx context.Context, req *grpcPb.UpdateOrderItemRequest) (*grpcPb.UpdateOrderItemResponse, error) {
+func (*GrpcServer) UpdateOrderItem (_ context.Context, req *grpcPb.UpdateOrderItemRequest) (*grpcPb.UpdateOrderItemResponse, error) {
 	orderId := req.GetOrderId()
 	itemId := req.GetItemId()
 	quantity := req.GetQuantity()
@@ -245,7 +245,7 @@ func (*GrpcServer) UpdateOrderItem (ctx context.Context, req *grpcPb.UpdateOrder
 	}, nil
 }
 
-func (*GrpcServer) GetOrdersCount(ctx context.Context, req *grpcPb.OrdersCountRequest) (*grpcPb.OrdersCountResponse, error)  {
+func (*GrpcServer) GetOrdersCount(context.Context, *grpcPb.OrdersCountRequest) (*grpcPb.OrdersCountResponse, error) {
 	db := getDBInstance()
 
 	params := &dynamodb.DescribeTableInput{
@@ -259,29 +259,24 @@ func (*GrpcServer) GetOrdersCount(ctx context.Context, req *grpcPb.OrdersCountRe
 	}
 
 	return &grpcPb.OrdersCountResponse{
-		Count: int64(*resp.Table.ItemCount),
+		Count: *resp.Table.ItemCount,
 	}, nil
 }
 
-func (*GrpcServer) PostRestaurant(ctx context.Context, req *grpcPb.PostRestaurantRequest) (*grpcPb.GenericResponse, error) {
-	//Id           int
-	//Name         string
-	//Items        []ItemEntity
-	//Address      AddressEntity
-	//ActiveStatus bool
-	restaurant := restaurentService.RestaurantEntity{
+func (*GrpcServer) PostRestaurant(_ context.Context, req *grpcPb.PostRestaurantRequest) (*grpcPb.GenericResponse, error) {
+	restaurant := types.Restaurant{
 		Id:    req.Id,
 		Name:  req.Name,
 		Items: getItemEntityFromItem(req.Items),
-		Address: restaurentService.AddressEntity{
+		Addr: types.Address{
 			HouseNo: req.GetRestaurantAddress().HouseNo,
 			Street:  req.GetRestaurantAddress().Street,
 			City:    req.GetRestaurantAddress().City,
-			Pin:     req.GetRestaurantAddress().Pin,
+			PIN:     req.GetRestaurantAddress().PIN,
 		},
 		ActiveStatus: req.GetStatus(),
 	}
-	res, err := restaurentService.SaveRestaurant(restaurant)
+	res, err := restaurantService.SaveRestaurant(restaurant)
 	fmt.Println("Successfully Inserted Restaurant", res)
 	if err != nil {
 		return &grpcPb.GenericResponse{
@@ -295,8 +290,8 @@ func (*GrpcServer) PostRestaurant(ctx context.Context, req *grpcPb.PostRestauran
 	}, nil
 }
 
-func (*GrpcServer) DeleteItem(ctx context.Context, req *grpcPb.DeleteItemRequest) (*grpcPb.GenericResponse, error) {
-	err := restaurentService.DeleteItemFromRestaurant(req.RestaurantId, req.ItemName)
+func (*GrpcServer) DeleteItem(_ context.Context, req *grpcPb.DeleteItemRequest) (*grpcPb.GenericResponse, error) {
+	err := restaurantService.DeleteItemFromRestaurant(req.RestaurantId, req.ItemName)
 	if err != nil {
 		return nil, err
 	}
@@ -306,8 +301,8 @@ func (*GrpcServer) DeleteItem(ctx context.Context, req *grpcPb.DeleteItemRequest
 	}, nil
 }
 
-func (*GrpcServer) DeleteRestaurant(ctx context.Context, req *grpcPb.RestaurantRequest) (*grpcPb.GenericResponse, error) {
-	err := restaurentService.DeleteRestaurant(req.RestaurantId)
+func (*GrpcServer) DeleteRestaurant(_ context.Context, req *grpcPb.RestaurantRequest) (*grpcPb.GenericResponse, error) {
+	err := restaurantService.DeleteRestaurant(req.RestaurantId)
 	if err != nil {
 		return nil, err
 	}
@@ -317,14 +312,15 @@ func (*GrpcServer) DeleteRestaurant(ctx context.Context, req *grpcPb.RestaurantR
 	}, nil
 }
 
-func (*GrpcServer) UpdateItem(ctx context.Context, req *grpcPb.UpdateItemRequest) (*grpcPb.GenericResponse, error) {
-	itemEntity := restaurentService.ItemEntity{
-		Name:     req.ItemToBeUpdates.Name,
-		Cuisine:  req.ItemToBeUpdates.Cuisine,
-		Cost:     req.ItemToBeUpdates.Cost,
-		Quantity: req.ItemToBeUpdates.Quantity,
+func (*GrpcServer) UpdateItem(_ context.Context, req *grpcPb.UpdateItemRequest) (*grpcPb.GenericResponse, error) {
+	itemEntity := types.Item {
+		Id:       req.ItemToBeUpdated.Id,
+		Name:     req.ItemToBeUpdated.Name,
+		Cuisine:  req.ItemToBeUpdated.Cuisine,
+		Cost:     req.ItemToBeUpdated.Cost,
+		Quantity: req.ItemToBeUpdated.Quantity,
 	}
-	err := restaurentService.UpdateItemInRestaurant(req.RestaurantId, itemEntity)
+	err := restaurantService.UpdateItemInRestaurant(req.RestaurantId, itemEntity)
 	if err != nil {
 		return nil, err
 	}
@@ -334,8 +330,8 @@ func (*GrpcServer) UpdateItem(ctx context.Context, req *grpcPb.UpdateItemRequest
 	}, nil
 }
 
-func (*GrpcServer) GetCountOfRestaurant(ctx context.Context, req *grpcPb.OrdersCountRequest) (*grpcPb.OrdersCountResponse, error) {
-	count, err := restaurentService.GetRestaurantCount()
+func (*GrpcServer) GetCountOfRestaurant(context.Context, *grpcPb.OrdersCountRequest) (*grpcPb.OrdersCountResponse, error) {
+	count, err := restaurantService.GetRestaurantCount()
 	if err != nil {
 		return nil, err
 	}
@@ -345,29 +341,30 @@ func (*GrpcServer) GetCountOfRestaurant(ctx context.Context, req *grpcPb.OrdersC
 	}, nil
 }
 
-func (*GrpcServer) GetRestaurant(ctx context.Context, req *grpcPb.RestaurantRequest) (*grpcPb.PostRestaurantRequest, error) {
-	restaurant, err := restaurentService.GetRestaurant(req.RestaurantId)
+func (*GrpcServer) GetRestaurant(_ context.Context, req *grpcPb.RestaurantRequest) (*grpcPb.PostRestaurantRequest, error) {
+	restaurant, err := restaurantService.GetRestaurant(req.RestaurantId)
 	if err != nil {
 		return nil, err
 	}
-	return &grpcPb.PostRestaurantRequest{
+	return &grpcPb.PostRestaurantRequest {
 		Name:   restaurant.Name,
 		Status: restaurant.ActiveStatus,
 		Id:     restaurant.Id,
 		RestaurantAddress: &grpcPb.Address{
-			Street:  restaurant.Address.Street,
-			HouseNo: restaurant.Address.HouseNo,
-			Pin:     restaurant.Address.Pin,
-			City:    restaurant.Address.City,
+			Street:  restaurant.Addr.Street,
+			HouseNo: restaurant.Addr.HouseNo,
+			PIN:     restaurant.Addr.PIN,
+			City:    restaurant.Addr.City,
 		},
 		Items: getItemFromItemEntity(restaurant.Items),
 	}, nil
 }
 
-func getItemFromItemEntity(itemEntities []restaurentService.ItemEntity) []*grpcPb.Item {
+func getItemFromItemEntity(itemEntities []types.Item) []*grpcPb.Item {
 	items := make([]*grpcPb.Item, 0, 5)
 	for _, val := range itemEntities {
 		temp := &grpcPb.Item{
+			Id:       val.Id,
 			Name:     val.Name,
 			Cuisine:  val.Cuisine,
 			Cost:     val.Cost,
@@ -378,8 +375,8 @@ func getItemFromItemEntity(itemEntities []restaurentService.ItemEntity) []*grpcP
 	return items
 }
 
-func (*GrpcServer) GetItemsOfRestaurant(ctx context.Context, req *grpcPb.RestaurantRequest) (*grpcPb.ItemsListResponse, error) {
-	items, err := restaurentService.GetRestaurantItems(req.RestaurantId)
+func (*GrpcServer) GetItemsOfRestaurant(_ context.Context, req *grpcPb.RestaurantRequest) (*grpcPb.ItemsListResponse, error) {
+	items, err := restaurantService.GetRestaurantItems(req.RestaurantId)
 	if err != nil {
 		return nil, err
 	}
@@ -388,8 +385,8 @@ func (*GrpcServer) GetItemsOfRestaurant(ctx context.Context, req *grpcPb.Restaur
 	}, nil
 }
 
-func (*GrpcServer) GetItemsInRange(ctx context.Context, req *grpcPb.ItemsInRangeRequest) (*grpcPb.ItemsListResponse, error) {
-	items, err := restaurentService.GetItemsBetweenRange(req.MinRange, req.MaxRange, req.RestaurantId)
+func (*GrpcServer) GetItemsInRange(_ context.Context, req *grpcPb.ItemsInRangeRequest) (*grpcPb.ItemsListResponse, error) {
+	items, err := restaurantService.GetItemsBetweenRange(req.MinRange, req.MaxRange, req.RestaurantId)
 	if err != nil {
 		return nil, err
 	}
@@ -398,10 +395,10 @@ func (*GrpcServer) GetItemsInRange(ctx context.Context, req *grpcPb.ItemsInRange
 	}, nil
 }
 
-func getItemEntityFromItem(items []*grpcPb.Item) []restaurentService.ItemEntity {
-	itemEntities := make([]restaurentService.ItemEntity, 0, 5)
+func getItemEntityFromItem(items []*grpcPb.Item) []types.Item {
+	itemEntities := make([]types.Item, 0, 5)
 	for _, val := range items {
-		temp := restaurentService.ItemEntity{
+		temp := types.Item {
 			Name:     val.Name,
 			Cuisine:  val.Cuisine,
 			Cost:     val.Cost,
@@ -412,7 +409,7 @@ func getItemEntityFromItem(items []*grpcPb.Item) []restaurentService.ItemEntity 
 	return itemEntities
 }
 
-func (*GrpcServer) GetCustomersCount (ctx context.Context, req *grpcPb.CustomersCountRequest) (*grpcPb.CustomersCountResponse, error) {
+func (*GrpcServer) GetCustomersCount(context.Context, *grpcPb.CustomersCountRequest) (*grpcPb.CustomersCountResponse, error) {
 	db := getDBInstance()
 	// create the api params
 	params := &dynamodb.DescribeTableInput{
@@ -423,13 +420,13 @@ func (*GrpcServer) GetCustomersCount (ctx context.Context, req *grpcPb.Customers
 	if err != nil {
 			  return nil, err
 			  }
-	countResp := &grpcPb.CustomersCountResponse{
+	countResp := &grpcPb.CustomersCountResponse {
 		Count: aws.Int64Value(resp.Table.ItemCount),
 	}
 	return countResp, nil
 }
 
-func (*GrpcServer) AddCustomer(ctx context.Context, req *grpcPb.AddCustomerRequest) (*grpcPb.StatusResponse, error)  {
+func (*GrpcServer) AddCustomer(_ context.Context, req *grpcPb.AddCustomerRequest) (*grpcPb.StatusResponse, error)  {
 	// unmarshalling content
 	var customerData types.Customer
 	err := json.Unmarshal([]byte(req.NewCustomer), &customerData)
@@ -459,7 +456,7 @@ func (*GrpcServer) AddCustomer(ctx context.Context, req *grpcPb.AddCustomerReque
 	return res, nil
 }
 
-func (*GrpcServer) GetCustomer (ctx context.Context, req *grpcPb.CustomerRequest) (*grpcPb.CustomerResponse, error) {
+func (*GrpcServer) GetCustomer (_ context.Context, req *grpcPb.CustomerRequest) (*grpcPb.CustomerResponse, error) {
 	customerId := req.CustomerId
 	resp := &grpcPb.CustomerResponse{}
 
@@ -478,7 +475,7 @@ func (*GrpcServer) GetCustomer (ctx context.Context, req *grpcPb.CustomerRequest
 	if err != nil {
 		return resp, err
 	}
-	if (len(itemOutput.Item) == 0) {
+	if len(itemOutput.Item) == 0 {
 		resp.CustomerData = ""
 		return resp, errors.New("FAILURE: Customer not found")
 	}
@@ -486,14 +483,11 @@ func (*GrpcServer) GetCustomer (ctx context.Context, req *grpcPb.CustomerRequest
 	return resp, nil
 }
 
-func (*GrpcServer) DeleteCustomer (ctx context.Context, req *grpcPb.CustomerRequest) (*grpcPb.CustomerResponse, error) {
+func (*GrpcServer) DeleteCustomer (_ context.Context, req *grpcPb.CustomerRequest) (*grpcPb.CustomerResponse, error) {
 	customerId := req.CustomerId
 	resp := &grpcPb.CustomerResponse{}
 
 	db := getDBInstance()
-
-	// update active status to false
-	activeStatus := false
 
 	params := &dynamodb.UpdateItemInput{
 		TableName: aws.String("T3_Customer"),
@@ -504,7 +498,7 @@ func (*GrpcServer) DeleteCustomer (ctx context.Context, req *grpcPb.CustomerRequ
 		},
 		UpdateExpression: aws.String("set ActiveStatus=:as"),
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue {
-			":as": {BOOL: aws.Bool(activeStatus)},
+			":as": {BOOL: aws.Bool(false)},
 		},
 		ReturnValues: aws.String(dynamodb.ReturnValueAllNew),
 	}

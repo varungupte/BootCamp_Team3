@@ -30,3 +30,11 @@ type Order struct {
 	Discount     float32
 	DeliveryAddr Address
 }
+
+type Restaurant struct {
+	Id           int64
+	Name         string
+	Items        []Item
+	Addr         Address
+	ActiveStatus bool
+}
