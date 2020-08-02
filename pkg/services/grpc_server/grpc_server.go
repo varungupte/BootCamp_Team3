@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
 	"github.com/google/uuid"
 	"github.com/varungupte/BootCamp_Team3/pkg/dynamoDB/types"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
@@ -27,6 +28,7 @@ func getDBInstance() *dynamodb.DynamoDB {
 }
 
 type GrpcServer struct {}
+var orders_table = "T3_Order"
 
 //func (*GrpcServer) GetPopularDish(ctx context.Context,req *grpcPb.PopularDishRequest) (*grpcPb.PopularDishResponse, error) {
 //	//Using gojq library https://github.com/elgs/gojq#gojq
@@ -63,7 +65,57 @@ type GrpcServer struct {}
 //	return res, nil
 //}
 
-func (*GrpcServer) CreateOrder (_ context.Context, req *grpcPb.CreateOrderRequest) (*grpcPb.CreateOrderResponse, error) {
+func (*GrpcServer) GetOrderDetails (ctx context.Context, req *grpcPb.GetOrderDetailsRequest) (*grpcPb.GetOrderDetailsResponse, error) {
+	order_id := req.GetOrderId()
+	proj := expression.NamesList(
+		expression.Name("Id"),
+		expression.Name("ResId"),
+		expression.Name("CustId"),
+		expression.Name("Items"),
+		expression.Name("DeliveryAddr"),
+		expression.Name("Discount"),
+		)
+	var order types.Order
+	db := getDBInstance()
+
+	keyCondition := expression.Key("Id").Equal(expression.Value(order_id))
+	expr, errExpression := expression.NewBuilder().WithKeyCondition(keyCondition).WithProjection(proj).Build()
+
+	if errExpression != nil {
+		log.Printf("error: creating dynamo expression ", errExpression)
+
+		panic("Cannot create expression")
+	}
+	params := &dynamodb.QueryInput{
+		ExpressionAttributeValues: expr.Values(),
+		ProjectionExpression:      expr.Projection(),
+		TableName:                 aws.String(orders_table),
+		IndexName:                 aws.String("Id5-index"),
+		KeyConditionExpression:    expr.KeyCondition(),
+		ExpressionAttributeNames:  expr.Names(),
+	}
+	result, errResults := db.Query(params)
+	if errResults != nil {
+
+	}
+
+	if len(result.Items) >0 {
+		log.Println(result.Items[0])
+		dynamodbattribute.UnmarshalMap(result.Items[0], &order)
+	}
+	log.Println(order)
+
+	str, err := json.Marshal(order)
+	if err != nil {
+		panic("cannot marshal")
+	}
+
+	return &grpcPb.GetOrderDetailsResponse{
+		OrderDetails:string(str),
+	}, nil
+}
+
+func (*GrpcServer) CreateOrder (ctx context.Context, req *grpcPb.CreateOrderRequest) (*grpcPb.CreateOrderResponse, error) {
 	var order types.Order
 	var Items []types.Item
 	var item types.Item
@@ -103,7 +155,7 @@ func (*GrpcServer) CreateOrder (_ context.Context, req *grpcPb.CreateOrderReques
 	}
 
 	params := &dynamodb.PutItemInput{
-		TableName: aws.String("OrdersT3"),
+		TableName: aws.String(orders_table),
 		Item: orderMap,
 	}
 	log.Println("pa", params)
@@ -132,7 +184,7 @@ func (*GrpcServer) UpdateOrderItem (_ context.Context, req *grpcPb.UpdateOrderIt
 	db := getDBInstance()
 
 	params := &dynamodb.GetItemInput{
-		TableName:aws.String("OrdersT3"),
+		TableName:aws.String(orders_table),
 		Key:map[string]*dynamodb.AttributeValue{
 			"Id" :{
 				N:aws.String(strconv.Itoa(int(orderId))),
@@ -181,7 +233,7 @@ func (*GrpcServer) UpdateOrderItem (_ context.Context, req *grpcPb.UpdateOrderIt
 
 	orderMap, err := dynamodbattribute.MarshalMap(order)
 	param := &dynamodb.PutItemInput{
-		TableName: aws.String("OrdersT3"),
+		TableName: aws.String(orders_table),
 		Item: orderMap,
 	}
 
@@ -198,7 +250,7 @@ func (*GrpcServer) GetOrdersCount(context.Context, *grpcPb.OrdersCountRequest) (
 	db := getDBInstance()
 
 	params := &dynamodb.DescribeTableInput{
-		TableName: aws.String("OrdersT3"),
+		TableName: aws.String(orders_table),
 	}
 	resp, err := db.DescribeTable(params)
 	if err != nil {
