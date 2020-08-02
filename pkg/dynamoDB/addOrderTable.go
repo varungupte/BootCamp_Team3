@@ -17,16 +17,16 @@ func main() {
 	db := dynamodb.New(sess)
 
 	awsParams := &dynamodb.CreateTableInput{
-		TableName: aws.String("T3_Order"),
+		TableName: aws.String("OrdersT3"),
 
 		KeySchema: [] *dynamodb.KeySchemaElement {
-			{AttributeName: aws.String("CustomerId"), KeyType: aws.String("HASH")},
-			{AttributeName: aws.String("OrderId"), KeyType: aws.String("RANGE")},
+			{AttributeName: aws.String("CustId"), KeyType: aws.String("HASH")},
+			{AttributeName: aws.String("Id"), KeyType: aws.String("RANGE")},
 		},
 
 		AttributeDefinitions: [] *dynamodb.AttributeDefinition {
-			{AttributeName: aws.String("CustomerId"), AttributeType: aws.String("S")},
-			{AttributeName: aws.String("OrderId"), AttributeType: aws.String("S")},
+			{AttributeName: aws.String("CustId"), AttributeType: aws.String("N")},
+			{AttributeName: aws.String("Id"), AttributeType: aws.String("N")},
 		},
 
 		ProvisionedThroughput: &dynamodb.ProvisionedThroughput {

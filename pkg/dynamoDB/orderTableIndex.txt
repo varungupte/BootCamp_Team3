@@ -1,0 +1,6 @@
+aws dynamodb update-table \
+    --table-name OrdersT3 \
+    --attribute-definitions AttributeName=Id,AttributeType=N \
+    --global-secondary-index-updates \
+    "[{\"Create\":{\"IndexName\": \"Id5-index\",\"KeySchema\":[{\"AttributeName\":\"Id\",\"KeyType\":\"HASH\"}], \
+    \"ProvisionedThroughput\": {\"ReadCapacityUnits\": 10, \"WriteCapacityUnits\": 5      },\"Projection\":{\"ProjectionType\":\"ALL\"}}}]" --endpoint-url http://localhost:8000

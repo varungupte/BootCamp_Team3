@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
 	"github.com/google/uuid"
 	"github.com/varungupte/BootCamp_Team3/pkg/dynamoDB/types"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
@@ -62,6 +63,56 @@ type GrpcServer struct {}
 //	res.DishName = name
 //	return res, nil
 //}
+
+func (*GrpcServer) GetOrderDetails (ctx context.Context, req *grpcPb.GetOrderDetailsRequest) (*grpcPb.GetOrderDetailsResponse, error) {
+	order_id := req.GetOrderId()
+	proj := expression.NamesList(
+		expression.Name("Id"),
+		expression.Name("ResId"),
+		expression.Name("CustId"),
+		expression.Name("Items"),
+		expression.Name("DeliveryAddr"),
+		expression.Name("Discount"),
+		)
+	var order types.Order
+	db := getDBInstance()
+
+	keyCondition := expression.Key("Id").Equal(expression.Value(order_id))
+	expr, errExpression := expression.NewBuilder().WithKeyCondition(keyCondition).WithProjection(proj).Build()
+
+	if errExpression != nil {
+		log.Printf("error: creating dynamo expression ", errExpression)
+
+		panic("Cannot create expression")
+	}
+	params := &dynamodb.QueryInput{
+		ExpressionAttributeValues: expr.Values(),
+		ProjectionExpression:      expr.Projection(),
+		TableName:                 aws.String("OrdersT3"),
+		IndexName:                 aws.String("Id5-index"),
+		KeyConditionExpression:    expr.KeyCondition(),
+		ExpressionAttributeNames:  expr.Names(),
+	}
+	result, errResults := db.Query(params)
+	if errResults != nil {
+
+	}
+
+	if len(result.Items) >0 {
+		log.Println(result.Items[0])
+		dynamodbattribute.UnmarshalMap(result.Items[0], &order)
+	}
+	log.Println(order)
+
+	str, err := json.Marshal(order)
+	if err != nil {
+		panic("cannot marshal")
+	}
+
+	return &grpcPb.GetOrderDetailsResponse{
+		OrderDetails:string(str),
+	}, nil
+}
 
 func (*GrpcServer) CreateOrder (ctx context.Context, req *grpcPb.CreateOrderRequest) (*grpcPb.CreateOrderResponse, error) {
 	var order types.Order

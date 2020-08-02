@@ -136,10 +136,19 @@ message OrdersCountResponse{
     int64 count=1;
 }
 
+message GetOrderDetailsRequest {
+    uint32 orderId=1;
+}
+
+message GetOrderDetailsResponse {
+    string orderDetails=1;
+}
+
 service GRPCService {
     rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse){}
     rpc UpdateOrderItem(UpdateOrderItemRequest) returns (UpdateOrderItemResponse){}
     rpc GetOrdersCount (OrdersCountRequest) returns (OrdersCountResponse) {}
+    rpc GetOrderDetails (GetOrderDetailsRequest) returns (GetOrderDetailsResponse) {}
 
     // Customer
     rpc GetCustomersCount (CustomersCountRequest) returns (CustomersCountResponse){}

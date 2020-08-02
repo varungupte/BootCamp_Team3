@@ -31,7 +31,7 @@ func AddOrderAPIs(router *gin.Engine) {
 	//order.GET("/populardish/city/:city", PopularDish)
 
 	// will return json object containing info about the order with orderid "ordernumber"
-	//order.GET("/order_details/order_id/:ordernumber", OrderDetail)
+	order.GET("/order_details/:order_id", GetOrderDetails)
 
 	// will return slice for orders till orderid "tillorder"
 	// order.GET("/order_details/tillorder/:tillorder", OrderDetailAll)
@@ -479,5 +479,36 @@ func CreateOrder (c *gin.Context) {
 		"Status":res.Status,
 		"Message":res.Message,
 		"OrderId":res.OrderId,
+	})
+}
+
+func GetOrderDetails (c *gin.Context) {
+	var req grpcPb.GetOrderDetailsRequest
+	order_id, err := strconv.ParseUint(c.Param("order_id"), 10, 32)
+	if err!= nil {
+
+	}
+	req.OrderId = uint32(order_id)
+	log.Println("id rece", req.OrderId)
+
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
+	}
+	defer conn.Close();
+
+	oc := grpcPb.NewGRPCServiceClient(conn)
+
+	res, err := oc.GetOrderDetails(context.Background(), &req)
+	if err != nil {
+		log.Fatalf("Error While calling Order Details : %v ", err)
+		c.JSON(200, gin.H{
+			"Order Details": "",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"OrderDetails": res.OrderDetails,
 	})
 }
