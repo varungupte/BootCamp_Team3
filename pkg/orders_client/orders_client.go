@@ -239,14 +239,13 @@ func CreateOrder (c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	log.Println(req)
 
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
-	defer conn.Close();
+	defer conn.Close()
 
 	oc := grpcPb.NewGRPCServiceClient(conn)
 
@@ -268,18 +267,18 @@ func CreateOrder (c *gin.Context) {
 
 func GetOrderDetails (c *gin.Context) {
 	var req grpcPb.GetOrderDetailsRequest
-	order_id, err := strconv.ParseUint(c.Param("order_id"), 10, 32)
+	orderId, err := strconv.ParseUint(c.Param("order_id"), 10, 32)
 	if err!= nil {
 
 	}
-	req.OrderId = uint32(order_id)
+	req.OrderId = uint32(orderId)
 	log.Println("id rece", req.OrderId)
 
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
-	defer conn.Close();
+	defer conn.Close()
 
 	oc := grpcPb.NewGRPCServiceClient(conn)
 

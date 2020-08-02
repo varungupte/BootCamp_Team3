@@ -1,4 +1,4 @@
-package restaurant_client
+package restaurants_client
 
 import (
 	"context"

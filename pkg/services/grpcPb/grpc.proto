@@ -12,13 +12,6 @@ message PostOrderResponse{
     string status = 1;
 }
 
-message OrderDetailRequest {
-    string OrderNumber = 1;
-}
-message OrderDetailResponse {
-    string orderDetail = 1;
-}
-
 message PopularDishResponse {
     string DishName = 1;
 }
@@ -136,11 +129,11 @@ message OrdersCountResponse{
     int64 count=1;
 }
 
-message GetOrderDetailsRequest {
+message OrderDetailsRequest {
     uint32 orderId=1;
 }
 
-message GetOrderDetailsResponse {
+message OrderDetailsResponse {
     string orderDetails=1;
 }
 
@@ -148,7 +141,7 @@ service GRPCService {
     rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse){}
     rpc UpdateOrderItem(UpdateOrderItemRequest) returns (UpdateOrderItemResponse){}
     rpc GetOrdersCount (OrdersCountRequest) returns (OrdersCountResponse) {}
-    rpc GetOrderDetails (GetOrderDetailsRequest) returns (GetOrderDetailsResponse) {}
+    rpc GetOrderDetails (OrderDetailsRequest) returns (OrderDetailsResponse) {}
 
     // Customer
     rpc GetCustomersCount (CustomersCountRequest) returns (CustomersCountResponse){}
