@@ -8,6 +8,8 @@ import (
 	"log"
 )
 
+var orders_table = "T3_Order"
+
 func main() {
 	sess := session.Must(session.NewSession(&aws.Config{
 		Endpoint: aws.String("http://localhost:8000"),
@@ -17,7 +19,7 @@ func main() {
 	db := dynamodb.New(sess)
 
 	awsParams := &dynamodb.CreateTableInput{
-		TableName: aws.String("OrdersT3"),
+		TableName: aws.String(orders_table),
 
 		KeySchema: [] *dynamodb.KeySchemaElement {
 			{AttributeName: aws.String("CustId"), KeyType: aws.String("HASH")},

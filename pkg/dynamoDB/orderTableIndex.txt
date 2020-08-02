@@ -1,5 +1,5 @@
 aws dynamodb update-table \
-    --table-name OrdersT3 \
+    --table-name T3_Order \
     --attribute-definitions AttributeName=Id,AttributeType=N \
     --global-secondary-index-updates \
     "[{\"Create\":{\"IndexName\": \"Id5-index\",\"KeySchema\":[{\"AttributeName\":\"Id\",\"KeyType\":\"HASH\"}], \

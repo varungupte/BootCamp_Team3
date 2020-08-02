@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
+
 func main() {
 	// read the json data file
 	f, err := ioutil.ReadFile(string(os.Getenv("GOPATH")) + "/src/github.com/varungupte/BootCamp_Team3/assets/orderData.json")
@@ -45,7 +46,7 @@ func main() {
 
 		// create the api params
 		params := &dynamodb.PutItemInput{
-			TableName: aws.String("OrdersT3"),
+			TableName: aws.String(orders_table),
 			Item:      orderMap,
 		}
 

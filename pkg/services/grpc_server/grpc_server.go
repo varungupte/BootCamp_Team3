@@ -28,6 +28,7 @@ func getDBInstance() *dynamodb.DynamoDB {
 }
 
 type GrpcServer struct {}
+var orders_table = "T3_Order"
 
 //func (*GrpcServer) GetPopularDish(ctx context.Context,req *grpcPb.PopularDishRequest) (*grpcPb.PopularDishResponse, error) {
 //	//Using gojq library https://github.com/elgs/gojq#gojq
@@ -88,7 +89,7 @@ func (*GrpcServer) GetOrderDetails (ctx context.Context, req *grpcPb.GetOrderDet
 	params := &dynamodb.QueryInput{
 		ExpressionAttributeValues: expr.Values(),
 		ProjectionExpression:      expr.Projection(),
-		TableName:                 aws.String("OrdersT3"),
+		TableName:                 aws.String(orders_table),
 		IndexName:                 aws.String("Id5-index"),
 		KeyConditionExpression:    expr.KeyCondition(),
 		ExpressionAttributeNames:  expr.Names(),
@@ -154,7 +155,7 @@ func (*GrpcServer) CreateOrder (ctx context.Context, req *grpcPb.CreateOrderRequ
 	}
 
 	params := &dynamodb.PutItemInput{
-		TableName: aws.String("OrdersT3"),
+		TableName: aws.String(orders_table),
 		Item: orderMap,
 	}
 	log.Println("pa", params)
@@ -183,7 +184,7 @@ func (*GrpcServer) UpdateOrderItem (_ context.Context, req *grpcPb.UpdateOrderIt
 	db := getDBInstance()
 
 	params := &dynamodb.GetItemInput{
-		TableName:aws.String("OrdersT3"),
+		TableName:aws.String(orders_table),
 		Key:map[string]*dynamodb.AttributeValue{
 			"Id" :{
 				N:aws.String(strconv.Itoa(int(orderId))),
@@ -232,7 +233,7 @@ func (*GrpcServer) UpdateOrderItem (_ context.Context, req *grpcPb.UpdateOrderIt
 
 	orderMap, err := dynamodbattribute.MarshalMap(order)
 	param := &dynamodb.PutItemInput{
-		TableName: aws.String("OrdersT3"),
+		TableName: aws.String(orders_table),
 		Item: orderMap,
 	}
 
@@ -249,7 +250,7 @@ func (*GrpcServer) GetOrdersCount(context.Context, *grpcPb.OrdersCountRequest) (
 	db := getDBInstance()
 
 	params := &dynamodb.DescribeTableInput{
-		TableName: aws.String("OrdersT3"),
+		TableName: aws.String(orders_table),
 	}
 	resp, err := db.DescribeTable(params)
 	if err != nil {
