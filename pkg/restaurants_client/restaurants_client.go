@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/varungupte/BootCamp_Team3/pkg/auth"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"google.golang.org/grpc"
@@ -34,6 +35,11 @@ func AddRestaurantAPIs(router *gin.Engine) {
 }
 
 func GetRestaurant(c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	id := c.Param("id")
 	n, err := strconv.ParseInt(id, 10, 64)
 	if err == nil {
@@ -59,6 +65,11 @@ func GetRestaurant(c *gin.Context) {
 }
 
 func CreateRestaurant(c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
@@ -82,6 +93,11 @@ func CreateRestaurant(c *gin.Context) {
 }
 
 func DeleteRestaurant (c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	id := c.Param("id")
 	n, err := strconv.ParseInt(id, 10, 64)
 	if err == nil {
@@ -108,6 +124,11 @@ func DeleteRestaurant (c *gin.Context) {
 }
 
 func DeleteRestaurantItem (c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	Id1 := c.Param("restId")
 	itemName := c.Param("itemName")
 	resId, err := strconv.ParseInt(Id1, 10, 64)
@@ -136,6 +157,11 @@ func DeleteRestaurantItem (c *gin.Context) {
 }
 
 func UpdateRestaurantItem(c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	body := c.Request.Body
 	content, err := ioutil.ReadAll(body)
 	id := c.Param("id")
@@ -168,6 +194,11 @@ func UpdateRestaurantItem(c *gin.Context) {
 }
 
 func GetRestaurantCount(c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
@@ -186,6 +217,11 @@ func GetRestaurantCount(c *gin.Context) {
 }
 
 func GetRestaurantItems(c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	id := c.Param("id")
 	n, err := strconv.ParseInt(id, 10, 64)
 	if err == nil {
@@ -212,6 +248,11 @@ func GetRestaurantItems(c *gin.Context) {
 }
 
 func GetRestaurantItemsInRange(c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	id := c.Param("id")
 	n, err := strconv.ParseInt(id, 10, 64)
 	if err == nil {
