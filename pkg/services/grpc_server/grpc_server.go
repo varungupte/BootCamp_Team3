@@ -82,7 +82,7 @@ func (*GrpcServer) GetOrderDetails (ctx context.Context, req *grpcPb.OrderDetail
 	expr, errExpression := expression.NewBuilder().WithKeyCondition(keyCondition).WithProjection(proj).Build()
 
 	if errExpression != nil {
-		log.Printf("error: creating dynamo expression ", errExpression)
+		log.Println("error: creating dynamo expression ", errExpression)
 
 		panic("Cannot create expression")
 	}
