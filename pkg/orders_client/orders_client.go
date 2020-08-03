@@ -3,6 +3,7 @@ package orders_client
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/varungupte/BootCamp_Team3/pkg/auth"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"google.golang.org/grpc"
 	"log"
@@ -13,11 +14,7 @@ import (
 // AddOrderAPIs adds GET and POST API paths for gin.
 func AddOrderAPIs(router *gin.Engine) {
 	//BasicAuth module for authorization while hitting the api
-	order := router.Group("/order", gin.BasicAuth(gin.Accounts{
-		"user1": "gupte", //username:password
-		"user2": "gupte",
-		"user3": "gupte",
-	}))
+	order := router.Group("/order")
 	order.GET("/", HomePage)
 
 	//will return the total orders so far
@@ -123,6 +120,11 @@ func HomePage(c *gin.Context) {
 // OrderCount is the handler for /order/count API.
 // It displays the total number of orders in the database.
 func OrderCount(c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	log.Println("ghhh")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 
@@ -201,6 +203,11 @@ func PopularDish(c *gin.Context) {
 
  */
 func UpdateOrderItem (c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	var req grpcPb.UpdateOrderItemRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -233,6 +240,11 @@ func UpdateOrderItem (c *gin.Context) {
 }
 
 func CreateOrder (c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	var req grpcPb.CreateOrderRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -266,7 +278,12 @@ func CreateOrder (c *gin.Context) {
 }
 
 func GetOrderDetails (c *gin.Context) {
-	var req grpcPb.GetOrderDetailsRequest
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
+	var req grpcPb.OrderDetailsRequest
 	orderId, err := strconv.ParseUint(c.Param("order_id"), 10, 32)
 	if err!= nil {
 

@@ -65,7 +65,7 @@ var orders_table = "T3_Order"
 //	return res, nil
 //}
 
-func (*GrpcServer) GetOrderDetails (ctx context.Context, req *grpcPb.GetOrderDetailsRequest) (*grpcPb.GetOrderDetailsResponse, error) {
+func (*GrpcServer) GetOrderDetails (ctx context.Context, req *grpcPb.OrderDetailsRequest) (*grpcPb.OrderDetailsResponse, error) {
 	order_id := req.GetOrderId()
 	proj := expression.NamesList(
 		expression.Name("Id"),
@@ -110,7 +110,7 @@ func (*GrpcServer) GetOrderDetails (ctx context.Context, req *grpcPb.GetOrderDet
 		panic("cannot marshal")
 	}
 
-	return &grpcPb.GetOrderDetailsResponse{
+	return &grpcPb.OrderDetailsResponse{
 		OrderDetails:string(str),
 	}, nil
 }
