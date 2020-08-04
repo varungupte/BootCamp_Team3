@@ -12,6 +12,7 @@ import (
 )
 
 const bufSize = 1024 * 1024
+
 var lis *bufconn.Listener
 
 var testItem = &grpcPb.Item{
@@ -154,6 +155,253 @@ func TestGrpcServer_UpdateOrderItem(t *testing.T) {
 		t.Fatalf("Failed to update order : %v ", err)
 	}
 }
+
+var addrUtil = &grpcPb.Address{
+	City:    "Test2",
+	HouseNo: "Test3",
+	Street:  "Test4",
+	PIN:     "Test5",
+}
+var itemsUtil = []*grpcPb.Item{
+	{
+		Id:       1,
+		Name:     "test6",
+		Quantity: 1,
+		Cost:     123,
+		Cuisine:  "Indian",
+	},
+	{
+		Id:       1,
+		Name:     "test7",
+		Quantity: 1,
+		Cost:     123,
+		Cuisine:  "Indian",
+	},
+}
+var restaurantUtil = grpcPb.PostRestaurantRequest{
+	Name:              "Test1",
+	Id:                101,
+	Status:            true,
+	RestaurantAddress: addrUtil,
+	Items:             itemsUtil,
+}
+
+func TestPostRestaurantPass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &restaurantUtil
+	response, err := oc.PostRestaurant(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+	if response.Status != "SuccessFul" {
+		t.Error("Faled as didn't Got Successful Message")
+	}
+}
+
+func TestDeleteItemPass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.DeleteItemRequest{
+		RestaurantId: 101,
+		ItemName:     "test7",
+	}
+	response, err := oc.DeleteItem(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+	if response.Status != "SuccessFul" {
+		t.Error("Faled as didn't Got Successful Message")
+	}
+}
+func TestUpdateItemPass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.UpdateItemRequest{
+		RestaurantId: 101,
+		ItemToBeUpdated: &grpcPb.Item{
+			Id:       1,
+			Name:     "test6",
+			Quantity: 1,
+			Cost:     1233141,
+			Cuisine:  "Indian",
+		},
+	}
+	response, err := oc.UpdateItem(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+	if response.Status != "SuccessFul" {
+		t.Error("Faled as didn't Got Successful Message")
+	}
+}
+func TestGetCountOfRestaurantPass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.OrdersCountRequest{}
+	_, err = oc.GetCountOfRestaurant(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+}
+func TestGetRestaurantPass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.RestaurantRequest{
+		RestaurantId: 101,
+	}
+	response, err := oc.GetRestaurant(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+	if response.Name != "Test1" {
+		t.Error("Faled as didn't Got Successful Message")
+	}
+}
+func TestGetItemsOfRestaurantPass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.RestaurantRequest{
+		RestaurantId: 101,
+	}
+	_, err = oc.GetItemsOfRestaurant(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+}
+func TestGetItemsInRangePass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.ItemsInRangeRequest{
+		RestaurantId: 101,
+		MaxRange:     1111111110,
+		MinRange:     0,
+	}
+	_, err = oc.GetItemsInRange(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+}
+func TestDeleteRestaurantPass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.RestaurantRequest{
+		RestaurantId: 101,
+	}
+	response, err := oc.DeleteRestaurant(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+	if response.Status != "SuccessFul" {
+		t.Error("Faled as didn't Got Successful Message")
+	}
+}
+
+func TestGetCustomersCountPass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.CustomersCountRequest{}
+	_, err = oc.GetCustomersCount(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+}
+
+func TestGetCustomersPass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.CustomerRequest{
+		CustomerId: "1",
+	}
+	_, err = oc.GetCustomer(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+}
+
+func TestGDeleteCustomerPass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.CustomerRequest{
+		CustomerId: "2",
+	}
+	_, err = oc.DeleteCustomer(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+}
+
+func TestAddCustomerPass(t *testing.T) {
+	ctx := context.Background()
+	conn, err := grpc.DialContext(ctx, "", grpc.WithContextDialer(bufDialer), grpc.WithInsecure())
+	if err != nil {
+		t.Fatalf("failed to dial: %v", err)
+	}
+	defer conn.Close()
+	oc := grpcPb.NewGRPCServiceClient(conn)
+	req := &grpcPb.AddCustomerRequest{}
+	_, err = oc.AddCustomer(context.Background(), req)
+	if err != nil {
+		t.Fatalf("Error While calling GetOrderDetail : %v ", err)
+	}
+}
+
+
 
 //func TestGetPopularDishPass(t *testing.T) {
 //	cityName := "SanFrancisco"
