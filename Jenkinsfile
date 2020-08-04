@@ -7,7 +7,7 @@ pipeline {
         stage('Build gin docker image') {
             steps {
                 echo 'Stopping existing gin container'
-                sh 'docker stop cont-go-in'
+                sh 'docker stop cont-go-gin'
 
                 echo 'Remove existing gin image'
                 sh 'docker rmi img-go-gin:1.1.1'
