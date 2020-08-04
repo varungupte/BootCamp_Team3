@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/BhaviD/BootCamp_Team3_gRPC/pkg/services/grpcPb"
 	"github.com/gin-gonic/gin"
+	"github.com/varungupte/BootCamp_Team3/pkg/grpcUtil"
 	"github.com/varungupte/BootCamp_Team3/pkg/auth"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
-	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"google.golang.org/grpc"
 	"io/ioutil"
 	"log"
@@ -45,7 +46,7 @@ func GetRestaurant(c *gin.Context) {
 	if err == nil {
 		fmt.Println("Unable to convert string to int 64")
 	}
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
@@ -70,7 +71,7 @@ func CreateRestaurant(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, "unauthorized")
 		return
 	}
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
@@ -103,7 +104,7 @@ func DeleteRestaurant (c *gin.Context) {
 	if err == nil {
 		fmt.Println("Unable to convert string to int 64")
 	}
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
@@ -135,7 +136,7 @@ func DeleteRestaurantItem (c *gin.Context) {
 	if err == nil {
 		fmt.Println("Unable to convert string to int 64")
 	}
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
@@ -172,7 +173,7 @@ func UpdateRestaurantItem(c *gin.Context) {
 	var item grpcPb.Item
 	err = json.Unmarshal(content, &item)
 	errorutil.CheckError(err, "unmarshalling orders")
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
@@ -199,7 +200,7 @@ func GetRestaurantCount(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, "unauthorized")
 		return
 	}
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
@@ -209,7 +210,7 @@ func GetRestaurantCount(c *gin.Context) {
 	req := &grpcPb.OrdersCountRequest{}
 	res, err := oc.GetCountOfRestaurant(context.Background(), req)
 	if err != nil {
-		log.Fatalf("Error While calling GetOrderDetail : %v ", err)
+		log.Fatalf("Error While calling GetRestaurantCount: %v ", err)
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"count": res.Count,
@@ -227,7 +228,7 @@ func GetRestaurantItems(c *gin.Context) {
 	if err == nil {
 		fmt.Println("Unable to convert string to int 64")
 	}
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
@@ -258,7 +259,7 @@ func GetRestaurantItemsInRange(c *gin.Context) {
 	if err == nil {
 		fmt.Println("Unable to convert string to int 64")
 	}
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}

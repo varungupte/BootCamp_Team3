@@ -8,7 +8,7 @@ import (
 	"github.com/varungupte/BootCamp_Team3/pkg/restaurants_client"
 )
 
-// Main launches the gin server at http://localhost:5657
+// Main launches the gin server at http://localhost:7878
 func main() {
 	gin.ForceConsoleColor()
 
@@ -20,7 +20,6 @@ func main() {
 	restaurants_client.AddRestaurantAPIs(router)
 	auth.AddAuthApis(router)
 
-	// listen and serve on localhost:5657
-	router.Run("localhost:5657")
+	// listen and serve on localhost:7878
+	router.Run("0.0.0.0:7878")
 }
-

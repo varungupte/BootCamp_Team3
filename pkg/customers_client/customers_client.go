@@ -2,10 +2,11 @@ package customers_client
 
 import (
 	"context"
+	"github.com/BhaviD/BootCamp_Team3_gRPC/pkg/services/grpcPb"
 	"github.com/gin-gonic/gin"
+	"github.com/varungupte/BootCamp_Team3/pkg/grpcUtil"
 	"github.com/varungupte/BootCamp_Team3/pkg/auth"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
-	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"google.golang.org/grpc"
 	"io/ioutil"
 	"log"
@@ -53,7 +54,7 @@ func GetCustomerCount(c *gin.Context) {
 	req := &grpcPb.CustomersCountRequest{}
 	res, err := grpcClient.GetCustomersCount(context.Background(), req)
 	if err != nil {
-		log.Fatalf("Error While calling GetOrdersCount: %v", err)
+		log.Fatalf("Error While calling GetCustomersCount: %v", err)
 	}
 
 	c.JSON(200, gin.H{
@@ -74,7 +75,7 @@ func AddCustomer (c *gin.Context) {
 	content, err := ioutil.ReadAll(body)
 	errorutil.CheckError(err, "Sorry No Content:")
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 		c.JSON(http.StatusBadGateway, gin.H {
@@ -113,7 +114,7 @@ func GetCustomer (c *gin.Context) {
 	}
 	customerId := c.Param("customerId")
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 		return
@@ -146,7 +147,7 @@ func DeleteCustomer (c *gin.Context) {
 	}
 	customerId := c.Param("customerId")
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 		return

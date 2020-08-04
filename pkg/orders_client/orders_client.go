@@ -2,11 +2,12 @@ package orders_client
 
 import (
 	"context"
+	"github.com/BhaviD/BootCamp_Team3_gRPC/pkg/services/grpcPb"
 	"github.com/gin-gonic/gin"
+	"github.com/varungupte/BootCamp_Team3/pkg/grpcUtil"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/varungupte/BootCamp_Team3/pkg/auth"
-	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"google.golang.org/grpc"
 	"log"
 	"net/http"
@@ -60,7 +61,7 @@ func AddOrderAPIs(router *gin.Engine) {
 func OrderDetail(c *gin.Context) {
 	ordernumber := c.Param("ordernumber")
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
@@ -94,7 +95,7 @@ func PostOrder(c *gin.Context) {
 
 	fmt.Println(string(content))
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 		c.JSON(http.StatusBadGateway, gin.H{
@@ -147,7 +148,7 @@ func OrderCount(c *gin.Context) {
 		return
 	}
 	log.Println("ghhh")
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
@@ -201,7 +202,7 @@ func OrderCount(c *gin.Context) {
 /*
 func PopularDish(c *gin.Context) {
 	cityName := c.Param("city")
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
@@ -240,7 +241,7 @@ func UpdateOrderItem (c *gin.Context) {
 	}
 	log.Println(req)
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
@@ -280,7 +281,7 @@ func CreateOrder (c *gin.Context) {
 	}
 	log.Println(req)
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
@@ -321,7 +322,7 @@ func GetOrderDetails (c *gin.Context) {
 	req.OrderId = uint32(orderId)
 	log.Println("id rece", req.OrderId)
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
 	}
