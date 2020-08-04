@@ -1,0 +1,206 @@
+[
+  {
+    "id": 1,
+    "name": "Indian Coffee House",
+    "items": [
+      {
+        "id": 1,
+        "name": "Biryani",
+        "cuisine": "Indian",
+        "cost": 360,
+        "quantity": 1
+      },
+      {
+        "id": 2,
+        "name": "Kerala Biryani",
+        "cuisine": "Indian",
+        "cost": 360,
+        "quantity": 1
+      },
+      {
+        "id": 1,
+        "name": "Coffee",
+        "cuisine": "Indian",
+        "cost": 35,
+        "quantity": 1
+      }
+    ],
+    "addr": {
+      "houseNo": "6-4/1",
+      "street": "Old Post Office Road",
+      "city": "Bhopal",
+      "pin": "462003"
+    },
+    "status": true
+  },
+  {
+    "id": 2,
+    "name": "Indian Tea House",
+    "items": [
+      {
+        "id": 1,
+        "name": "Biryani",
+        "cuisine": "Indian",
+        "cost": 360,
+        "quantity": 1
+      },
+      {
+        "id": 2,
+        "name": "Kerala Biryani",
+        "cuisine": "Indian",
+        "cost": 360,
+        "quantity": 1
+      },
+      {
+        "id": 1,
+        "name": "Coffee",
+        "cuisine": "Indian",
+        "cost": 35,
+        "quantity": 1
+      }
+    ],
+    "addr": {
+      "houseNo": "6-4/2",
+      "street": "Bakers Street",
+      "city": "Hyderabad",
+      "pin": "521176"
+    },
+    "status": true
+  },
+  {
+    "id": 3,
+    "name": "Sagar Gaire",
+    "items": [
+      {
+        "id": 1,
+        "name": "Paneer Kulcha",
+        "cuisine": "Indian",
+        "cost": 120,
+        "quantity": 1
+      },
+      {
+        "id": 2,
+        "name": "Masala Maggi",
+        "cuisine": "NaN",
+        "cost": 30,
+        "quantity": 1
+      },
+      {
+        "id": 1,
+        "name": "Coffee",
+        "cuisine": "Indian",
+        "cost": 25,
+        "quantity": 1
+      }
+    ],
+    "addr": {
+      "houseNo": "6-4/5",
+      "street": "Mata Mandir",
+      "city": "Bhopal",
+      "pin": "462003"
+    },
+    "status": true
+  },
+  {
+    "id": 4,
+    "name": "KFC",
+    "items": [
+      {
+        "id": 1,
+        "name": "Chichen Bucket",
+        "cuisine": "Indian",
+        "cost": 150,
+        "quantity": 1
+      },
+      {
+        "id": 2,
+        "name": "Crushers",
+        "cuisine": "NaN",
+        "cost": 100,
+        "quantity": 1
+      },
+      {
+        "id": 1,
+        "name": "Coffee",
+        "cuisine": "Indian",
+        "cost": 25,
+        "quantity": 1
+      }
+    ],
+    "addr": {
+      "houseNo": "6-4/53",
+      "street": "Db Mall",
+      "city": "Bhopal",
+      "pin": "462003"
+    },
+    "status": true
+  },
+  {
+    "id": 5,
+    "name": "Bawarchi",
+    "items": [
+      {
+        "id": 1,
+        "name": "Mutton Biryani",
+        "cuisine": "Indian",
+        "cost": 300,
+        "quantity": 1
+      },
+      {
+        "id": 2,
+        "name": "Masala Maggi",
+        "cuisine": "NaN",
+        "cost": 30,
+        "quantity": 1
+      },
+      {
+        "id": 1,
+        "name": "Coffee",
+        "cuisine": "Indian",
+        "cost": 25,
+        "quantity": 1
+      }
+    ],
+    "addr": {
+      "houseNo": "6-4/5",
+      "street": "Near Charminar",
+      "city": "Hyderabad",
+      "pin": "462003"
+    },
+    "status": true
+  },
+  {
+    "id": 6,
+    "name": "Gateway",
+    "items": [
+      {
+        "id": 1,
+        "name": "Idli",
+        "cuisine": "Indian",
+        "cost": 50,
+        "quantity": 5
+      },
+      {
+        "id": 2,
+        "name": "Masala Dosa",
+        "cuisine": "NaN",
+        "cost": 30,
+        "quantity": 3
+      },
+      {
+        "id": 1,
+        "name": "Coffee",
+        "cuisine": "Indian",
+        "cost": 25,
+        "quantity": 1
+      }
+    ],
+    "addr": {
+      "houseNo": "6-4/5",
+      "street": "Auto Nagar Road",
+      "city": "Vijayawada",
+      "pin": "521163"
+    },
+    "status": true
+  }
+]

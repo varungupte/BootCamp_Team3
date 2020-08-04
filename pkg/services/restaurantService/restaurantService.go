@@ -1,4 +1,4 @@
-package restaurentService
+package restaurantService
 
 import (
 	"fmt"
@@ -6,36 +6,18 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/varungupte/BootCamp_Team3/pkg/dynamoDB/types"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
 	"strconv"
 )
 
-type RestaurantEntity struct {
-	Id           int64
-	Name         string
-	Items        []ItemEntity
-	Address      AddressEntity
-	ActiveStatus bool
-}
-type AddressEntity struct {
-	HouseNo string
-	Street  string
-	City    string
-	Pin     string
-}
-type ItemEntity struct {
-	Name     string
-	Cuisine  string
-	Cost     float32
-	Quantity uint32
-}
 
-func SaveRestaurant(entity RestaurantEntity) (RestaurantEntity, error) {
+func SaveRestaurant(entity types.Restaurant) (types.Restaurant, error) {
 	db := MakeNewDbSession()
 	restaurantMap, err := dynamodbattribute.MarshalMap(entity)
 	errorutil.CheckError(err, "Error occured While Marshalling Restaurant Entity")
 	_, err = db.PutItem(&dynamodb.PutItemInput{
-		TableName: aws.String("Restaurant"),
+		TableName: aws.String("T3_Restaurant"),
 		Item:      restaurantMap,
 	})
 	errorutil.CheckError(err, "Error Occured While putting Restaurent in Db")
@@ -43,10 +25,10 @@ func SaveRestaurant(entity RestaurantEntity) (RestaurantEntity, error) {
 	return entity, nil
 }
 
-func GetRestaurant(id int64) (RestaurantEntity, error) {
+func GetRestaurant(id int64) (types.Restaurant, error) {
 	db := MakeNewDbSession()
 	resp, err := db.GetItem(&dynamodb.GetItemInput{
-		TableName: aws.String("Restaurant"),
+		TableName: aws.String("T3_Restaurant"),
 		Key: map[string]*dynamodb.AttributeValue{
 			"Id": {
 				N: aws.String(strconv.Itoa(int(id))),
@@ -54,17 +36,18 @@ func GetRestaurant(id int64) (RestaurantEntity, error) {
 		},
 	})
 	if err != nil {
-		return RestaurantEntity{}, err
+		return types.Restaurant{}, err
 	}
-	var restaurantEntity RestaurantEntity
+	var restaurantEntity types.Restaurant
 	err = dynamodbattribute.UnmarshalMap(resp.Item, &restaurantEntity)
+	fmt.Println("Got this from db ",restaurantEntity)
 	return restaurantEntity, nil
 }
 
 func DeleteRestaurant(id int64) error{
 	db := MakeNewDbSession()
 	params := &dynamodb.DeleteItemInput{
-		TableName: aws.String("Restaurant"),
+		TableName: aws.String("T3_Restaurant"),
 		Key: map[string]*dynamodb.AttributeValue{
 			"Id": {
 				N: aws.String(strconv.Itoa(int(id))),
@@ -84,20 +67,20 @@ func DeleteRestaurant(id int64) error{
 
 }
 
-func GetRestaurantItems(id int64)([]ItemEntity,error)  {
+func GetRestaurantItems(id int64)([]types.Item,error)  {
 	res,err:=GetRestaurant(id)
 	if err!=nil {
-		return []ItemEntity{},err
+		return []types.Item{},err
 	}
 	return res.Items, nil
 }
 
-func GetItemsBetweenRange(min float32,max float32,id int64)([]ItemEntity,error)  {
+func GetItemsBetweenRange(min float32,max float32,id int64)([]types.Item,error)  {
 	res,err:=GetRestaurant(id)
 	if err!=nil {
-		return []ItemEntity{},err
+		return []types.Item{},err
 	}
-	reqItems:=make([]ItemEntity,0,5)
+	reqItems:=make([]types.Item,0,5)
 	for _,item:=range res.Items{
 		if item.Cost>=min&&item.Cost<=max {
 			reqItems=append(reqItems, item)
@@ -125,7 +108,7 @@ func DeleteItemFromRestaurant(restaurantId int64,itemName string) error {
 	}
 	return nil
 }
-func UpdateItemInRestaurant(restaurantId int64,item ItemEntity) error {
+func UpdateItemInRestaurant(restaurantId int64,item types.Item) error {
 	restaurantEntity,err:=GetRestaurant(restaurantId)
 	if err!=nil{
 		return err
@@ -151,7 +134,7 @@ func GetRestaurantCount()(*int64,error)  {
 	db:=MakeNewDbSession()
 	// create the api params
 	params := &dynamodb.DescribeTableInput{
-		TableName: aws.String("Restaurant"),
+		TableName: aws.String("T3_Restaurant"),
 	}
 	// get the table description
 	resp, err := db.DescribeTable(params)

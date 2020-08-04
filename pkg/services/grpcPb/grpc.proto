@@ -12,13 +12,6 @@ message PostOrderResponse{
     string status = 1;
 }
 
-message OrderDetailRequest {
-    string OrderNumber = 1;
-}
-message OrderDetailResponse {
-    string orderDetail = 1;
-}
-
 message PopularDishResponse {
     string DishName = 1;
 }
@@ -57,18 +50,18 @@ message CustomerResponse {
 
 // Restaurant
 message Item {
-    uint32 id=1;
-    string name = 2;
-    string cuisine = 3;
-    float cost = 4;
-    uint32 quantity = 5;
+    uint32 Id = 1;
+    string Name = 2;
+    string Cuisine = 3;
+    float  Cost = 4;
+    uint32 Quantity = 5;
 }
 
-message Address{
-    string houseNo = 1;
-    string street = 2;
-    string city = 3;
-    string pin = 4;
+message Address {
+    string HouseNo = 1;
+    string Street = 2;
+    string City = 3;
+    string PIN = 4;
 }
 
 message PostRestaurantRequest{
@@ -94,7 +87,7 @@ message GenericResponse{
 }
 message UpdateItemRequest{
     int64 restaurantId = 1;
-    Item itemToBeUpdates = 2;
+    Item itemToBeUpdated = 2;
 }
 message ItemsInRangeRequest{
     float minRange = 1;
@@ -136,10 +129,19 @@ message OrdersCountResponse{
     int64 count=1;
 }
 
+message OrderDetailsRequest {
+    uint32 orderId=1;
+}
+
+message OrderDetailsResponse {
+    string orderDetails=1;
+}
+
 service GRPCService {
     rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse){}
     rpc UpdateOrderItem(UpdateOrderItemRequest) returns (UpdateOrderItemResponse){}
     rpc GetOrdersCount (OrdersCountRequest) returns (OrdersCountResponse) {}
+    rpc GetOrderDetails (OrderDetailsRequest) returns (OrderDetailsResponse) {}
 
     // Customer
     rpc GetCustomersCount (CustomersCountRequest) returns (CustomersCountResponse){}

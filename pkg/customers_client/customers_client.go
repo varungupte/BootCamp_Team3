@@ -3,6 +3,7 @@ package customers_client
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/varungupte/BootCamp_Team3/pkg/auth"
 	"github.com/varungupte/BootCamp_Team3/pkg/errorutil"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"google.golang.org/grpc"
@@ -13,7 +14,7 @@ import (
 
 // AddOrderPaths adds GET and POST API paths for gin.
 func AddCustomerAPIs(router *gin.Engine) {
-	customers := router.Group("/customers")
+	customers := router.Group("/customer")
 
 	// gets the number of customers in the database
 	customers.POST("/new", AddCustomer)
@@ -35,6 +36,11 @@ func AddCustomerAPIs(router *gin.Engine) {
 // GetCustomerCount is the handler for /customers/count API.
 // It displays the number of customers in the database.
 func GetCustomerCount(c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 
 	if err != nil {
@@ -58,6 +64,11 @@ func GetCustomerCount(c *gin.Context) {
 // AddCustomer is the handler for /customers/new API.
 // It adds a new customer in the database and displays a success or failure message.
 func AddCustomer (c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	body := c.Request.Body
 
 	content, err := ioutil.ReadAll(body)
@@ -95,6 +106,11 @@ func AddCustomer (c *gin.Context) {
 // GetCustomer is the handler for /customers/id/:customerId API.
 // It displays the customer details of a particular customerId
 func GetCustomer (c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	customerId := c.Param("customerId")
 
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
@@ -123,6 +139,11 @@ func GetCustomer (c *gin.Context) {
 // DeleteCustomer is the handler for /customers/id/:customerId API.
 // It displays the customer details of a particular customerId
 func DeleteCustomer (c *gin.Context) {
+	err := auth.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
 	customerId := c.Param("customerId")
 
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
