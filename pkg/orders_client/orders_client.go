@@ -3,6 +3,8 @@ package orders_client
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/varungupte/BootCamp_Team3/pkg/auth"
 	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"google.golang.org/grpc"
@@ -11,8 +13,23 @@ import (
 	"strconv"
 )
 
+var (
+	apiHits = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "api_hit_count",
+		Help: "Number of times api's were called.",
+	})
+)
+
+func init() {
+	// Metrics have to be registered to be exposed:
+	prometheus.MustRegister(apiHits)
+}
+
 // AddOrderAPIs adds GET and POST API paths for gin.
 func AddOrderAPIs(router *gin.Engine) {
+
+	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
+
 	//BasicAuth module for authorization while hitting the api
 	order := router.Group("/order")
 	order.GET("/", HomePage)
@@ -112,6 +129,7 @@ func PostOrder(c *gin.Context) {
 // HomePage is the handler for /order API.
 // It displays an introductory message.
 func HomePage(c *gin.Context) {
+	apiHits.Inc()
 	c.JSON(200, gin.H{
 		"message": "Hi there !... This is analytics tool to find popular dish based on various parameters.",
 	})
@@ -120,6 +138,9 @@ func HomePage(c *gin.Context) {
 // OrderCount is the handler for /order/count API.
 // It displays the total number of orders in the database.
 func OrderCount(c *gin.Context) {
+
+	apiHits.Inc()
+
 	err := auth.ExtractTokenMetadata(c.Request)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, "unauthorized")
@@ -203,6 +224,9 @@ func PopularDish(c *gin.Context) {
 
  */
 func UpdateOrderItem (c *gin.Context) {
+
+	apiHits.Inc()
+
 	err := auth.ExtractTokenMetadata(c.Request)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, "unauthorized")
@@ -240,6 +264,9 @@ func UpdateOrderItem (c *gin.Context) {
 }
 
 func CreateOrder (c *gin.Context) {
+
+	apiHits.Inc()
+
 	err := auth.ExtractTokenMetadata(c.Request)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, "unauthorized")
@@ -278,6 +305,9 @@ func CreateOrder (c *gin.Context) {
 }
 
 func GetOrderDetails (c *gin.Context) {
+
+	apiHits.Inc()
+
 	err := auth.ExtractTokenMetadata(c.Request)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, "unauthorized")

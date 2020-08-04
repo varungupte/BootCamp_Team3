@@ -2,7 +2,7 @@ syntax="proto3";
 
 package grpcPb;
 
-option go_package="services/grpcPb";
+option go_package="grpcPb";
 
 // Order
 message PostOrderRequest{
