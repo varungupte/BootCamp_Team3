@@ -33,7 +33,6 @@ func AddCustomerAPIs(router *gin.Engine) {
 	customers.DELETE("/id/:customerId", DeleteCustomer)
 }
 
-
 // GetCustomerCount is the handler for /customers/count API.
 // It displays the number of customers in the database.
 func GetCustomerCount(c *gin.Context) {
@@ -42,7 +41,7 @@ func GetCustomerCount(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, "unauthorized")
 		return
 	}
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcUtil.GRPC_target_addr, grpc.WithInsecure())
 
 	if err != nil {
 		log.Fatalf("Sorry client cannot talk to server: %v: ", err)
