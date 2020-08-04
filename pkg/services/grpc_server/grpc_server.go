@@ -39,7 +39,7 @@ var orders_table = "T3_Order"
 //	for i := 0; i < 1000; i++ {
 //		var f string
 //		f = "[" + strconv.Itoa(i) + "].User.City"
-//		q, _ := parser.Query(f)
+//		q, _ := parser.Quelsry(f)
 //		if q == cityName {
 //			var d string
 //			d = "[" + strconv.Itoa(i) + "].DishName"
