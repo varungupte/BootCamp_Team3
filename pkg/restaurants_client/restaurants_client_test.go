@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/varungupte/BootCamp_Team3/pkg/auth"
+	"github.com/varungupte/BootCamp_Team3/pkg/services/grpcPb"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -62,6 +63,126 @@ func TestGetRestaurantCount(t *testing.T) {
 	}
 }
 
+func TestDeleteRestaurantItem(t *testing.T) {
+	w := httptest.NewRecorder()
+	r := gin.Default()
+	token := getToken()
+	r.DELETE ("/restaurant/1/Coffee", DeleteRestaurant)
+	req, _ := http.NewRequest("DELETE", "/restaurant/1/Coffee", nil)
+
+	bearer := "Bearer "+token
+	req.Header.Add("Authorization", bearer)
+
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("failed ")
+		log.Println(w.Result())
+	}
+}
+func TestGetRestaurantItemsInRange(t *testing.T) {
+	w := httptest.NewRecorder()
+	r := gin.Default()
+	token := getToken()
+	r.GET("/restaurant/3/items/0/100", GetRestaurantItemsInRange)
+	req, _ := http.NewRequest("GET", "/restaurant/3/items/0/100", nil)
+
+	bearer := "Bearer "+token
+	req.Header.Add("Authorization", bearer)
+
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("failed ")
+		log.Println(w.Result())
+	}
+}
+var addrUtil = &grpcPb.Address{
+	City:    "Test2",
+	HouseNo: "Test3",
+	Street:  "Test4",
+	PIN:     "Test5",
+}
+var itemsUtil = []*grpcPb.Item{
+	{
+		Id:       1,
+		Name:     "test6",
+		Quantity: 1,
+		Cost:     123,
+		Cuisine:  "Indian",
+	},
+	{
+		Id:       1,
+		Name:     "test7",
+		Quantity: 1,
+		Cost:     123,
+		Cuisine:  "Indian",
+	},
+}
+var restaurantUtil = grpcPb.PostRestaurantRequest{
+	Name:              "Test1",
+	Id:                101,
+	Status:            true,
+	RestaurantAddress: addrUtil,
+	Items:             itemsUtil,
+}
+
+func TestCreateRestaurant(t *testing.T) {
+	w := httptest.NewRecorder()
+	r := gin.Default()
+	str, _ := json.Marshal(restaurantUtil)
+	token := getToken()
+	r.POST("/restaurant/", GetRestaurantItemsInRange)
+	req, _ := http.NewRequest("POST", "/restaurant/",bytes.NewBuffer(str) )
+
+	bearer := "Bearer "+token
+	req.Header.Add("Authorization", bearer)
+
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("failed ")
+		log.Println(w.Result())
+	}
+}
+func TestGetRestaurantItems(t *testing.T) {
+	w := httptest.NewRecorder()
+	r := gin.Default()
+	token := getToken()
+	r.GET("/restaurant/3/items", GetRestaurantItemsInRange)
+	req, _ := http.NewRequest("GET", "/restaurant/3/items", nil)
+
+	bearer := "Bearer "+token
+	req.Header.Add("Authorization", bearer)
+
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("failed ")
+		log.Println(w.Result())
+	}
+}
+func TestUpdateRestaurantItem(t *testing.T) {
+
+	w := httptest.NewRecorder()
+	r := gin.Default()
+	item:=grpcPb.Item{
+		Id:       1,
+		Name:     "test6",
+		Quantity: 1,
+		Cost:     123,
+		Cuisine:  "Indian",
+	}
+	str, _ := json.Marshal(item)
+	token := getToken()
+	r.PUT("/restaurant/1", UpdateRestaurantItem)
+	req, _ := http.NewRequest("PUT", "/restaurant/1",bytes.NewBuffer(str) )
+
+	bearer := "Bearer "+token
+	req.Header.Add("Authorization", bearer)
+
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("failed ")
+		log.Println(w.Result())
+	}
+}
 func getToken() string{
 	w := httptest.NewRecorder()
 	r := gin.Default()
