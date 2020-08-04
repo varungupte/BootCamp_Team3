@@ -67,6 +67,7 @@ var orders_table = "T3_Order"
 
 func (*GrpcServer) GetOrderDetails (ctx context.Context, req *grpcPb.OrderDetailsRequest) (*grpcPb.OrderDetailsResponse, error) {
 	order_id := req.GetOrderId()
+	log.Println("hererr", order_id)
 	proj := expression.NamesList(
 		expression.Name("Id"),
 		expression.Name("ResId"),
@@ -82,7 +83,7 @@ func (*GrpcServer) GetOrderDetails (ctx context.Context, req *grpcPb.OrderDetail
 	expr, errExpression := expression.NewBuilder().WithKeyCondition(keyCondition).WithProjection(proj).Build()
 
 	if errExpression != nil {
-		log.Printf("error: creating dynamo expression ", errExpression)
+		log.Printf("error: creating dynamo expression %v", errExpression)
 
 		panic("Cannot create expression")
 	}
@@ -144,12 +145,12 @@ func (*GrpcServer) CreateOrder (ctx context.Context, req *grpcPb.CreateOrderRequ
 	}
 	order.Items = Items
 
-	log.Println("order create ", order)
+	//log.Println("order create ", order)
 
 	db := getDBInstance()
 
 	orderMap, err := dynamodbattribute.MarshalMap(order)
-	log.Println("mapppp", orderMap)
+	//log.Println("mapppp", orderMap)
 	if err != nil {
 		panic("Cannot map the values given in order struct...")
 	}
@@ -158,15 +159,13 @@ func (*GrpcServer) CreateOrder (ctx context.Context, req *grpcPb.CreateOrderRequ
 		TableName: aws.String(orders_table),
 		Item: orderMap,
 	}
-	log.Println("pa", params)
+	//log.Println("pa", params)
 
-	resp, err := db.PutItem(params)
+	_, err = db.PutItem(params)
 
 	if err != nil {
 		log.Fatalf("Some problem while inserting : %v", err)
 	}
-
-	log.Println(resp)
 
 	return &grpcPb.CreateOrderResponse{
 		Status:  true,
@@ -195,7 +194,7 @@ func (*GrpcServer) UpdateOrderItem (_ context.Context, req *grpcPb.UpdateOrderIt
 		},
 	}
 	resp, err := db.GetItem(params)
-	log.Println("resss", resp)
+	//log.Println("resss", resp)
 
 	//if err != nil {
 	//
@@ -208,7 +207,7 @@ func (*GrpcServer) UpdateOrderItem (_ context.Context, req *grpcPb.UpdateOrderIt
 	//
 	//}
 
-	log.Println(order)
+	//log.Println(order)
 	var item types.Item
 	j := 0
 
