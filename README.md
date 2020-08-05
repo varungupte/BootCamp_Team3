@@ -1,4 +1,4 @@
-# BootCamp_Team3
+# Go gin server
 
 ### Overview
 Created a web server using Go programming language. 
