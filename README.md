@@ -88,30 +88,30 @@ Open Terminal and copy-paste the following commands
 ### Project Directory Structure
 ```
 BootCamp_Team3
-   ├── README.md
-   ├── cmd
-   │   └── order-prediction
-   │       └── main.go
-   └── pkg
-       ├── errorutil
-       │   └── errorutil.go
-       ├── restaurants
-       │   └── restaurants.go
-       ├── services
-       │   └── orders
-       │       ├── orders_client
-       │       │   └── orders_client.go
-       │       ├── orders_server
-       │       │   ├── Orders.csv
-       │       │   ├── Restaurant.csv
-       │       │   ├── User.csv
-       │       │   ├── orders.json
-       │       │   └── orders_server.go
-       │       └── orderspb
-       │           ├── orders.pb.go
-       │           └── orders.proto
-       └── users
-           └── users.go
+    ├── Dockerfile
+    ├── Jenkinsfile
+    ├── README.md
+    ├── cmd
+    │   └── gin_server
+    │       └── main.go
+    ├── go.mod
+    ├── go.sum
+    └── pkg
+        ├── auth
+        │   └── jwtAuth.go
+        ├── customers_client
+        │   ├── customers_client.go
+        │   └── customers_client_test.go
+        ├── errorutil
+        │   └── errorutil.go
+        ├── grpcUtil
+        │   └── grpcUtil.go
+        ├── orders_client
+        │   ├── orders_client.go
+        │   └── orders_client_test.go
+        └── restaurants_client
+            ├── restaurants_client.go
+            └── restaurants_client_test.go
 ```
 
 #### /cmd
