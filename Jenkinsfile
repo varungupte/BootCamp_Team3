@@ -17,7 +17,7 @@ pipeline {
             }
         }
 
-        stage('Run gRPC docker container') {
+        stage('Run gin docker container') {
             steps {
                 echo 'Running new gin container'
                 sh 'docker run --rm -d -p 7878:7878 --net=my_bridge --name=cont-go-gin img-go-gin:1.1.1'
