@@ -29,43 +29,48 @@ POST /customers/new
 DELETE /customers/id/{custId}
 ```
 
-### Data
-**users.csv** contains the data of users:
-```
-type User struct {
-    Id      int
-    Name    string
-    Street  string
-    City    string
-    Rating  int
+### Models
+type Address struct {
+	HouseNo string
+	Street  string
+	City    string
+	PIN     string
 }
-```
 
-**restaurants.csv** contains the data of restaurants:
-```
-type Restaurant struct {
-    Id      int
-    Name    string
-    Street  string
-    City    string
-    Rating  int
+type Customer struct {
+	Id           uint32
+	FullName     string
+	Addr         Address
+	ActiveStatus bool
 }
-```
 
-**orders.csv** contains the data of orders:
-```
+type Item struct {
+	Id       uint32
+	Name     string
+	Cuisine  string
+	Cost     float32
+	Quantity uint32
+}
+
 type Order struct {
-    Id            int
-    Quantity      int
-    Amount        float64
-    DishName      string
-    User          users.User
-    Restau        restaurants.Restaurant
-    DeliveryTime  string
+	Id           uint32
+	ResId        uint32
+	CustId       uint32
+	Items        []Item
+	Discount     float32
+	DeliveryAddr Address
+}
+
+type Restaurant struct {
+	Id           int64
+	Name         string
+	Items        []Item
+	Addr         Address
+	ActiveStatus bool
 }
 ```
 
-### Steps to run the GIN and gRPC servers:
+### Steps to run the gin server:
 Open Terminal and copy-paste the following commands
 ```
 1. mkdir $HOME/GoWorkspace
@@ -75,14 +80,8 @@ Open Terminal and copy-paste the following commands
 6. mkdir $GOPATH/src
 7. cd $GOPATH/src
 8. go get github.com/varungupte/BootCamp_Team3
-9. go get -u github.com/elgs/gojq
-10. go get -u github.com/gin-gonic/gin
-11. go get -u google.golang.org/grpc
-12. cd $GOPATH/src/github.com/varungupte/BootCamp_Team3/cmd/order-prediction
-13. go run main.go              <-- this will run gin server
-14. Open a new terminal tab
-15. cd $GOPATH/src/github.com/varungupte/BootCamp_Team3/pkg/services/orders/orders_server
-16. go run orders_server.go     <-- this will run gRPC server
+9. docker build -t img-go-gin:1.1.1
+10. docker run --rm -p 7878:7878 --net=my_bridge --name=cont-go-gin img-go-gin:1.1.1
 ```
 
 ### Project Directory Structure
