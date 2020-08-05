@@ -1,6 +1,5 @@
 # BootCamp_Team3
 
-## Week 1
 ### Overview
 Created a web server using Go programming language. 
 It includes the following features:
@@ -27,6 +26,20 @@ GET /customers/id/{custId}
 GET /customers/count
 POST /customers/new
 DELETE /customers/id/{custId}
+```
+
+### Technologies used
+```
+* Go gin
+* gRPC
+* dynamoDB
+* Docker
+* Jenkins
+* Prometheus
+* Grafana
+* Godocs
+* JWT Auth
+* Sonarqube
 ```
 
 ### Models
