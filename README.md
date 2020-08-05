@@ -30,6 +30,7 @@ DELETE /customers/id/{custId}
 ```
 
 ### Models
+```
 type Address struct {
 	HouseNo string
 	Street  string
