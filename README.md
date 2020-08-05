@@ -30,16 +30,16 @@ DELETE /customers/id/{custId}
 
 ### Technologies used
 ```
-* Go gin
-* gRPC
-* dynamoDB
-* Docker
-* Jenkins
-* Prometheus
-* Grafana
-* Godocs
-* JWT Auth
-* Sonarqube
+- Go gin
+- gRPC
+- dynamoDB
+- Docker
+- Jenkins
+- Prometheus
+- Grafana
+- Godocs
+- JWT Auth
+- Sonarqube
 ```
 
 ### Models
