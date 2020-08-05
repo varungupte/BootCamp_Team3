@@ -94,7 +94,7 @@ Open Terminal and copy-paste the following commands
 6. mkdir $GOPATH/src
 7. cd $GOPATH/src
 8. go get github.com/varungupte/BootCamp_Team3
-9. docker build -t img-go-gin:1.1.1
+9. docker build -t img-go-gin:1.1.1 .
 10. docker run --rm -p 7878:7878 --net=my_bridge --name=cont-go-gin img-go-gin:1.1.1
 ```
 
