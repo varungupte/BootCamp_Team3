@@ -2,6 +2,8 @@
 
 ### Overview
 Created a web server using Go programming language. 
+Refer to the corresponding gRPC server implementation in [gRPC repo](https://github.com/BhaviD/BootCamp_Team3_gRPC)
+
 It includes the following features:
 ```
 POST /admin/login
