@@ -127,3 +127,6 @@ Library code that's ok to use by external applications (e.g., pkg/orders, pkg/re
 ### Request Flow
 
 ![image](https://user-images.githubusercontent.com/59866066/88765441-1c657e80-d194-11ea-9f5c-17054dfc3d5e.png)
+
+Architecture
+![image](https://user-images.githubusercontent.com/59866066/89395956-9d3fef80-d72b-11ea-9f67-ae5c8d82f6db.jpeg)
